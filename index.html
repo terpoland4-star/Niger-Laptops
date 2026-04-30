@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Niger Laptop - Vente de produits informatiques et technologiques au Niger">
     <meta name="keywords" content="ordinateur, laptop, niger, informatique, technologie, accessoires">
-    <meta name="author" content="Niger Laptop">
+    <meta name="author" content="HAM Global-Words">
+    <meta name="copyright" content="HAM Global-Words 2026">
     <title>Niger Laptop - Informatique & Technologie</title>
     
     <!-- Font Awesome Icons -->
@@ -13,6 +14,9 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -36,7 +40,10 @@
 <header class="main-header">
     <div class="header-container">
         <a href="#" class="logo" id="logoLink">
-            <i class="fas fa-laptop-code"></i>
+            <div class="logo-wrapper">
+                <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo">
+                <div class="logo-glow"></div>
+            </div>
             <span>Niger Laptop</span>
         </a>
         
@@ -70,12 +77,12 @@
         <!-- HERO -->
         <section class="hero">
             <div class="container">
-                <h1>Votre passion, notre technologie</h1>
-                <p>Ordinateurs, accessoires et innovations technologiques au meilleur prix</p>
-                <a href="#" class="btn btn-primary" data-page="products">
+                <h1 data-aos="fade-up" data-aos-duration="1000">Votre passion, notre technologie</h1>
+                <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">Ordinateurs, accessoires et innovations technologiques au meilleur prix</p>
+                <a href="#" class="btn btn-primary" data-page="products" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
                     <i class="fas fa-shopping-bag"></i> Découvrir nos produits
                 </a>
-                <div class="hero-stats">
+                <div class="hero-stats" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
                     <div class="stat-item">
                         <div class="stat-number">500+</div>
                         <div class="stat-label">Produits</div>
@@ -95,7 +102,7 @@
         <!-- CATEGORIES -->
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Catégories populaires</h2>
+                <h2 class="section-title" data-aos="fade-up">Catégories populaires</h2>
                 <div class="categories-grid" id="categoriesGrid"></div>
             </div>
         </section>
@@ -103,13 +110,13 @@
         <!-- FEATURED PRODUCTS -->
         <section class="section" style="background: #f9f9f9;">
             <div class="container">
-                <h2 class="section-title">Produits vedettes</h2>
+                <h2 class="section-title" data-aos="fade-up">Produits vedettes</h2>
                 <div class="products-grid" id="featuredProductsGrid"></div>
             </div>
         </section>
         
         <!-- BANNIÈRE PROMO NIGER -->
-        <section class="niger-banner">
+        <section class="niger-banner" data-aos="fade-up">
             <div class="container">
                 <div class="banner-content">
                     <i class="fas fa-flag-checkered"></i>
@@ -125,7 +132,7 @@
         </section>
 
         <!-- NEWSLETTER -->
-        <section class="newsletter-section">
+        <section class="newsletter-section" data-aos="fade-up">
             <div class="container">
                 <h2>Inscrivez-vous à notre newsletter</h2>
                 <p>Recevez nos offres exclusives et nouveautés</p>
@@ -141,7 +148,7 @@
     <div id="productsPage" style="display: none;">
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Tous nos produits</h2>
+                <h2 class="section-title" data-aos="fade-up">Tous nos produits</h2>
                 <div class="products-grid" id="allProductsGrid"></div>
             </div>
         </section>
@@ -151,12 +158,12 @@
     <div id="aboutPage" style="display: none;">
         <section class="section">
             <div class="container">
-                <h2 class="section-title">À propos de Niger Laptop</h2>
+                <h2 class="section-title" data-aos="fade-up">À propos de Niger Laptop</h2>
                 <div class="about-content">
                     <i class="fas fa-laptop-code about-icon"></i>
-                    <p>Niger Laptop est une entreprise dédiée à la vente de produits informatiques et technologiques au Niger. Notre mission est de rendre la technologie accessible à tous, avec des produits de qualité et des prix compétitifs.</p>
-                    <p>Depuis notre création en 2024, nous nous engageons à fournir le meilleur service client et les produits les plus récents du marché.</p>
-                    <div class="legal-info">
+                    <p data-aos="fade-up">Niger Laptop est une entreprise dédiée à la vente de produits informatiques et technologiques au Niger. Notre mission est de rendre la technologie accessible à tous, avec des produits de qualité et des prix compétitifs.</p>
+                    <p data-aos="fade-up" data-aos-delay="200">Depuis notre création en 2024, nous nous engageons à fournir le meilleur service client et les produits les plus récents du marché.</p>
+                    <div class="legal-info" data-aos="fade-up" data-aos-delay="400">
                         <h3>Nos informations légales</h3>
                         <p><strong>NIF :</strong> 117816/P</p>
                         <p><strong>RCCM :</strong> 01-2024-A10-00573</p>
@@ -172,9 +179,9 @@
     <div id="contactPage" style="display: none;">
         <section class="section">
             <div class="container">
-                <h2 class="section-title">Contactez-nous</h2>
+                <h2 class="section-title" data-aos="fade-up">Contactez-nous</h2>
                 <div class="contact-wrapper">
-                    <div class="contact-info">
+                    <div class="contact-info" data-aos="fade-up">
                         <div class="contact-card">
                             <i class="fas fa-map-marker-alt"></i>
                             <h4>Adresse</h4>
@@ -191,7 +198,7 @@
                             <p>contact@nigerlaptop.com</p>
                         </div>
                     </div>
-                    <form id="contactForm" class="contact-form">
+                    <form id="contactForm" class="contact-form" data-aos="fade-up" data-aos-delay="200">
                         <div class="form-group">
                             <label>Nom complet *</label>
                             <input type="text" id="contactName" required>
@@ -224,6 +231,9 @@
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>Niger Laptop</h4>
+                <div class="footer-logo-wrapper">
+                    <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo">
+                </div>
                 <p>Votre partenaire de confiance pour l'informatique et la technologie au Niger.</p>
                 <div class="flag-mini">
                     <span></span><span></span><span></span>
@@ -257,7 +267,8 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Niger Laptop - Tous droits réservés</p>
+            <p>&copy; 2026 Niger Laptop - Tous droits réservés</p>
+            <p class="design-credit">Conçu par <strong>HAM Global-Words</strong> <i class="fas fa-heart"></i></p>
         </div>
     </div>
 </footer>
@@ -300,7 +311,8 @@
     <span id="toastMessage">Produit ajouté au panier</span>
 </div>
 
-<!-- Custom JS -->
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
