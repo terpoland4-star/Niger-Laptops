@@ -7,7 +7,7 @@
     <meta name="keywords" content="ordinateur, laptop, niger, informatique, technologie, accessoires">
     <meta name="author" content="HAM Global-Words">
     <meta name="copyright" content="HAM Global-Words 2026">
-    <title>Niger Laptop - Informatique & Technologie</title>
+    <title>Niger Laptops - Informatique & Technologie</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,11 +27,11 @@
 <div class="top-bar">
     <div class="container">
         <div>
-            <i class="fas fa-store"></i> Niger Laptop | NIF: 117816/P | RCCM: 01-2024-A10-00573
+            <i class="fas fa-store"></i> Niger Laptops | NIF: 117816/P | RCCM: 01-2024-A10-00573
         </div>
         <div>
-            <i class="fas fa-phone"></i> +227 86 76 29 03
-            <a href="mailto:contact@nigerlaptop.com"><i class="fas fa-envelope"></i> contact@nigerlaptop.com</a>
+            <i class="fas fa-phone"></i> +227 91127870
+            <a href="mailto:contact@nigerlaptop.com"><i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com</a>
         </div>
     </div>
 </div>
@@ -44,7 +44,7 @@
                 <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo">
                 <div class="logo-glow"></div>
             </div>
-            <span>Niger Laptop</span>
+            <span>Niger Laptops</span>
         </a>
         
         <div class="mobile-toggle" id="mobileToggle">
@@ -289,6 +289,17 @@
             <span id="cartTotal">0 FCFA</span>
         </div>
         <div class="cart-buttons">
+            <!-- APERÇU PAIEMENTS -->
+<div id="paymentPreviewContainer"></div>
+
+<script>
+    // Charger l'aperçu des paiements
+    fetch('payment-preview.html')
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('paymentPreviewContainer').innerHTML = html;
+        });
+</script>
             <button class="btn btn-outline" id="clearCartBtn">Vider</button>
             <button class="btn btn-primary" id="checkoutBtn">Commander</button>
         </div>
