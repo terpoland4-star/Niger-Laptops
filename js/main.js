@@ -28,9 +28,7 @@ let cart = [];
 
 function loadCart() {
     const savedCart = localStorage.getItem('nigerLaptopCart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    }
+    if (savedCart) cart = JSON.parse(savedCart);
     updateCartUI();
 }
 
@@ -59,6 +57,11 @@ function addToCart(productId) {
     saveCart();
     showToast(`${product.name} ajouté au panier`, 'success');
     updateCartCount();
+    
+    // Animation sur le panier
+    const cartIcon = document.getElementById('cartIcon');
+    cartIcon.style.transform = 'scale(1.2)';
+    setTimeout(() => { cartIcon.style.transform = 'scale(1)'; }, 300);
 }
 
 function removeFromCart(productId) {
@@ -147,7 +150,7 @@ function renderCategories() {
     const grid = document.getElementById('categoriesGrid');
     if (grid) {
         grid.innerHTML = categories.map(cat => `
-            <a href="#" class="category-card" data-category="${cat.name}">
+            <a href="#" class="category-card" data-category="${cat.name}" data-aos="fade-up" data-aos-delay="${cat.id * 100}">
                 <i class="${cat.icon}"></i>
                 <h3>${cat.name}</h3>
                 <p>${cat.count} produits</p>
@@ -186,8 +189,8 @@ function renderAllProducts() {
 }
 
 function renderProductCards(productList) {
-    return productList.map(product => `
-        <div class="product-card">
+    return productList.map((product, index) => `
+        <div class="product-card" data-aos="fade-up" data-aos-delay="${index * 50}">
             ${product.badge ? `<div class="product-badge ${product.badge}">${product.badge === 'sale' ? 'PROMO' : 'NOUVEAU'}</div>` : ''}
             <div class="product-image">${product.image}</div>
             <div class="product-info">
@@ -227,9 +230,7 @@ function showPage(pageId) {
         }
     });
     
-    if (pageId === 'productsPage') {
-        renderAllProducts();
-    }
+    if (pageId === 'productsPage') renderAllProducts();
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -278,25 +279,18 @@ function checkout() {
     openModal();
 }
 
-// ========== CONTACT FORM ==========
+// ========== FORMULAIRES ==========
 function initContactForm() {
     const form = document.getElementById('contactForm');
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const phone = document.getElementById('contactPhone').value;
-            const message = document.getElementById('contactMessage').value;
-            
-            console.log('Message envoyé:', { name, email, phone, message });
             showToast('Message envoyé avec succès ! Nous vous répondrons rapidement.', 'success');
             form.reset();
         });
     }
 }
 
-// ========== NEWSLETTER FORM ==========
 function initNewsletter() {
     const form = document.getElementById('newsletterForm');
     if (form) {
@@ -386,6 +380,45 @@ function initNavigation() {
     }
 }
 
+// ========== INIT AOS ANIMATIONS ==========
+function initAOS() {
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    }
+}
+
+// ========== LOGO HOVER EFFECT ==========
+function initLogoEffects() {
+    const mainLogo = document.getElementById('mainLogo');
+    const footerLogo = document.getElementById('footerLogo');
+    
+    if (mainLogo) {
+        mainLogo.addEventListener('mouseenter', () => {
+            mainLogo.style.animation = 'none';
+            mainLogo.offsetHeight;
+            mainLogo.style.animation = 'floatLogo 0.5s ease-in-out';
+        });
+        
+        mainLogo.addEventListener('mouseleave', () => {
+            mainLogo.style.animation = 'floatLogo 3s ease-in-out infinite';
+        });
+    }
+    
+    if (footerLogo) {
+        footerLogo.addEventListener('mouseenter', () => {
+            footerLogo.style.transform = 'scale(1.05) translateY(-3px)';
+        });
+        
+        footerLogo.addEventListener('mouseleave', () => {
+            footerLogo.style.transform = 'scale(1) translateY(0)';
+        });
+    }
+}
+
 // ========== DEMARRAGE ==========
 document.addEventListener('DOMContentLoaded', () => {
     loadCart();
@@ -396,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initNewsletter();
     initMobileMenu();
     initSearch();
+    initAOS();
+    initLogoEffects();
     
     document.getElementById('cartIcon').addEventListener('click', openCart);
     document.getElementById('cartClose').addEventListener('click', closeCart);
