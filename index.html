@@ -162,12 +162,11 @@
                 <div class="about-content">
                     <i class="fas fa-laptop-code about-icon"></i>
                     <p data-aos="fade-up">Niger Laptop est une entreprise dédiée à la vente de produits informatiques et technologiques au Niger. Notre mission est de rendre la technologie accessible à tous, avec des produits de qualité et des prix compétitifs.</p>
-                    <p data-aos="fade-up" data-aos-delay="200">Depuis notre création en 2024, nous nous engageons à fournir le meilleur service client et les produits les plus récents du marché.</p>
+                    <p data-aos="fade-up" data-aos-delay="200">Depuis notre création, nous nous engageons à fournir le meilleur service client et les produits les plus récents du marché.</p>
                     <div class="legal-info" data-aos="fade-up" data-aos-delay="400">
                         <h3>Nos informations légales</h3>
                         <p><strong>NIF :</strong> 117816/P</p>
                         <p><strong>RCCM :</strong> 01-2024-A10-00573</p>
-                        <p><strong>Date de création :</strong> Janvier 2024</p>
                         <p><strong>Siège social :</strong> Niamey, Niger</p>
                     </div>
                 </div>
@@ -288,46 +287,44 @@
             <span>Total</span>
             <span id="cartTotal">0 FCFA</span>
         </div>
-        
-        <!-- SECTION APERÇU PAIEMENTS - Intégré dans le panier -->
-        <div class="payment-preview" id="paymentPreview">
-            <div class="payment-preview__header">
-                <i class="fas fa-credit-card"></i>
-                <h3>Paiement 100% local</h3>
-                <span class="preview-badge">Bientôt disponible</span>
+       <!-- SECTION APERÇU PAIEMENTS - AVEC LOGOS -->
+<div class="payment-preview" id="paymentPreview">
+    <div class="payment-preview__header">
+        <i class="fas fa-credit-card"></i>
+        <h3>Paiement 100% local – bientôt disponible</h3>
+        <span class="preview-badge">En cours d'intégration</span>
+    </div>
+    <p class="payment-preview__sub">
+        Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, 
+        deux solutions de paiement sécurisées 100% nigériennes.
+    </p>
+    <div class="payment-preview__methods">
+        <div class="method-card">
+            <div class="method-icon">
+                <img src="assets/images/logos/logoMynita.png" alt="MyNita" class="payment-logo" loading="lazy">
             </div>
-            <p class="payment-preview__sub">
-                Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, 
-                deux solutions de paiement sécurisées 100% nigériennes.
-            </p>
-            <div class="payment-preview__methods">
-                <div class="method-card">
-                    <div class="method-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h4>MyNita</h4>
-                    <p>Paiement par Mobile Money<br>(NIT Niger)</p>
-                    <span class="status status-pending">⚙️ Intégration en cours</span>
-                </div>
-                <div class="method-card">
-                    <div class="method-icon">
-                        <i class="fas fa-university"></i>
-                    </div>
-                    <h4>AmanaTa</h4>
-                    <p>Paiement bancaire<br>(Amana VISA)</p>
-                    <span class="status status-pending">⚙️ Intégration en cours</span>
-                </div>
-            </div>
-            <div class="payment-preview__info">
-                <i class="fas fa-info-circle"></i>
-                <span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span>
-            </div>
-            <div class="payment-preview__credit">
-                Intégration technique par <strong>HAM Global-Words</strong>
-            </div>
+            <h4>MyNita</h4>
+            <p>Paiement par Mobile Money<br>(NIT Niger)</p>
+            <span class="status status-pending">⚙️ Intégration en cours</span>
         </div>
-        
-        <div class="cart-buttons">
+        <div class="method-card">
+            <div class="method-icon">
+                <img src="assets/images/logos/logoAmanaTa.png" alt="AmanaTa" class="payment-logo" loading="lazy">
+            </div>
+            <h4>AmanaTa</h4>
+            <p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p>
+            <span class="status status-pending">⚙️ Intégration en cours</span>
+        </div>
+    </div>
+    <div class="payment-preview__info">
+        <i class="fas fa-info-circle"></i>
+        <span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span>
+    </div>
+    <div class="payment-preview__credit">
+        Intégration technique par <strong>HAM Global-Words</strong>
+    </div>
+</div> 
+  <div class="cart-buttons">
             <button class="btn btn-outline" id="clearCartBtn">Vider</button>
             <button class="btn btn-primary" id="checkoutBtn">Commander</button>
         </div>
