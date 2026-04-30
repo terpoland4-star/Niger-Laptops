@@ -872,16 +872,15 @@ body {
     width: auto;
     height: auto;
     object-fit: contain;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     margin-bottom: 10px;
 }
 
 .method-card:hover .payment-logo {
-    transform: scale(1.08);
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    transform: scale(1.08) rotate(2deg);
+    filter: drop-shadow(0 4px 12px rgba(224, 82, 6, 0.3));
 }
 
-/* Ajustement pour l'icône dans la méthode de paiement */
 .method-icon {
     min-height: 90px;
     display: flex;
@@ -890,13 +889,23 @@ body {
     margin-bottom: 5px;
 }
 
-/* Style spécifique pour les logos en version sombre (si besoin) */
 .method-card .payment-logo {
     background: transparent;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
-/* Version responsive pour les petits écrans */
+/* Ajustement pour l'intégration dans le panier */
+.cart-footer .payment-preview {
+    margin: 20px 0;
+    padding: 20px;
+}
+
+.cart-footer .payment-logo {
+    max-width: 80px;
+    max-height: 60px;
+}
+
+/* Version responsive mobile */
 @media (max-width: 768px) {
     .payment-logo {
         max-width: 70px;
@@ -905,6 +914,11 @@ body {
     
     .method-icon {
         min-height: 70px;
+    }
+    
+    .cart-footer .payment-logo {
+        max-width: 60px;
+        max-height: 50px;
     }
 }
 
@@ -916,7 +930,7 @@ body {
     }
 }
 
-/* Option : effet de brillance au survol */
+/* Effet de brillance au survol de la carte */
 .method-card:hover .method-icon {
-    filter: drop-shadow(0 0 8px rgba(224, 82, 6, 0.3));
+    filter: drop-shadow(0 0 8px rgba(224, 82, 6, 0.2));
 }
