@@ -315,7 +315,44 @@
         <button class="btn btn-primary" onclick="closeModal()">Fermer</button>
     </div>
 </div>
-
+<!-- SECTION APERÇU PAIEMENTS - À INTÉGRER DANS VOTRE SITE -->
+<div class="payment-preview" id="paymentPreview">
+    <div class="payment-preview__header">
+        <i class="fas fa-credit-card"></i>
+        <h3>Paiement 100% local – bientôt disponible</h3>
+        <span class="preview-badge">En cours d'intégration</span>
+    </div>
+    <p class="payment-preview__sub">
+        Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, 
+        deux solutions de paiement sécurisées 100% nigériennes.
+    </p>
+    <div class="payment-preview__methods">
+        <div class="method-card">
+            <div class="method-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h4>MyNita</h4>
+            <p>Paiement par Mobile Money<br>(NIT Niger)</p>
+            <span class="status status-pending">⚙️ Intégration en cours</span>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">
+                <i class="fas fa-university"></i>
+            </div>
+            <h4>AmanaTa</h4>
+            <p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p>
+            <span class="status status-pending">⚙️ Intégration en cours</span>
+        </div>
+    </div>
+    <div class="payment-preview__info">
+        <i class="fas fa-info-circle"></i>
+        <span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span>
+    </div>
+    <!-- Petite mention HAM Global-Words -->
+    <div class="payment-preview__credit">
+        Intégration technique par <strong>HAM Global-Words</strong>
+    </div>
+</div>
 <!-- TOAST NOTIFICATION -->
 <div class="toast-notification" id="toast">
     <i class="fas fa-check-circle"></i>
