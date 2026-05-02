@@ -163,7 +163,6 @@ function updateCartUI() {
             </div>
         `).join('');
         
-        // Attacher les événements dynamiquement
         document.querySelectorAll('.quantity-btn').forEach(btn => {
             btn.removeEventListener('click', handleQuantityClick);
             btn.addEventListener('click', handleQuantityClick);
@@ -206,7 +205,38 @@ function getRatingStars(rating) {
     return stars;
 }
 
-// ========== AFFICHAGE PRODUITS ==========
+// ========== SKELETON LOADING ==========
+function showSkeleton(containerId, type = 'product', count = 6) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let skeletonHTML = '';
+    for (let i = 0; i < count; i++) {
+        if (type === 'product') {
+            skeletonHTML += `
+                <div class="skeleton-product">
+                    <div class="skeleton-image"></div>
+                    <div style="padding: 20px;">
+                        <div class="skeleton-text skeleton-title"></div>
+                        <div class="skeleton-text" style="width: 60%;"></div>
+                        <div class="skeleton-price"></div>
+                    </div>
+                </div>
+            `;
+        } else if (type === 'category') {
+            skeletonHTML += `
+                <div class="skeleton-product" style="padding: 35px; text-align: center;">
+                    <div style="width: 48px; height: 48px; background: var(--bg-tertiary); border-radius: 50%; margin: 0 auto 15px;"></div>
+                    <div class="skeleton-text skeleton-title" style="margin: 0 auto;"></div>
+                    <div class="skeleton-text" style="width: 50%; margin: 10px auto 0;"></div>
+                </div>
+            `;
+        }
+    }
+    container.innerHTML = skeletonHTML;
+}
+
+// ========== AFFICHAGE PRODUITS AVEC SKELETON ==========
 function renderCategories() {
     const grid = document.getElementById('categoriesGrid');
     if (grid) {
@@ -232,12 +262,26 @@ function renderCategories() {
     }
 }
 
+function renderCategoriesWithSkeleton() {
+    showSkeleton('categoriesGrid', 'category', 6);
+    setTimeout(() => {
+        renderCategories();
+    }, 300);
+}
+
 function renderFeaturedProducts() {
     const grid = document.getElementById('featuredProductsGrid');
     if (grid) {
         const featured = products.filter(p => p.featured);
         grid.innerHTML = renderProductCards(featured);
     }
+}
+
+function renderFeaturedWithSkeleton() {
+    showSkeleton('featuredProductsGrid', 'product', 4);
+    setTimeout(() => {
+        renderFeaturedProducts();
+    }, 300);
 }
 
 function renderAllProducts() {
@@ -273,7 +317,6 @@ function renderProductCards(productList) {
     `).join('');
 }
 
-// Attacher les événements des produits (délégation)
 function bindProductEvents() {
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('.add-to-cart-btn');
@@ -408,7 +451,7 @@ function initNewsletter() {
     }
 }
 
-// ========== SEARCH MODAL (remplace prompt) ==========
+// ========== SEARCH MODAL ==========
 function initSearch() {
     const searchBtn = document.getElementById('searchBtn');
     const searchModal = document.getElementById('searchModal');
@@ -506,7 +549,131 @@ function initMobileMenu() {
     }
 }
 
-// ========== INITIALISATION ==========
+// ========== THEME TOGGLE (Mode sombre/clair) ==========
+function initThemeToggle() {
+    const headerActions = document.querySelector('.header-actions');
+    if (headerActions && !document.querySelector('.theme-toggle')) {
+        const themeBtn = document.createElement('div');
+        themeBtn.className = 'theme-toggle';
+        themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        themeBtn.style.cursor = 'pointer';
+        themeBtn.style.padding = '8px';
+        themeBtn.style.borderRadius = '50%';
+        themeBtn.style.background = 'var(--bg-tertiary)';
+        themeBtn.style.display = 'flex';
+        themeBtn.style.alignItems = 'center';
+        themeBtn.style.justifyContent = 'center';
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                showToast('Mode clair activé', 'success');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+                showToast('Mode sombre activé', 'success');
+            }
+        });
+        
+        headerActions.insertBefore(themeBtn, headerActions.firstChild);
+    }
+}
+
+// ========== BACK TO TOP BUTTON ==========
+function initBackToTop() {
+    const btn = document.createElement('button');
+    btn.className = 'back-to-top';
+    btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    document.body.appendChild(btn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.classList.add('show');
+        } else {
+            btn.classList.remove('show');
+        }
+    });
+    
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ========== STICKY HEADER EFFECT ==========
+function initStickyHeader() {
+    const header = document.querySelector('.main-header');
+    let lastScroll = 0;
+    
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 100) {
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            header.style.transform = 'translateY(0)';
+        }
+        lastScroll = currentScroll;
+    });
+}
+
+// ========== COUNTER ANIMATION ==========
+function animateCounter(element, target, duration = 2000) {
+    if (!element) return;
+    let start = 0;
+    const increment = target / (duration / 16);
+    
+    const updateCounter = () => {
+        start += increment;
+        if (start < target) {
+            element.textContent = Math.floor(start) + '+';
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = target + '+';
+        }
+    };
+    
+    updateCounter();
+}
+
+function initStatsAnimation() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const numbers = entry.target.querySelectorAll('.stat-number');
+                numbers.forEach(num => {
+                    const target = parseInt(num.textContent);
+                    animateCounter(num, target);
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    const statsSection = document.querySelector('.hero-stats');
+    if (statsSection) observer.observe(statsSection);
+}
+
+// ========== PARALLAX EFFECT ==========
+function initParallax() {
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            hero.style.backgroundPositionY = scrolled * 0.3 + 'px';
+        }
+    });
+}
+
+// ========== INITIALISATION NAVIGATION ==========
 function initNavigation() {
     const navLinks = document.querySelectorAll('[data-page]');
     navLinks.forEach(link => {
@@ -571,11 +738,14 @@ function initLogoEffects() {
     }
 }
 
-// ========== INITIALISATION GÉNÉRALE AVEC GUARDS ==========
+// ========== INITIALISATION GÉNÉRALE ==========
 function init() {
     loadCart();
-    renderCategories();
-    renderFeaturedProducts();
+    
+    // Afficher les skeletons puis charger les données
+    renderCategoriesWithSkeleton();
+    renderFeaturedWithSkeleton();
+    
     initNavigation();
     initContactForm();
     initNewsletter();
@@ -585,6 +755,14 @@ function init() {
     initLogoEffects();
     bindProductEvents();
     
+    // Fonctions Premium 2.0
+    initThemeToggle();
+    initBackToTop();
+    initStickyHeader();
+    initStatsAnimation();
+    initParallax();
+    
+    // Éléments du panier
     const cartIcon = document.getElementById('cartIcon');
     if (cartIcon) cartIcon.addEventListener('click', openCart);
     
