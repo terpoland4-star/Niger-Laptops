@@ -86,7 +86,7 @@
     <div class="header-container">
         <a href="#" class="logo" id="logoLink" aria-label="Niger Laptop - Accueil">
             <div class="logo-wrapper">
-                <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo" onerror="this.src='assets/images/logo-placeholder.png'">
+                <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo" onerror="this.onerror=null;this.src='assets/images/logo-placeholder.png'">
                 <div class="logo-glow" aria-hidden="true"></div>
             </div>
             <span>Niger Laptops</span>
@@ -167,7 +167,7 @@
                 <h2 class="section-title" id="whyUsTitle" data-aos="fade-up">Pourquoi nous choisir ?</h2>
                 <div class="features-grid" data-aos="fade-up">
                     <div class="feature-card"><i class="fas fa-truck-fast fa-2x"></i><h4>Livraison rapide</h4><p>Expédition sous 24h partout au Niger.</p></div>
-                    <div class="feature-card"><i class="fas fa-shield-haltered fa-2x"></i><h4>Satisfait ou remboursé</h4><p>Retour sous 7 jours, sans condition.</p></div>
+                    <div class="feature-card"><i class="fas fa-shield-halved fa-2x"></i><h4>Satisfait ou remboursé</h4><p>Retour sous 7 jours, sans condition.</p></div>
                     <div class="feature-card"><i class="fas fa-headset fa-2x"></i><h4>Support 7j/7</h4><p>Une équipe dédiée à votre service.</p></div>
                     <div class="feature-card"><i class="fas fa-lock fa-2x"></i><h4>Paiement sécurisé</h4><p>Transactions chiffrées et locales.</p></div>
                 </div>
@@ -245,6 +245,10 @@
                     <button id="applyFiltersBtn" class="btn btn-primary">Appliquer</button>
                 </div>
                 <div class="products-grid" id="allProductsGrid"></div>
+                <div class="no-results-message" id="noResultsMessage" style="display:none; text-align:center; padding:40px; color:var(--text-muted);">
+                    <i class="fas fa-search" style="font-size:48px; margin-bottom:15px; display:block;"></i>
+                    Aucun produit ne correspond à vos critères.
+                </div>
                 <div class="pagination" id="paginationContainer" aria-label="Pagination"></div>
             </div>
         </section>
@@ -300,7 +304,7 @@
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>Niger Laptop</h4>
-                <div class="footer-logo-wrapper"><img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo" onerror="this.src='assets/images/logo-placeholder.png'"></div>
+                <div class="footer-logo-wrapper"><img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo" onerror="this.onerror=null;this.src='assets/images/logo-placeholder.png'"></div>
                 <p>Votre partenaire de confiance pour l'informatique et la technologie au Niger.</p>
                 <div class="flag-mini" aria-hidden="true"><span></span><span></span><span></span></div>
                 <div class="social-links">
@@ -340,8 +344,8 @@
             <div class="payment-preview__header"><i class="fas fa-credit-card" aria-hidden="true"></i><h3>Paiement 100% local – bientôt disponible</h3><span class="preview-badge">En cours d'intégration</span></div>
             <p class="payment-preview__sub">Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, deux solutions de paiement sécurisées 100% nigériennes.</p>
             <div class="payment-preview__methods">
-                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoMynita.png" alt="MyNita" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'"></div><h4>MyNita</h4><p>Paiement par Mobile Money<br>(NIT Niger)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
-                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoAmanaTa.png" alt="AmanaTa" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'"></div><h4>AmanaTa</h4><p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
+                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoMynita.png" alt="MyNita" class="payment-logo" loading="lazy" onerror="this.onerror=null;this.src='assets/images/payment-placeholder.png'"></div><h4>MyNita</h4><p>Paiement par Mobile Money<br>(NIT Niger)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
+                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoAmanaTa.png" alt="AmanaTa" class="payment-logo" loading="lazy" onerror="this.onerror=null;this.src='assets/images/payment-placeholder.png'"></div><h4>AmanaTa</h4><p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
             </div>
             <div class="payment-preview__info"><i class="fas fa-info-circle" aria-hidden="true"></i><span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span></div>
             <div class="payment-preview__credit">Intégration technique par <strong>HAM Global-Words</strong></div>
