@@ -1,7 +1,7 @@
 /**
  * Niger Laptop - Application e-commerce
  * @author HAM Global-Words
- * @version 2.0 Premium
+ * @version 2.1 - Version corrigée
  */
 
 // ========== ÉCHAPPEMENT HTML (SÉCURITÉ XSS) ==========
@@ -43,7 +43,7 @@ const products = [
 // ========== PANIER ==========
 let cart = [];
 let promoCode = null;
-const PROMOS = { 'NIGER10': 0.1, 'TECH20': 0.2 }; // réductions en pourcentage
+const PROMOS = { 'NIGER10': 0.1, 'TECH20': 0.2 };
 
 function loadCart() {
     const saved = localStorage.getItem('nigerLaptopCart');
@@ -53,11 +53,19 @@ function loadCart() {
             cart = Array.isArray(parsed) ? parsed.filter(item => item && typeof item.id === 'number' && item.quantity > 0) : [];
         } catch (e) { cart = []; }
     }
+    // Charger le code promo sauvegardé
+    promoCode = localStorage.getItem('nigerLaptopPromo') || null;
     updateCartUI();
 }
 
 function saveCart() {
-    localStorage.setItem('nigerLaptopCart', JSON.stringify(cart));
+    try {
+        localStorage.setItem('nigerLaptopCart', JSON.stringify(cart));
+        if (promoCode) localStorage.setItem('nigerLaptopPromo', promoCode);
+        else localStorage.removeItem('nigerLaptopPromo');
+    } catch (e) {
+        showToast('Erreur de sauvegarde du panier', 'error');
+    }
     updateCartUI();
 }
 
@@ -92,8 +100,10 @@ function clearCart(silent = false) {
         showConfirm('Vider le panier ?', () => {
             cart = [];
             promoCode = null;
-            document.getElementById('promoCode').value = '';
-            document.getElementById('promoMessage').textContent = '';
+            const promoInput = document.getElementById('promoCode');
+            const promoMsg = document.getElementById('promoMessage');
+            if (promoInput) promoInput.value = '';
+            if (promoMsg) promoMsg.textContent = '';
             saveCart();
             updateCartCount();
             showToast('Panier vidé', 'info');
@@ -156,10 +166,10 @@ function updateCartUI() {
 
 // Délégation événementielle panier
 function handleCartItemClick(e) {
-    const btn = e.target.closest('.quantity-btn');
-    if (btn) {
-        const id = parseInt(btn.dataset.id);
-        const delta = parseInt(btn.dataset.delta);
+    const qtyBtn = e.target.closest('.quantity-btn');
+    if (qtyBtn) {
+        const id = parseInt(qtyBtn.dataset.id);
+        const delta = parseInt(qtyBtn.dataset.delta);
         updateQuantity(id, delta);
         return;
     }
@@ -183,18 +193,18 @@ function animateCartIcon() {
 function applyPromo() {
     const input = document.getElementById('promoCode');
     const message = document.getElementById('promoMessage');
+    if (!input || !message) return;
     const code = input.value.trim().toUpperCase();
     if (PROMOS[code]) {
         promoCode = code;
         message.textContent = `Code promo appliqué : -${PROMOS[code] * 100}%`;
         message.className = 'promo-message success';
-        saveCart(); // met à jour l'UI
     } else {
         promoCode = null;
         message.textContent = 'Code invalide';
         message.className = 'promo-message error';
-        updateCartUI();
     }
+    saveCart();
 }
 
 // ========== FORMATAGE ==========
@@ -238,22 +248,27 @@ function renderCategories() {
             e.preventDefault();
             const cat = card.dataset.category;
             showPage('productsPage');
-            document.getElementById('categoryFilter').value = cat;
-            applyFiltersAndRender();
+            const catFilter = document.getElementById('categoryFilter');
+            if (catFilter) {
+                catFilter.value = cat;
+                applyFiltersAndRender();
+            }
         });
     });
 }
 
-// ========== RENDU PRODUITS ==========
+// ========== RENDU PRODUITS AVEC FILTRES ET PAGINATION ==========
 let currentPage = 1;
 const productsPerPage = 8;
+let productsPageInitialized = false;
 let filteredProducts = [...products];
 
 function getFilteredAndSorted() {
     let list = [...products];
     const catFilter = document.getElementById('categoryFilter')?.value || '';
     const minPrice = parseInt(document.getElementById('minPrice')?.value) || 0;
-    const maxPrice = document.getElementById('maxPrice')?.value ? parseInt(document.getElementById('maxPrice').value) : Infinity;
+    const maxPriceInput = document.getElementById('maxPrice')?.value;
+    const maxPrice = maxPriceInput ? parseInt(maxPriceInput) : Infinity;
     const sort = document.getElementById('sortBy')?.value || 'default';
 
     if (catFilter) list = list.filter(p => p.category === catFilter);
@@ -271,7 +286,20 @@ function getFilteredAndSorted() {
 
 function renderProductsPage(list) {
     const grid = document.getElementById('allProductsGrid');
+    const noResults = document.getElementById('noResultsMessage');
+    const pagination = document.getElementById('paginationContainer');
+    
     if (!grid) return;
+    
+    if (list.length === 0) {
+        grid.innerHTML = '';
+        if (noResults) noResults.style.display = 'block';
+        if (pagination) pagination.innerHTML = '';
+        return;
+    }
+    
+    if (noResults) noResults.style.display = 'none';
+    
     const start = (currentPage - 1) * productsPerPage;
     const paginated = list.slice(start, start + productsPerPage);
     grid.innerHTML = renderProductCards(paginated);
@@ -305,6 +333,7 @@ function renderPagination(totalItems) {
     if (!container) return;
     const totalPages = Math.ceil(totalItems / productsPerPage);
     if (totalPages <= 1) { container.innerHTML = ''; return; }
+    
     let html = '';
     html += `<button ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">Précédent</button>`;
     for (let i = 1; i <= totalPages; i++) {
@@ -312,13 +341,17 @@ function renderPagination(totalItems) {
     }
     html += `<button ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Suivant</button>`;
     container.innerHTML = html;
+    
     container.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
             const page = parseInt(btn.dataset.page);
             if (page >= 1 && page <= totalPages) {
                 currentPage = page;
                 applyFiltersAndRender();
-                window.scrollTo({ top: document.getElementById('productsToolbar').offsetTop - 100, behavior: 'smooth' });
+                const toolbar = document.getElementById('productsToolbar');
+                if (toolbar) {
+                    window.scrollTo({ top: toolbar.offsetTop - 100, behavior: 'smooth' });
+                }
             }
         });
     });
@@ -326,21 +359,27 @@ function renderPagination(totalItems) {
 
 function applyFiltersAndRender() {
     filteredProducts = getFilteredAndSorted();
-    currentPage = 1; // réinitialise à la première page
+    currentPage = 1;
     renderProductsPage(filteredProducts);
 }
 
-// ========== INITIALISATION PAGE PRODUITS ==========
+// ========== INITIALISATION PAGE PRODUITS (appelée une seule fois) ==========
 function initProductsPage() {
+    if (productsPageInitialized) return;
+    productsPageInitialized = true;
+    
     // Remplir le filtre catégorie
     const catSelect = document.getElementById('categoryFilter');
     if (catSelect) {
-        catSelect.innerHTML = '<option value="">Toutes</option>' + [...new Set(products.map(p => p.category))].map(c => `<option value="${c}">${c}</option>`).join('');
+        const uniqueCategories = [...new Set(products.map(p => p.category))];
+        catSelect.innerHTML = '<option value="">Toutes</option>' + uniqueCategories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
-    document.getElementById('applyFiltersBtn').addEventListener('click', applyFiltersAndRender);
-    // Appliquer les filtres lors du changement des champs (optionnel)
-    document.getElementById('categoryFilter').addEventListener('change', applyFiltersAndRender);
-    document.getElementById('sortBy').addEventListener('change', applyFiltersAndRender);
+    
+    // Écouteurs
+    document.getElementById('applyFiltersBtn')?.addEventListener('click', applyFiltersAndRender);
+    document.getElementById('categoryFilter')?.addEventListener('change', applyFiltersAndRender);
+    document.getElementById('sortBy')?.addEventListener('change', applyFiltersAndRender);
+    
     applyFiltersAndRender();
 }
 
@@ -352,15 +391,14 @@ function viewProduct(productId) {
     const content = document.getElementById('productDetailContent');
     if (!modal || !content) return;
 
-    // Récupérer la note utilisateur si existante
     const userRatings = JSON.parse(localStorage.getItem('nigerRatings') || '{}');
     const userRating = userRatings[productId] || 0;
 
     content.innerHTML = `
-        <div style="display:flex; gap:20px; flex-wrap:wrap;">
-            <div style="font-size:80px; text-align:center; flex:1;">${escapeHtml(product.image)}</div>
-            <div style="flex:2;">
-                <h3>${escapeHtml(product.name)}</h3>
+        <h3 id="productDetailTitle">${escapeHtml(product.name)}</h3>
+        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
+            <div style="font-size:80px; text-align:center; flex:1; min-width:120px;">${escapeHtml(product.image)}</div>
+            <div style="flex:2; min-width:250px;">
                 <p style="color:var(--text-muted);">${escapeHtml(product.category)}</p>
                 <p>${escapeHtml(product.description)}</p>
                 <p class="current-price" style="font-size:24px;">${formatPrice(product.price)}</p>
@@ -368,9 +406,9 @@ function viewProduct(productId) {
                 <div class="product-rating" style="margin:10px 0;">${getRatingStars(product.rating)} (${product.rating})</div>
                 <div class="user-rating" style="margin:15px 0;">
                     <span>Votre note : </span>
-                    <div class="star-rating" data-product-id="${product.id}">
-                        ${[1,2,3,4,5].map(s => `<i class="${s <= userRating ? 'fas' : 'far'} fa-star" data-star="${s}" style="cursor:pointer;"></i>`).join('')}
-                    </div>
+                    <span class="star-rating" data-product-id="${product.id}">
+                        ${[1,2,3,4,5].map(s => `<i class="${s <= userRating ? 'fas' : 'far'} fa-star" data-star="${s}" style="cursor:pointer; color:#ffc107;"></i>`).join('')}
+                    </span>
                 </div>
                 <button class="btn btn-primary add-to-cart-btn" data-id="${product.id}"><i class="fas fa-cart-plus"></i> Ajouter au panier</button>
             </div>
@@ -385,7 +423,6 @@ function viewProduct(productId) {
             const ratings = JSON.parse(localStorage.getItem('nigerRatings') || '{}');
             ratings[productId] = rating;
             localStorage.setItem('nigerRatings', JSON.stringify(ratings));
-            // Re-render les étoiles
             content.querySelectorAll('.star-rating i').forEach((s, idx) => {
                 s.className = (idx + 1 <= rating) ? 'fas fa-star' : 'far fa-star';
             });
@@ -395,8 +432,8 @@ function viewProduct(productId) {
 }
 
 function initProductDetailModal() {
-    document.getElementById('closeProductDetailModal').addEventListener('click', () => closeModal('productDetailModal'));
-    document.getElementById('productDetailModal').addEventListener('click', (e) => {
+    document.getElementById('closeProductDetailModal')?.addEventListener('click', () => closeModal('productDetailModal'));
+    document.getElementById('productDetailModal')?.addEventListener('click', (e) => {
         if (e.target === e.currentTarget) closeModal('productDetailModal');
     });
 }
@@ -425,11 +462,15 @@ function showPage(pageId) {
     });
     const page = document.getElementById(pageId);
     if (page) page.style.display = 'block';
+    
     document.querySelectorAll('.nav-menu a').forEach(link => {
         link.classList.remove('active');
         if (link.dataset.page === pageId.replace('Page','')) link.classList.add('active');
     });
-    if (pageId === 'productsPage') initProductsPage();
+    
+    if (pageId === 'productsPage') {
+        initProductsPage();
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -537,10 +578,10 @@ function initContactForm() {
     if (!form) return;
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('contactName').value.trim();
-        const email = document.getElementById('contactEmail').value.trim();
-        const phone = document.getElementById('contactPhone').value.trim();
-        const message = document.getElementById('contactMessage').value.trim();
+        const name = document.getElementById('contactName')?.value.trim();
+        const email = document.getElementById('contactEmail')?.value.trim();
+        const phone = document.getElementById('contactPhone')?.value.trim();
+        const message = document.getElementById('contactMessage')?.value.trim();
         if (!name) { showToast('Nom requis', 'error'); return; }
         if (!email || !isValidEmail(email)) { showToast('Email valide requis', 'error'); return; }
         if (phone && !isValidPhone(phone)) { showToast('Téléphone invalide', 'error'); return; }
@@ -555,7 +596,7 @@ function initNewsletter() {
     if (!form) return;
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = document.getElementById('newsletterEmail').value.trim();
+        const email = document.getElementById('newsletterEmail')?.value.trim();
         if (!email || !isValidEmail(email)) { showToast('Email valide requis', 'error'); return; }
         showToast('Inscription réussie !', 'success');
         form.reset();
@@ -579,11 +620,11 @@ function initSearch() {
     searchBtn.addEventListener('click', (e) => {
         e.preventDefault();
         openModal('searchModal');
-        input.focus();
-        input.value = '';
-        results.innerHTML = '';
+        input?.focus();
+        if (input) input.value = '';
+        if (results) results.innerHTML = '';
     });
-    closeBtn.addEventListener('click', () => closeModal('searchModal'));
+    closeBtn?.addEventListener('click', () => closeModal('searchModal'));
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal('searchModal'); });
 
     const performSearch = debounce((query) => {
@@ -598,9 +639,9 @@ function initSearch() {
         `).join('') : '<div class="search-no-results">Aucun produit trouvé</div>';
     }, 300);
 
-    input.addEventListener('input', (e) => performSearch(e.target.value.trim().toLowerCase()));
+    input?.addEventListener('input', (e) => performSearch(e.target.value.trim().toLowerCase()));
 
-    results.addEventListener('click', (e) => {
+    results?.addEventListener('click', (e) => {
         const item = e.target.closest('.search-result-item');
         if (!item) return;
         const id = parseInt(item.dataset.id);
@@ -660,6 +701,7 @@ function initBackToTop() {
 // ========== STICKY HEADER & PARALLAX ==========
 function initStickyHeader() {
     const header = document.querySelector('.main-header');
+    if (!header) return;
     let lastScroll = 0, ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
@@ -708,6 +750,7 @@ function initMobileMenu() {
 
 // ========== STATS ANIMATION ==========
 function animateCounter(el, target) {
+    if (!el) return;
     let start = 0;
     const inc = target / 100;
     const update = () => {
@@ -745,7 +788,7 @@ function initLogoEffects() {
     const mainLogo = document.getElementById('mainLogo');
     const footerLogo = document.getElementById('footerLogo');
     if (mainLogo) {
-        mainLogo.addEventListener('mouseenter', () => { mainLogo.style.animation = 'none'; mainLogo.offsetHeight; mainLogo.style.animation = 'floatLogo 0.5s ease-in-out'; });
+        mainLogo.addEventListener('mouseenter', () => { mainLogo.style.animation = 'none'; void mainLogo.offsetHeight; mainLogo.style.animation = 'floatLogo 0.5s ease-in-out'; });
         mainLogo.addEventListener('mouseleave', () => { mainLogo.style.animation = 'floatLogo 3s ease-in-out infinite'; });
     }
     if (footerLogo) {
@@ -791,12 +834,12 @@ function init() {
         showToast('Merci pour votre commande !', 'success');
     });
 
-    // Gestion Échap
+    // Gestion Échap pour fermer les modales
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            const modals = document.querySelectorAll('.modal.open, .cart-sidebar.open, .search-modal.open');
-            if (modals.length) {
-                const last = modals[modals.length - 1];
+            const openModals = document.querySelectorAll('.modal.open, .cart-sidebar.open, .search-modal.open');
+            if (openModals.length > 0) {
+                const last = openModals[openModals.length - 1];
                 if (last.id === 'cartSidebar') closeCart();
                 else closeModal(last.id);
             }
@@ -814,4 +857,5 @@ function renderFeaturedWithSkeleton() {
     }, 300);
 }
 
+// ========== DÉMARRAGE ==========
 document.addEventListener('DOMContentLoaded', init);
