@@ -7,23 +7,64 @@
     <meta name="keywords" content="ordinateur, laptop, niger, informatique, technologie, accessoires">
     <meta name="author" content="HAM Global-Words">
     <meta name="copyright" content="HAM Global-Words 2026">
-    <title>Niger - Laptops - Informatique & Technologie</title>
-    
+    <meta name="theme-color" content="#e05206">
+    <title>Niger Laptop – Informatique & Technologie au Niger</title>
+
+    <!-- Preconnect hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
-    
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&display=swap" rel="stylesheet">
+
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Niger Laptop",
+        "url": "https://www.nigerlaptop.com",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+227-91-12-78-70",
+            "contactType": "Customer Service",
+            "email": "zoubeirou.zakariya@gmail.com"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {"@type": "Product", "name": "ASUS ROG Strix G15", "offers": {"@type": "Offer", "price": "850000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Souris Gaming Logitech G502", "offers": {"@type": "Offer", "price": "45000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Dell XPS 13", "offers": {"@type": "Offer", "price": "1250000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Clavier Mécanique RGB", "offers": {"@type": "Offer", "price": "65000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "SSD NVMe 1To", "offers": {"@type": "Offer", "price": "75000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Processeur Intel i7", "offers": {"@type": "Offer", "price": "350000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Écran 24 pouces", "offers": {"@type": "Offer", "price": "180000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Routeur Wi-Fi 6", "offers": {"@type": "Offer", "price": "95000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Casque Gaming HyperX", "offers": {"@type": "Offer", "price": "55000", "priceCurrency": "XOF"}},
+            {"@type": "Product", "name": "Carte Graphique RTX 3060", "offers": {"@type": "Offer", "price": "450000", "priceCurrency": "XOF"}}
+        ]
+    }
+    </script>
 </head>
 <body>
 
@@ -31,11 +72,11 @@
 <div class="top-bar">
     <div class="container">
         <div>
-            <i class="fas fa-store"></i> Niger Laptops | NIF: 117816/P | RCCM: 01-2024-A10-00573
+            <i class="fas fa-store" aria-hidden="true"></i> Niger Laptops | NIF: 117816/P | RCCM: 01-2024-A10-00573
         </div>
         <div>
-            <i class="fas fa-phone"></i> +227 91-12-78-70
-            <a href="mailto:zoubeirou.zakariya@gmail.com"><i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com</a>
+            <i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70
+            <a href="mailto:zoubeirou.zakariya@gmail.com"><i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com</a>
         </div>
     </div>
 </div>
@@ -43,44 +84,44 @@
 <!-- MAIN HEADER -->
 <header class="main-header">
     <div class="header-container">
-        <a href="#" class="logo" id="logoLink">
+        <a href="#" class="logo" id="logoLink" aria-label="Niger Laptop - Accueil">
             <div class="logo-wrapper">
                 <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo" onerror="this.src='assets/images/logo-placeholder.png'">
-                <div class="logo-glow"></div>
+                <div class="logo-glow" aria-hidden="true"></div>
             </div>
             <span>Niger Laptops</span>
         </a>
-        
-        <div class="mobile-toggle" id="mobileToggle">
-            <i class="fas fa-bars"></i>
-        </div>
-        
-        <nav class="nav-menu" id="navMenu">
+
+        <button class="mobile-toggle" id="mobileToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Menu de navigation">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Navigation principale">
             <a href="#" data-page="home" class="active">Accueil</a>
             <a href="#" data-page="products">Produits</a>
             <a href="#" data-page="about">À propos</a>
             <a href="#" data-page="contact">Contact</a>
         </nav>
-        
+
         <div class="header-actions">
-            <a href="#" class="search-btn" id="searchBtn">
-                <i class="fas fa-search"></i>
-            </a>
-            <div class="cart-icon" id="cartIcon">
-                <i class="fas fa-shopping-cart fa-lg"></i>
-                <span class="cart-count" id="cartCount">0</span>
-            </div>
+            <button class="search-btn" id="searchBtn" aria-label="Rechercher un produit">
+                <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+            <button class="cart-icon" id="cartIcon" aria-label="Ouvrir le panier">
+                <i class="fas fa-shopping-cart fa-lg" aria-hidden="true"></i>
+                <span class="cart-count" id="cartCount" aria-live="polite">0</span>
+            </button>
         </div>
     </div>
 </header>
 
-<!-- SEARCH MODAL (remplace le prompt) -->
-<div class="search-modal" id="searchModal">
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-labelledby="searchModalTitle">
     <div class="search-modal-content">
-        <span class="search-modal-close" id="searchModalClose">&times;</span>
-        <h3><i class="fas fa-search"></i> Rechercher un produit</h3>
+        <button class="search-modal-close" id="searchModalClose" aria-label="Fermer la recherche">&times;</button>
+        <h3 id="searchModalTitle"><i class="fas fa-search" aria-hidden="true"></i> Rechercher un produit</h3>
         <input type="text" id="searchInput" placeholder="Nom du produit, catégorie..." autocomplete="off">
-        <div id="searchResults" class="search-results"></div>
+        <div id="searchResults" class="search-results" role="listbox" aria-label="Résultats de recherche"></div>
     </div>
 </div>
 
@@ -94,7 +135,7 @@
                 <h1 data-aos="fade-up" data-aos-duration="1000">Votre passion, notre technologie</h1>
                 <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">Ordinateurs, accessoires et innovations technologiques au meilleur prix</p>
                 <a href="#" class="btn btn-primary" data-page="products" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                    <i class="fas fa-shopping-bag"></i> Découvrir nos produits
+                    <i class="fas fa-shopping-bag" aria-hidden="true"></i> Découvrir nos produits
                 </a>
                 <div class="hero-stats" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
                     <div class="stat-item">
@@ -114,29 +155,29 @@
         </section>
 
         <!-- CATEGORIES -->
-        <section class="section">
+        <section class="section" aria-labelledby="categoriesTitle">
             <div class="container">
-                <h2 class="section-title" data-aos="fade-up">Catégories populaires</h2>
+                <h2 class="section-title" id="categoriesTitle" data-aos="fade-up">Catégories populaires</h2>
                 <div class="categories-grid" id="categoriesGrid"></div>
             </div>
         </section>
 
         <!-- FEATURED PRODUCTS -->
-        <section class="section" style="background: #f9f9f9;">
+        <section class="section" style="background: var(--bg-secondary);" aria-labelledby="featuredTitle">
             <div class="container">
-                <h2 class="section-title" data-aos="fade-up">Produits vedettes</h2>
+                <h2 class="section-title" id="featuredTitle" data-aos="fade-up">Produits vedettes</h2>
                 <div class="products-grid" id="featuredProductsGrid"></div>
             </div>
         </section>
-        
+
         <!-- BANNIÈRE PROMO NIGER -->
         <section class="niger-banner" data-aos="fade-up">
             <div class="container">
                 <div class="banner-content">
-                    <i class="fas fa-flag-checkered"></i>
+                    <i class="fas fa-flag-checkered" aria-hidden="true"></i>
                     <h3>Fierté Nigérienne</h3>
                     <p>Des produits de qualité au service de la technologie au Niger</p>
-                    <div class="flag-colors">
+                    <div class="flag-colors" aria-hidden="true">
                         <span class="color-orange"></span>
                         <span class="color-white"></span>
                         <span class="color-green"></span>
@@ -146,12 +187,12 @@
         </section>
 
         <!-- NEWSLETTER -->
-        <section class="newsletter-section" data-aos="fade-up">
+        <section class="newsletter-section" data-aos="fade-up" aria-labelledby="newsletterTitle">
             <div class="container">
-                <h2>Inscrivez-vous à notre newsletter</h2>
+                <h2 id="newsletterTitle">Inscrivez-vous à notre newsletter</h2>
                 <p>Recevez nos offres exclusives et nouveautés</p>
-                <form id="newsletterForm" class="newsletter-form">
-                    <input type="email" id="newsletterEmail" placeholder="exemple@domaine.com" required>
+                <form id="newsletterForm" class="newsletter-form" novalidate>
+                    <input type="email" id="newsletterEmail" placeholder="exemple@domaine.com" required autocomplete="email">
                     <button type="submit" class="btn btn-secondary">S'inscrire</button>
                 </form>
             </div>
@@ -159,22 +200,22 @@
     </div>
 
     <!-- PRODUCTS PAGE -->
-    <div id="productsPage" style="display: none;">
+    <div id="productsPage" style="display: none;" aria-labelledby="allProductsTitle">
         <section class="section">
             <div class="container">
-                <h2 class="section-title" data-aos="fade-up">Tous nos produits</h2>
+                <h2 class="section-title" id="allProductsTitle" data-aos="fade-up">Tous nos produits</h2>
                 <div class="products-grid" id="allProductsGrid"></div>
             </div>
         </section>
     </div>
 
     <!-- ABOUT PAGE -->
-    <div id="aboutPage" style="display: none;">
+    <div id="aboutPage" style="display: none;" aria-labelledby="aboutTitle">
         <section class="section">
             <div class="container">
-                <h2 class="section-title" data-aos="fade-up">À propos de Niger Laptop</h2>
+                <h2 class="section-title" id="aboutTitle" data-aos="fade-up">À propos de Niger Laptop</h2>
                 <div class="about-content">
-                    <i class="fas fa-laptop-code about-icon"></i>
+                    <i class="fas fa-laptop-code about-icon" aria-hidden="true"></i>
                     <p data-aos="fade-up">Niger Laptop est une entreprise dédiée à la vente de produits informatiques et technologiques au Niger. Notre mission est de rendre la technologie accessible à tous, avec des produits de qualité et des prix compétitifs.</p>
                     <p data-aos="fade-up" data-aos-delay="200">Depuis notre création, nous nous engageons à fournir le meilleur service client et les produits les plus récents du marché.</p>
                     <div class="legal-info" data-aos="fade-up" data-aos-delay="400">
@@ -189,47 +230,47 @@
     </div>
 
     <!-- CONTACT PAGE -->
-    <div id="contactPage" style="display: none;">
+    <div id="contactPage" style="display: none;" aria-labelledby="contactTitle">
         <section class="section">
             <div class="container">
-                <h2 class="section-title" data-aos="fade-up">Contactez-nous</h2>
+                <h2 class="section-title" id="contactTitle" data-aos="fade-up">Contactez-nous</h2>
                 <div class="contact-wrapper">
                     <div class="contact-info" data-aos="fade-up">
                         <div class="contact-card">
-                            <i class="fas fa-map-marker-alt"></i>
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                             <h4>Adresse</h4>
                             <p>Niamey, Niger</p>
                         </div>
                         <div class="contact-card">
-                            <i class="fas fa-phone"></i>
+                            <i class="fas fa-phone" aria-hidden="true"></i>
                             <h4>Téléphone</h4>
-                            <p>+227 91 12 78 70 </p>
+                            <p>+227 91 12 78 70</p>
                         </div>
                         <div class="contact-card">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
                             <h4>Email</h4>
                             <p>zoubeirou.zakariya@gmail.com</p>
                         </div>
                     </div>
-                    <form id="contactForm" class="contact-form" data-aos="fade-up" data-aos-delay="200">
+                    <form id="contactForm" class="contact-form" data-aos="fade-up" data-aos-delay="200" novalidate>
                         <div class="form-group">
-                            <label>Nom complet *</label>
-                            <input type="text" id="contactName" required>
+                            <label for="contactName">Nom complet *</label>
+                            <input type="text" id="contactName" required autocomplete="name">
                         </div>
                         <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" id="contactEmail" required>
+                            <label for="contactEmail">Email *</label>
+                            <input type="email" id="contactEmail" required autocomplete="email">
                         </div>
                         <div class="form-group">
-                            <label>Téléphone</label>
-                            <input type="tel" id="contactPhone">
+                            <label for="contactPhone">Téléphone</label>
+                            <input type="tel" id="contactPhone" autocomplete="tel" inputmode="tel" placeholder="+227 XX XX XX XX">
                         </div>
                         <div class="form-group">
-                            <label>Message *</label>
+                            <label for="contactMessage">Message *</label>
                             <textarea id="contactMessage" rows="5" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Envoyer le message
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i> Envoyer le message
                         </button>
                     </form>
                 </div>
@@ -239,7 +280,7 @@
 </main>
 
 <!-- FOOTER -->
-<footer class="footer">
+<footer class="footer" role="contentinfo">
     <div class="container">
         <div class="footer-grid">
             <div class="footer-col">
@@ -248,14 +289,14 @@
                     <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo" onerror="this.src='assets/images/logo-placeholder.png'">
                 </div>
                 <p>Votre partenaire de confiance pour l'informatique et la technologie au Niger.</p>
-                <div class="flag-mini">
+                <div class="flag-mini" aria-hidden="true">
                     <span></span><span></span><span></span>
                 </div>
                 <div class="social-links">
-                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
-                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -281,17 +322,17 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Niger Laptop - Tous droits réservés</p>
-            <p class="design-credit">Conçu par <strong>HAM Global-Words</strong> <i class="fas fa-heart"></i></p>
+            <p class="design-credit">Conçu par <strong>HAM Global-Words</strong> <i class="fas fa-heart" aria-hidden="true"></i></p>
         </div>
     </div>
 </footer>
 
 <!-- CART SIDEBAR -->
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+<div class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
     <div class="cart-header">
-        <h3><i class="fas fa-shopping-cart"></i> Mon panier</h3>
-        <span class="cart-close" id="cartClose">&times;</span>
+        <h3 id="cartTitle"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Mon panier</h3>
+        <button class="cart-close" id="cartClose" aria-label="Fermer le panier">&times;</button>
     </div>
     <div class="cart-items" id="cartItems">
         <div class="empty-cart">Votre panier est vide</div>
@@ -303,9 +344,9 @@
         </div>
         <div class="payment-preview" id="paymentPreview">
             <div class="payment-preview__header">
-                <i class="fas fa-credit-card"></i>
+                <i class="fas fa-credit-card" aria-hidden="true"></i>
                 <h3>Paiement 100% local – bientôt disponible</h3>
-                <span class="preview-badge">En cours d'intégration</span>
+                <span class="preview-badge" aria-label="En cours d'intégration">En cours d'intégration</span>
             </div>
             <p class="payment-preview__sub">
                 Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, 
@@ -314,7 +355,7 @@
             <div class="payment-preview__methods">
                 <div class="method-card">
                     <div class="method-icon">
-                        <img src="assets/images/logos/logoMynita.png" alt="MyNita" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'">
+                        <img src="assets/images/logos/logoMynita.png" alt="Logo MyNita" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'">
                     </div>
                     <h4>MyNita</h4>
                     <p>Paiement par Mobile Money<br>(NIT Niger)</p>
@@ -322,7 +363,7 @@
                 </div>
                 <div class="method-card">
                     <div class="method-icon">
-                        <img src="assets/images/logos/logoAmanaTa.png" alt="AmanaTa" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'">
+                        <img src="assets/images/logos/logoAmanaTa.png" alt="Logo AmanaTa" class="payment-logo" loading="lazy" onerror="this.src='assets/images/payment-placeholder.png'">
                     </div>
                     <h4>AmanaTa</h4>
                     <p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p>
@@ -330,7 +371,7 @@
                 </div>
             </div>
             <div class="payment-preview__info">
-                <i class="fas fa-info-circle"></i>
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
                 <span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span>
             </div>
             <div class="payment-preview__credit">
@@ -345,23 +386,35 @@
 </div>
 
 <!-- CHECKOUT MODAL -->
-<div class="modal" id="checkoutModal">
+<div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" aria-hidden="true">
     <div class="modal-content">
-        <i class="fas fa-check-circle success-icon"></i>
-        <h3>Commande validée !</h3>
+        <i class="fas fa-check-circle success-icon" aria-hidden="true"></i>
+        <h3 id="checkoutTitle">Commande validée !</h3>
         <p>Merci pour votre commande. Un conseiller vous contactera sous 24h pour finaliser le paiement et la livraison.</p>
-        <button class="btn btn-primary" id="closeModalBtn">Fermer</button>
+        <button class="btn btn-primary" id="closeModalBtn" aria-label="Fermer la confirmation">Fermer</button>
+    </div>
+</div>
+
+<!-- CONFIRMATION MODAL (générique) -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="modal-content">
+        <h3 id="confirmTitle">Confirmation</h3>
+        <p id="confirmMessage"></p>
+        <div class="confirm-buttons">
+            <button class="btn btn-outline" id="confirmCancelBtn">Annuler</button>
+            <button class="btn btn-primary" id="confirmOkBtn">Confirmer</button>
+        </div>
     </div>
 </div>
 
 <!-- TOAST NOTIFICATION -->
-<div class="toast-notification" id="toast">
-    <i class="fas fa-check-circle"></i>
-    <span id="toastMessage">Produit ajouté au panier</span>
+<div class="toast-notification" id="toast" role="status" aria-live="polite">
+    <i class="fas fa-check-circle" aria-hidden="true"></i>
+    <span id="toastMessage"></span>
 </div>
 
 <!-- Scripts -->
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="js/main.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+<script src="js/main.js" defer></script>
 </body>
 </html>
