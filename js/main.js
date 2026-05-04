@@ -1,7 +1,7 @@
 /**
  * Niger Laptop - Application e-commerce
  * @author HAM Global-Words
- * @version 2.1 - Version corrigée
+ * @version 2.2 - Chargement depuis data.json
  */
 
 // ========== ÉCHAPPEMENT HTML (SÉCURITÉ XSS) ==========
@@ -15,30 +15,27 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-// ========== DONNÉES ==========
-const categories = [
-    { id: 1, name: "Ordinateurs", icon: "fas fa-laptop", count: 45 },
-    { id: 2, name: "Accessoires", icon: "fas fa-mouse", count: 89 },
-    { id: 3, name: "Composants", icon: "fas fa-microchip", count: 56 },
-    { id: 4, name: "Réseau", icon: "fas fa-wifi", count: 34 },
-    { id: 5, name: "Stockage", icon: "fas fa-hdd", count: 42 },
-    { id: 6, name: "Périphériques", icon: "fas fa-keyboard", count: 67 }
-];
+// ========== DONNÉES (seront chargées depuis data.json) ==========
+let categories = [];
+let products = [];
 
-const products = [
-    { id: 1, name: "ASUS ROG Strix G15", category: "Ordinateurs", price: 850000, oldPrice: 950000, image: "💻", badge: "sale", featured: true, rating: 4.5, description: "PC portable gaming avec RTX 3060, 16Go RAM, SSD 512Go." },
-    { id: 2, name: "Souris Gaming Logitech G502", category: "Accessoires", price: 45000, oldPrice: 55000, image: "🖱️", badge: "sale", featured: true, rating: 4.8, description: "Souris gaming 11 boutons programmables, capteur 25K." },
-    { id: 3, name: "Dell XPS 13", category: "Ordinateurs", price: 1250000, oldPrice: null, image: "💻", badge: "new", featured: true, rating: 4.9, description: "Ultrabook 13 pouces, écran InfinityEdge, processeur i7." },
-    { id: 4, name: "Clavier Mécanique RGB", category: "Périphériques", price: 65000, oldPrice: 85000, image: "⌨️", badge: "sale", featured: true, rating: 4.7, description: "Clavier mécanique rétroéclairé RGB, switches Cherry MX." },
-    { id: 5, name: "SSD NVMe 1To", category: "Stockage", price: 75000, oldPrice: 95000, image: "💾", badge: "sale", featured: false, rating: 4.6, description: "SSD NVMe M.2, vitesse de lecture 3500 Mo/s." },
-    { id: 6, name: "Processeur Intel i7", category: "Composants", price: 350000, oldPrice: null, image: "⚙️", badge: null, featured: false, rating: 4.7, description: "Intel Core i7-12700K, 12 cœurs, socket LGA1700." },
-    { id: 7, name: "Écran 24 pouces", category: "Périphériques", price: 180000, oldPrice: 220000, image: "🖥️", badge: "sale", featured: true, rating: 4.4, description: "Écran IPS Full HD, temps de réponse 1ms." },
-    { id: 8, name: "Routeur Wi-Fi 6", category: "Réseau", price: 95000, oldPrice: null, image: "📡", badge: "new", featured: false, rating: 4.8, description: "Routeur Wi-Fi 6 AX3000, double bande, 4 ports Gigabit." },
-    { id: 9, name: "Casque Gaming HyperX", category: "Accessoires", price: 55000, oldPrice: 75000, image: "🎧", badge: "sale", featured: true, rating: 4.6, description: "Casque circum-auriculaire avec microphone détachable." },
-    { id: 10, name: "Carte Graphique RTX 3060", category: "Composants", price: 450000, oldPrice: 550000, image: "🎮", badge: "sale", featured: false, rating: 4.9, description: "NVIDIA GeForce RTX 3060 12Go GDDR6." },
-    { id: 11, name: "Tablette Samsung Galaxy", category: "Ordinateurs", price: 320000, oldPrice: null, image: "📱", badge: null, featured: false, rating: 4.5, description: "Tablette 10.4 pouces, 64Go, stylet inclus." },
-    { id: 12, name: "Imprimante HP Laser", category: "Périphériques", price: 150000, oldPrice: 200000, image: "🖨️", badge: "sale", featured: false, rating: 4.3, description: "Imprimante laser monochrome, recto-verso automatique." }
-];
+async function loadData() {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+        const data = await response.json();
+        if (!data.categories || !Array.isArray(data.categories) || !data.products || !Array.isArray(data.products)) {
+            throw new Error('Format JSON invalide');
+        }
+        categories = data.categories;
+        products = data.products;
+        console.log(`✅ ${categories.length} catégories, ${products.length} produits chargés`);
+        return true;
+    } catch (error) {
+        console.error('❌ Échec du chargement des données :', error);
+        return false;
+    }
+}
 
 // ========== PANIER ==========
 let cart = [];
@@ -53,7 +50,6 @@ function loadCart() {
             cart = Array.isArray(parsed) ? parsed.filter(item => item && typeof item.id === 'number' && item.quantity > 0) : [];
         } catch (e) { cart = []; }
     }
-    // Charger le code promo sauvegardé
     promoCode = localStorage.getItem('nigerLaptopPromo') || null;
     updateCartUI();
 }
@@ -70,6 +66,10 @@ function saveCart() {
 }
 
 function addToCart(productId) {
+    if (!products.length) {
+        showToast('Catalogue en cours de chargement...', 'error');
+        return;
+    }
     const product = products.find(p => p.id === productId);
     if (!product) return;
     const existing = cart.find(item => item.id === productId);
@@ -261,7 +261,7 @@ function renderCategories() {
 let currentPage = 1;
 const productsPerPage = 8;
 let productsPageInitialized = false;
-let filteredProducts = [...products];
+let filteredProducts = [];
 
 function getFilteredAndSorted() {
     let list = [...products];
@@ -368,14 +368,12 @@ function initProductsPage() {
     if (productsPageInitialized) return;
     productsPageInitialized = true;
     
-    // Remplir le filtre catégorie
     const catSelect = document.getElementById('categoryFilter');
     if (catSelect) {
         const uniqueCategories = [...new Set(products.map(p => p.category))];
         catSelect.innerHTML = '<option value="">Toutes</option>' + uniqueCategories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
     
-    // Écouteurs
     document.getElementById('applyFiltersBtn')?.addEventListener('click', applyFiltersAndRender);
     document.getElementById('categoryFilter')?.addEventListener('change', applyFiltersAndRender);
     document.getElementById('sortBy')?.addEventListener('change', applyFiltersAndRender);
@@ -385,6 +383,10 @@ function initProductsPage() {
 
 // ========== VUE DÉTAILLÉE PRODUIT ==========
 function viewProduct(productId) {
+    if (!products.length) {
+        showToast('Catalogue en cours de chargement...', 'error');
+        return;
+    }
     const product = products.find(p => p.id === productId);
     if (!product) return;
     const modal = document.getElementById('productDetailModal');
@@ -416,7 +418,6 @@ function viewProduct(productId) {
     `;
     openModal('productDetailModal');
 
-    // Gestion du clic sur les étoiles
     content.querySelectorAll('.star-rating i').forEach(star => {
         star.addEventListener('click', () => {
             const rating = parseInt(star.dataset.star);
@@ -797,11 +798,32 @@ function initLogoEffects() {
     }
 }
 
-// ========== INIT GÉNÉRALE ==========
-function init() {
+// ========== RENDU DES PRODUITS EN VEDETTE ==========
+function renderFeaturedWithSkeleton() {
+    showSkeleton('featuredProductsGrid', 'product', 4);
+    setTimeout(() => {
+        const grid = document.getElementById('featuredProductsGrid');
+        if (grid) grid.innerHTML = renderProductCards(products.filter(p => p.featured));
+    }, 300);
+}
+
+// ========== INIT GÉNÉRALE (asynchrone) ==========
+async function init() {
+    // 1. Afficher immédiatement les squelettes
+    showSkeleton('featuredProductsGrid', 'product', 4);
+    showSkeleton('categoriesGrid', 'category', 6);
+
+    // 2. Charger les données
+    const success = await loadData();
+    if (!success) {
+        document.querySelector('.categories-grid') && (document.querySelector('.categories-grid').innerHTML = '<p style="text-align:center;color:red;">Impossible de charger le catalogue.</p>');
+        return;
+    }
+
+    // 3. Initialisations qui dépendent des données
     loadCart();
     renderCategories();
-    renderFeaturedWithSkeleton();
+    renderFeaturedWithSkeleton(); // remplace le squelette
 
     initNavigation();
     initContactForm();
@@ -847,14 +869,6 @@ function init() {
     });
 
     showPage('homePage');
-}
-
-function renderFeaturedWithSkeleton() {
-    showSkeleton('featuredProductsGrid', 'product', 4);
-    setTimeout(() => {
-        const grid = document.getElementById('featuredProductsGrid');
-        if (grid) grid.innerHTML = renderProductCards(products.filter(p => p.featured));
-    }, 300);
 }
 
 // ========== DÉMARRAGE ==========
