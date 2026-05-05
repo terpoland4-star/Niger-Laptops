@@ -1,6 +1,7 @@
 /**
  * Niger Laptop - Application e-commerce
  * Architecture modulaire
+ * @version 3.0 - Compatible avec page panier dédiée
  */
 
 // Imports
@@ -58,9 +59,13 @@ async function loadData() {
 // Callback quand le panier change
 function onCartUpdate() {
     updateCartUI();
+    // Mettre à jour le compteur dans le header (pour la page panier aussi)
+    const count = getCartCount();
+    const cartCountElem = document.getElementById('cartCount');
+    if (cartCountElem) cartCountElem.textContent = count;
 }
 
-// Animation du panier
+// Animation du panier (conservée pour compatibilité)
 function animateCartIcon() {
     const icon = document.getElementById('cartIcon');
     if (icon) {
@@ -69,7 +74,7 @@ function animateCartIcon() {
     }
 }
 
-// Gestionnaire de clics dans le panier
+// Gestionnaire de clics dans le panier (sidebar)
 function handleCartItemClick(e) {
     const qtyBtn = e.target.closest('.quantity-btn');
     if (qtyBtn) {
@@ -85,7 +90,7 @@ function handleCartItemClick(e) {
     }
 }
 
-// Checkout
+// Checkout (pour la sidebar)
 function checkout() {
     if (getCartCount() === 0) {
         showToast('Panier vide', 'error');
@@ -94,44 +99,84 @@ function checkout() {
     openModal('checkoutModal');
 }
 
-// Événements généraux
+// Événements généraux (uniquement pour la sidebar, plus pour le lien panier)
 function bindGlobalEvents() {
-    // Panier
-    document.getElementById('cartItems')?.addEventListener('click', handleCartItemClick);
-    document.getElementById('cartIcon')?.addEventListener('click', () => {
-        animateCartIcon();
-        openCart();
-    });
-    document.getElementById('cartClose')?.addEventListener('click', closeCart);
-    document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
-    document.getElementById('clearCartBtn')?.addEventListener('click', () => {
-        if (getCartCount() > 0) {
-            showConfirm('Vider le panier ?', () => clearCart(false));
+    // Panier - événements pour la sidebar (si elle existe encore)
+    const cartItems = document.getElementById('cartItems');
+    if (cartItems) {
+        cartItems.addEventListener('click', handleCartItemClick);
+    }
+    
+    // Icône panier - redirige vers la page panier dédiée
+    const cartIcon = document.getElementById('cartIcon');
+    if (cartIcon) {
+        // Remplacer l'ancien comportement (ouverture sidebar) par redirection
+        const newCartLink = document.createElement('a');
+        newCartLink.href = 'cart-page.html';
+        newCartLink.className = 'cart-icon';
+        newCartLink.setAttribute('aria-label', 'Voir mon panier');
+        newCartLink.innerHTML = cartIcon.innerHTML;
+        
+        // Remplacer l'ancien élément
+        cartIcon.parentNode.replaceChild(newCartLink, cartIcon);
+        
+        // Mettre à jour la référence
+        const newCartCount = newCartLink.querySelector('.cart-count');
+        if (newCartCount && newCartCount.id === 'cartCount') {
+            // Garder l'id pour que updateCartUI continue de fonctionner
         }
-    });
-    document.getElementById('checkoutBtn')?.addEventListener('click', checkout);
-    document.getElementById('applyPromoBtn')?.addEventListener('click', () => {
-        const input = document.getElementById('promoCode');
-        const msg = document.getElementById('promoMessage');
-        if (!input || !msg) return;
-        const result = applyPromo(input.value);
-        if (result.success) {
-            msg.textContent = `Code promo appliqué : -${result.discount * 100}%`;
-            msg.className = 'promo-message success';
-        } else {
-            msg.textContent = 'Code invalide';
-            msg.className = 'promo-message error';
-        }
-        updateCartUI();
-    });
+    }
+    
+    // Fermeture sidebar (si elle existe)
+    const cartClose = document.getElementById('cartClose');
+    if (cartClose) cartClose.addEventListener('click', closeCart);
+    
+    const cartOverlay = document.getElementById('cartOverlay');
+    if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+    
+    // Vider le panier (sidebar)
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', () => {
+            if (getCartCount() > 0) {
+                showConfirm('Vider le panier ?', () => clearCart(false));
+            }
+        });
+    }
+    
+    // Checkout (sidebar)
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) checkoutBtn.addEventListener('click', checkout);
+    
+    // Code promo (sidebar)
+    const applyPromoBtn = document.getElementById('applyPromoBtn');
+    if (applyPromoBtn) {
+        applyPromoBtn.addEventListener('click', () => {
+            const input = document.getElementById('promoCode');
+            const msg = document.getElementById('promoMessage');
+            if (!input || !msg) return;
+            const result = applyPromo(input.value);
+            if (result.success) {
+                msg.textContent = `Code promo appliqué : -${result.discount * 100}%`;
+                msg.className = 'promo-message success';
+            } else {
+                msg.textContent = 'Code invalide';
+                msg.className = 'promo-message error';
+            }
+            updateCartUI();
+        });
+    }
     
     // Modale checkout
-    document.getElementById('closeModalBtn')?.addEventListener('click', () => {
-        closeModal('checkoutModal');
-        clearCart(true);
-        showToast('Merci pour votre commande !', 'success');
-        updateCartUI();
-    });
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            closeModal('checkoutModal');
+            clearCart(true);
+            showToast('Merci pour votre commande !', 'success');
+            updateCartUI();
+        });
+    }
     
     // Fermeture avec Echap
     document.addEventListener('keydown', (e) => {
@@ -246,6 +291,13 @@ function initAOS() {
     }
 }
 
+// Mettre à jour le compteur dans le header (appelé régulièrement)
+function updateHeaderCartCount() {
+    const count = getCartCount();
+    const cartCountElem = document.getElementById('cartCount');
+    if (cartCountElem) cartCountElem.textContent = count;
+}
+
 // Initialisation principale
 async function init() {
     // Skeletons
@@ -257,11 +309,15 @@ async function init() {
     initUI();
     
     // Configurer callback du panier
-    setCartUpdateCallback(onCartUpdate);
+    setCartUpdateCallback(() => {
+        updateCartUI();
+        updateHeaderCartCount();
+    });
     
     // Charger panier
     loadCart();
     updateCartUI();
+    updateHeaderCartCount();
     
     // Navigation SPA
     initNavigation(showPage);
