@@ -454,3 +454,13 @@ img {
 [data-theme="dark"] .product-image img {
     filter: brightness(0.95) contrast(1.05);
 }
+/* Calmer les images trop vives */
+.product-image img {
+    filter: saturate(0.95) brightness(1.02) contrast(1.03);
+    transition: filter 0.2s;
+}
+
+/* Retour à la normale au survol */
+.product-image:hover img {
+    filter: saturate(1) brightness(1) contrast(1);
+}
