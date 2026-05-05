@@ -397,3 +397,60 @@ body {
     .modal-content { padding: 30px 20px; }
     .products-grid { grid-template-columns: 1fr; }
 }
+/* Amélioration globale du rendu des images */
+img {
+    image-rendering: auto;           /* Par défaut, mais on force */
+    image-rendering: crisp-edges;    /* Pour les navigateurs compatibles */
+    image-rendering: high-quality;   /* Propriété standardisée récente */
+    image-rendering: smooth;         /* Alternative */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Anti-aliasing subtil */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Pour les images de produits (cartes) */
+.product-image img,
+.cart-item-image img,
+.modal-product img {
+    /* Lissage et netteté */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;      /* Fallback */
+    image-rendering: smooth;
+    
+    /* Anti-aliasing amélioré */
+    transform: scale(1);
+    transition: transform 0.3s ease;
+    
+    /* Éviter les flous de redimensionnement */
+    object-fit: cover;
+    object-position: center;
+    
+    /* Optimisation mémoire */
+    will-change: transform;
+}
+
+/* Zoom au survol pour masquer les défauts */
+.product-image {
+    overflow: hidden;
+}
+
+.product-image img {
+    transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+.product-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Filtre de netteté pour JPEG (léger) */
+.product-image img {
+    filter: contrast(1.02) saturate(1.02) brightness(1.02);
+}
+
+/* Mode sombre : ajustement des images */
+[data-theme="dark"] .product-image img {
+    filter: brightness(0.95) contrast(1.05);
+}
