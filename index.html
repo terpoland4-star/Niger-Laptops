@@ -47,28 +47,10 @@
         }
     }
     </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListElement": [
-            {"@type": "Product", "name": "ASUS ROG Strix G15", "offers": {"@type": "Offer", "price": "850000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Souris Gaming Logitech G502", "offers": {"@type": "Offer", "price": "45000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Dell XPS 13", "offers": {"@type": "Offer", "price": "1250000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Clavier Mécanique RGB", "offers": {"@type": "Offer", "price": "65000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "SSD NVMe 1To", "offers": {"@type": "Offer", "price": "75000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Processeur Intel i7", "offers": {"@type": "Offer", "price": "350000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Écran 24 pouces", "offers": {"@type": "Offer", "price": "180000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Routeur Wi-Fi 6", "offers": {"@type": "Offer", "price": "95000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Casque Gaming HyperX", "offers": {"@type": "Offer", "price": "55000", "priceCurrency": "XOF"}},
-            {"@type": "Product", "name": "Carte Graphique RTX 3060", "offers": {"@type": "Offer", "price": "450000", "priceCurrency": "XOF"}}
-        ]
-    }
-    </script>
 </head>
 <body>
 
-<!-- TOP BAR (corrigée : téléphone et email cliquables) -->
+<!-- TOP BAR -->
 <div class="top-bar">
     <div class="container">
         <div>
@@ -78,7 +60,7 @@
             <a href="tel:+22791127870" class="top-bar-link" aria-label="Appeler Niger Laptop">
                 <i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70
             </a>
-            <a href="mailto:zoubeirou.zakariya@gmail.com" class="top-bar-link" aria-label="Envoyer un email à Niger Laptop">
+            <a href="mailto:zoubeirou.zakariya@gmail.com" class="top-bar-link" aria-label="Envoyer un email">
                 <i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com
             </a>
         </div>
@@ -90,7 +72,7 @@
     <div class="header-container">
         <a href="#" class="logo" id="logoLink" aria-label="Niger Laptop - Accueil">
             <div class="logo-wrapper">
-                <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo" onerror="this.onerror=null;this.src='assets/images/logo-placeholder.png'">
+                <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="logo-img" id="mainLogo" onerror="this.src='assets/images/logo-placeholder.png'">
                 <div class="logo-glow" aria-hidden="true"></div>
             </div>
             <span>Niger Laptops</span>
@@ -111,10 +93,10 @@
             <button class="search-btn" id="searchBtn" aria-label="Rechercher un produit">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
-            <button class="cart-icon" id="cartIcon" aria-label="Ouvrir le panier">
+            <a href="cart-page.html" class="cart-icon" id="cartIconLink" aria-label="Voir mon panier">
                 <i class="fas fa-shopping-cart fa-lg" aria-hidden="true"></i>
                 <span class="cart-count" id="cartCount" aria-live="polite">0</span>
-            </button>
+            </a>
         </div>
     </div>
 </header>
@@ -221,6 +203,7 @@
         <section class="section">
             <div class="container">
                 <h2 class="section-title" id="allProductsTitle" data-aos="fade-up">Tous nos produits</h2>
+                
                 <!-- Barre d'outils (filtres, tri) -->
                 <div class="products-toolbar" id="productsToolbar">
                     <div class="filter-group">
@@ -248,6 +231,7 @@
                     </div>
                     <button id="applyFiltersBtn" class="btn btn-primary">Appliquer</button>
                 </div>
+                
                 <div class="products-grid" id="allProductsGrid"></div>
                 <div class="no-results-message" id="noResultsMessage" style="display:none; text-align:center; padding:40px; color:var(--text-muted);">
                     <i class="fas fa-search" style="font-size:48px; margin-bottom:15px; display:block;"></i>
@@ -320,7 +304,9 @@
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>Niger Laptop</h4>
-                <div class="footer-logo-wrapper"><img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo" onerror="this.onerror=null;this.src='assets/images/logo-placeholder.png'"></div>
+                <div class="footer-logo-wrapper">
+                    <img src="assets/images/logos/logolap.jpeg" alt="Niger Laptop Logo" class="footer-logo-img" id="footerLogo" onerror="this.src='assets/images/logo-placeholder.png'">
+                </div>
                 <p>Votre partenaire de confiance pour l'informatique et la technologie au Niger.</p>
                 <div class="flag-mini" aria-hidden="true"><span></span><span></span><span></span></div>
                 <div class="social-links">
@@ -330,14 +316,25 @@
                     <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
                 </div>
             </div>
-            <div class="footer-col"><h4>Liens rapides</h4><a href="#" data-page="home">Accueil</a><a href="#" data-page="products">Produits</a><a href="#" data-page="about">À propos</a><a href="#" data-page="contact">Contact</a></div>
+            <div class="footer-col">
+                <h4>Liens rapides</h4>
+                <a href="#" data-page="home">Accueil</a>
+                <a href="#" data-page="products">Produits</a>
+                <a href="#" data-page="about">À propos</a>
+                <a href="#" data-page="contact">Contact</a>
+            </div>
             <div class="footer-col">
                 <h4>Contact</h4>
                 <a href="tel:+22791127870" class="footer-link"><i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70</a>
                 <a href="mailto:zoubeirou.zakariya@gmail.com" class="footer-link"><i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com</a>
                 <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Niamey, Niger</p>
             </div>
-            <div class="footer-col"><h4>Horaires d'ouverture</h4><p>Lundi - Vendredi: 8h - 18h</p><p>Samedi: 9h - 13h</p><p>Dimanche: Fermé</p></div>
+            <div class="footer-col">
+                <h4>Horaires d'ouverture</h4>
+                <p>Lundi - Vendredi: 8h - 18h</p>
+                <p>Samedi: 9h - 13h</p>
+                <p>Dimanche: Fermé</p>
+            </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Niger Laptop - Tous droits réservés</p>
@@ -346,43 +343,26 @@
     </div>
 </footer>
 
-<!-- CART SIDEBAR -->
-<div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
-<div class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
-    <div class="cart-header">
-        <h3 id="cartTitle"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Mon panier <span id="cartItemCountBadge"></span></h3>
-        <button class="cart-close" id="cartClose" aria-label="Fermer le panier">&times;</button>
-    </div>
-    <div class="cart-items" id="cartItems"><div class="empty-cart">Votre panier est vide</div></div>
-    <div class="cart-footer" id="cartFooter" style="display: none;">
-        <div class="cart-promo">
-            <input type="text" id="promoCode" placeholder="Code promo" aria-label="Code promo">
-            <button id="applyPromoBtn" class="btn btn-outline btn-sm">Appliquer</button>
-            <span id="promoMessage" class="promo-message"></span>
-        </div>
-        <div class="cart-total"><span>Total</span><span id="cartTotal">0 FCFA</span></div>
-        <div class="payment-preview" id="paymentPreview">
-            <div class="payment-preview__header"><i class="fas fa-credit-card" aria-hidden="true"></i><h3>Paiement 100% local – bientôt disponible</h3><span class="preview-badge">En cours d'intégration</span></div>
-            <p class="payment-preview__sub">Nous intégrons actuellement <strong>MyNita</strong> et <strong>AmanaTa</strong>, deux solutions de paiement sécurisées 100% nigériennes.</p>
-            <div class="payment-preview__methods">
-                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoMynita.png" alt="MyNita" class="payment-logo" loading="lazy" onerror="this.onerror=null;this.src='assets/images/payment-placeholder.png'"></div><h4>MyNita</h4><p>Paiement par Mobile Money<br>(NIT Niger)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
-                <div class="method-card"><div class="method-icon"><img src="assets/images/logos/logoAmanaTa.png" alt="AmanaTa" class="payment-logo" loading="lazy" onerror="this.onerror=null;this.src='assets/images/payment-placeholder.png'"></div><h4>AmanaTa</h4><p>Paiement bancaire<br>(Amana Bank – Conforme Charia)</p><span class="status status-pending">⚙️ Intégration en cours</span></div>
-            </div>
-            <div class="payment-preview__info"><i class="fas fa-info-circle" aria-hidden="true"></i><span>Ces moyens de paiement seront actifs dès réception des identifiants API.</span></div>
-            <div class="payment-preview__credit">Intégration technique par <strong>HAM Global-Words</strong></div>
-        </div>
-        <div class="cart-buttons"><button class="btn btn-outline" id="clearCartBtn">Vider</button><button class="btn btn-primary" id="checkoutBtn">Commander</button></div>
-    </div>
-</div>
-
 <!-- CHECKOUT MODAL -->
 <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" aria-hidden="true">
-    <div class="modal-content"><i class="fas fa-check-circle success-icon" aria-hidden="true"></i><h3 id="checkoutTitle">Commande validée !</h3><p>Merci pour votre commande. Un conseiller vous contactera sous 24h pour finaliser le paiement et la livraison.</p><button class="btn btn-primary" id="closeModalBtn" aria-label="Fermer la confirmation">Fermer</button></div>
+    <div class="modal-content">
+        <i class="fas fa-check-circle success-icon" aria-hidden="true"></i>
+        <h3 id="checkoutTitle">Commande validée !</h3>
+        <p>Merci pour votre commande. Un conseiller vous contactera sous 24h pour finaliser le paiement et la livraison.</p>
+        <button class="btn btn-primary" id="closeModalBtn" aria-label="Fermer la confirmation">Fermer</button>
+    </div>
 </div>
 
 <!-- CONFIRMATION MODAL -->
 <div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
-    <div class="modal-content"><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage"></p><div class="confirm-buttons"><button class="btn btn-outline" id="confirmCancelBtn">Annuler</button><button class="btn btn-primary" id="confirmOkBtn">Confirmer</button></div></div>
+    <div class="modal-content">
+        <h3 id="confirmTitle">Confirmation</h3>
+        <p id="confirmMessage"></p>
+        <div class="confirm-buttons">
+            <button class="btn btn-outline" id="confirmCancelBtn">Annuler</button>
+            <button class="btn btn-primary" id="confirmOkBtn">Confirmer</button>
+        </div>
+    </div>
 </div>
 
 <!-- PRODUCT DETAIL MODAL -->
@@ -393,12 +373,13 @@
 </div>
 
 <!-- TOAST NOTIFICATION -->
-<div class="toast-notification" id="toast" role="status" aria-live="polite"><i class="fas fa-check-circle" aria-hidden="true"></i><span id="toastMessage"></span></div>
+<div class="toast-notification" id="toast" role="status" aria-live="polite">
+    <i class="fas fa-check-circle" aria-hidden="true"></i>
+    <span id="toastMessage"></span>
+</div>
 
-<!-- Scripts avec type="module" -->
+<!-- Scripts -->
 <script type="module" src="js/main.js"></script>
-
-<!-- AOS (librairie externe) -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </body>
 </html>
