@@ -2083,3 +2083,149 @@ body {
     margin-bottom: 15px;
     display: block;
 }
+/* ========== OPTIONS DE LIVRAISON ========== */
+.delivery-options {
+    margin: 20px 0;
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.delivery-options h4 {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.delivery-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.delivery-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-secondary);
+}
+
+.delivery-option:hover {
+    border-color: var(--orange);
+    background: var(--bg-primary);
+}
+
+.delivery-option input[type="radio"] {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--orange);
+}
+
+.delivery-option-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.delivery-option-content strong {
+    font-size: 15px;
+}
+
+.delivery-option-content span {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.delivery-price {
+    font-weight: 600;
+    color: var(--orange);
+}
+
+/* ========== FORMULAIRE D'ADRESSE ========== */
+.address-form {
+    margin: 20px 0;
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.address-form h4 {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.address-form .form-group {
+    margin-bottom: 12px;
+}
+
+.address-form input,
+.address-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.address-form input:focus,
+.address-form textarea:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(224,82,6,0.2);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ========== OPTIONS DE PAIEMENT ========== */
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-secondary);
+}
+
+.payment-option:hover {
+    border-color: var(--orange);
+}
+
+.payment-option input[type="radio"] {
+    accent-color: var(--orange);
+}
+
+.payment-option-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-option-content i {
+    font-size: 20px;
+    color: var(--orange);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .delivery-option {
+        padding: 12px;
+    }
+}
