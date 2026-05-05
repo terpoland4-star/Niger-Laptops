@@ -1,7 +1,7 @@
 /**
  * Niger Laptop - Application e-commerce
  * @author HAM Global-Words
- * @version 2.2 - Chargement depuis data.json
+ * @version 2.2 - Chargement depuis data.json, images réelles
  */
 
 // ========== ÉCHAPPEMENT HTML (SÉCURITÉ XSS) ==========
@@ -15,7 +15,7 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-// ========== DONNÉES (seront chargées depuis data.json) ==========
+// ========== DONNÉES (chargées depuis data.json) ==========
 let categories = [];
 let products = [];
 
@@ -145,7 +145,9 @@ function updateCartUI() {
     } else {
         cartItemsDiv.innerHTML = cart.map(item => `
             <div class="cart-item">
-                <div class="cart-item-image">${escapeHtml(item.image)}</div>
+                <div class="cart-item-image">
+                    <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy">
+                </div>
                 <div class="cart-item-details">
                     <div class="cart-item-title">${escapeHtml(item.name)}</div>
                     <div class="cart-item-price">${formatPrice(item.price)}</div>
@@ -310,7 +312,9 @@ function renderProductCards(productList) {
     return productList.map((p, idx) => `
         <div class="product-card" data-aos="fade-up" data-aos-delay="${idx * 50}">
             ${p.badge ? `<div class="product-badge ${escapeHtml(p.badge)}">${p.badge === 'sale' ? 'PROMO' : 'NOUVEAU'}</div>` : ''}
-            <div class="product-image">${escapeHtml(p.image)}</div>
+            <div class="product-image">
+                <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy">
+            </div>
             <div class="product-info">
                 <div class="product-title">${escapeHtml(p.name)}</div>
                 <div class="product-category">${escapeHtml(p.category)}</div>
@@ -399,7 +403,9 @@ function viewProduct(productId) {
     content.innerHTML = `
         <h3 id="productDetailTitle">${escapeHtml(product.name)}</h3>
         <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
-            <div style="font-size:80px; text-align:center; flex:1; min-width:120px;">${escapeHtml(product.image)}</div>
+            <div style="text-align:center; flex:1; min-width:120px;">
+                <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" style="max-width:100%; height:auto;">
+            </div>
             <div style="flex:2; min-width:250px;">
                 <p style="color:var(--text-muted);">${escapeHtml(product.category)}</p>
                 <p>${escapeHtml(product.description)}</p>
