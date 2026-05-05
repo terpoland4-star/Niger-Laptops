@@ -1,10 +1,10 @@
 /**
  * Niger Laptop - Application e-commerce v2.3
  * @author HAM Global-Words
- * Améliorations : gestion specs, fallback images, état loading/error, optimisation panier
+ * @version 2.3 - Placeholder intégré, gestion erreurs images
  */
 
-// ========== SÉCURITÉ XSS ==========
+// ========== ÉCHAPPEMENT HTML (SÉCURITÉ XSS) ==========
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -15,7 +15,17 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-// ========== DONNÉES ==========
+// ========== PLACEHOLDER INTÉGRÉ (DataURI SVG) ==========
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='45%25' font-size='14' text-anchor='middle' fill='%23999' font-family='sans-serif'%3EImage non%3C/text%3E%3Ctext x='50%25' y='55%25' font-size='14' text-anchor='middle' fill='%23999' font-family='sans-serif'%3Edisponible%3C/text%3E%3C/svg%3E";
+
+function handleImageError(img) {
+    if (!img) return;
+    if (img.src === PLACEHOLDER_IMAGE) return;
+    img.src = PLACEHOLDER_IMAGE;
+    img.classList.add('placeholder-img');
+}
+
+// ========== DONNÉES (chargées depuis data.json) ==========
 let categories = [];
 let products = [];
 let dataLoaded = false;
@@ -23,7 +33,7 @@ let dataLoaded = false;
 async function loadData() {
     try {
         const response = await fetch('data.json');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
         const data = await response.json();
         if (!data.categories || !Array.isArray(data.categories) || !data.products || !Array.isArray(data.products)) {
             throw new Error('Format JSON invalide');
@@ -34,7 +44,7 @@ async function loadData() {
         console.log(`✅ ${categories.length} catégories, ${products.length} produits chargés`);
         return true;
     } catch (error) {
-        console.error('❌ Échec data.json :', error);
+        console.error('❌ Échec du chargement des données :', error);
         showErrorMessage('Impossible de charger le catalogue. Rafraîchissez la page ou réessayez plus tard.');
         return false;
     }
@@ -147,7 +157,7 @@ function updateCartUI() {
         cartItemsDiv.innerHTML = cart.map(item => `
             <div class="cart-item">
                 <div class="cart-item-image">
-                    <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='assets/images/placeholder.png'">
+                    <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
                 </div>
                 <div class="cart-item-details">
                     <div class="cart-item-title">${escapeHtml(item.name)}</div>
@@ -231,6 +241,34 @@ function showSkeleton(containerId, type = 'product', count = 6) {
     container.innerHTML = html;
 }
 
+// ========== RENDU PRODUITS ==========
+function renderProductCards(productList) {
+    return productList.map((p, idx) => `
+        <div class="product-card" data-aos="fade-up" data-aos-delay="${idx * 50}">
+            ${p.badge ? `<div class="product-badge ${escapeHtml(p.badge)}">${p.badge === 'sale' ? 'PROMO' : 'NOUVEAU'}</div>` : ''}
+            <div class="product-image">
+                <img src="${escapeHtml(p.image)}" 
+                     alt="${escapeHtml(p.name)}" 
+                     loading="lazy"
+                     onerror="handleImageError(this)">
+            </div>
+            <div class="product-info">
+                <div class="product-title">${escapeHtml(p.name)}</div>
+                <div class="product-category">${escapeHtml(p.category)}</div>
+                <div class="product-rating">${getRatingStars(p.rating)}</div>
+                <div class="product-price">
+                    <span class="current-price">${formatPrice(p.price)}</span>
+                    ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ''}
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-primary add-to-cart-btn" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Ajouter</button>
+                    <button class="btn btn-outline view-product-btn" data-id="${p.id}"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
 // ========== RENDU CATÉGORIES ==========
 function renderCategories() {
     const grid = document.getElementById('categoriesGrid');
@@ -256,7 +294,12 @@ function renderCategories() {
     });
 }
 
-// ========== RENDU PRODUITS ==========
+function renderFeaturedProducts() {
+    const grid = document.getElementById('featuredProductsGrid');
+    if (grid) grid.innerHTML = renderProductCards(products.filter(p => p.featured === true));
+}
+
+// ========== FILTRES ET PAGINATION ==========
 let currentPage = 1;
 const productsPerPage = 8;
 let productsPageInitialized = false;
@@ -281,30 +324,6 @@ function getFilteredAndSorted() {
         case 'rating': list.sort((a, b) => b.rating - a.rating); break;
     }
     return list;
-}
-
-function renderProductCards(productList) {
-    return productList.map((p, idx) => `
-        <div class="product-card" data-aos="fade-up" data-aos-delay="${idx * 50}">
-            ${p.badge ? `<div class="product-badge ${escapeHtml(p.badge)}">${p.badge === 'sale' ? 'PROMO' : 'NOUVEAU'}</div>` : ''}
-            <div class="product-image">
-                <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='assets/images/placeholder.png'">
-            </div>
-            <div class="product-info">
-                <div class="product-title">${escapeHtml(p.name)}</div>
-                <div class="product-category">${escapeHtml(p.category)}</div>
-                <div class="product-rating">${getRatingStars(p.rating)}</div>
-                <div class="product-price">
-                    <span class="current-price">${formatPrice(p.price)}</span>
-                    ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ''}
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary add-to-cart-btn" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Ajouter</button>
-                    <button class="btn btn-outline view-product-btn" data-id="${p.id}"><i class="fas fa-eye"></i></button>
-                </div>
-            </div>
-        </div>
-    `).join('');
 }
 
 function renderProductsPage(list) {
@@ -378,11 +397,6 @@ function initProductsPage() {
     applyFiltersAndRender();
 }
 
-function renderFeaturedProducts() {
-    const grid = document.getElementById('featuredProductsGrid');
-    if (grid) grid.innerHTML = renderProductCards(products.filter(p => p.featured === true));
-}
-
 // ========== VUE PRODUIT AVEC SPECS ==========
 function viewProduct(productId) {
     if (!dataLoaded) { showToast('Catalogue en chargement...', 'error'); return; }
@@ -396,7 +410,6 @@ function viewProduct(productId) {
     const userRatings = JSON.parse(localStorage.getItem('nigerRatings') || '{}');
     const userRating = userRatings[productId] || 0;
 
-    // Génération des spécifications si elles existent
     let specsHtml = '';
     if (product.specs) {
         specsHtml = `
@@ -419,7 +432,7 @@ function viewProduct(productId) {
         <h3 id="productDetailTitle">${escapeHtml(product.name)}</h3>
         <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
             <div style="text-align:center; flex:1; min-width:120px;">
-                <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" style="max-width:100%; height:auto;" onerror="this.src='assets/images/placeholder.png'">
+                <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" style="max-width:100%; height:auto;" onerror="handleImageError(this)">
             </div>
             <div style="flex:2; min-width:250px;">
                 <p style="color:var(--text-muted);">${escapeHtml(product.category)}</p>
@@ -441,7 +454,6 @@ function viewProduct(productId) {
     
     openModal('productDetailModal');
 
-    // Étoiles de notation
     content.querySelectorAll('.star-rating i').forEach(star => {
         star.addEventListener('click', () => {
             const rating = parseInt(star.dataset.star);
@@ -455,7 +467,6 @@ function viewProduct(productId) {
         });
     });
 
-    // Bouton ajouter au panier dans la modale
     const addBtnDetail = content.querySelector('.add-to-cart-btn-detail');
     if (addBtnDetail) {
         addBtnDetail.addEventListener('click', () => {
@@ -464,7 +475,6 @@ function viewProduct(productId) {
         });
     }
 
-    // Fermeture de la modale
     const closeInner = document.getElementById('closeProductDetailModalInner');
     if (closeInner) closeInner.addEventListener('click', () => closeModal('productDetailModal'));
 }
@@ -864,6 +874,9 @@ async function init() {
 
     showPage('homePage');
 }
+
+// Rendre handleImageError accessible globalement
+window.handleImageError = handleImageError;
 
 // Démarrage
 document.addEventListener('DOMContentLoaded', init);
