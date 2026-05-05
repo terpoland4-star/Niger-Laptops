@@ -68,15 +68,19 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- TOP BAR (corrigée : téléphone et email cliquables) -->
 <div class="top-bar">
     <div class="container">
         <div>
             <i class="fas fa-store" aria-hidden="true"></i> Niger Laptops | NIF: 117816/P | RCCM: 01-2024-A10-00573
         </div>
-        <div>
-            <i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70
-            <a href="mailto:zoubeirou.zakariya@gmail.com"><i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com</a>
+        <div class="top-bar-contacts">
+            <a href="tel:+22791127870" class="top-bar-link" aria-label="Appeler Niger Laptop">
+                <i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70
+            </a>
+            <a href="mailto:zoubeirou.zakariya@gmail.com" class="top-bar-link" aria-label="Envoyer un email à Niger Laptop">
+                <i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com
+            </a>
         </div>
     </div>
 </div>
@@ -281,9 +285,21 @@
                 <h2 class="section-title" id="contactTitle" data-aos="fade-up">Contactez-nous</h2>
                 <div class="contact-wrapper">
                     <div class="contact-info" data-aos="fade-up">
-                        <div class="contact-card"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><h4>Adresse</h4><p>Niamey, Niger</p></div>
-                        <div class="contact-card"><i class="fas fa-phone" aria-hidden="true"></i><h4>Téléphone</h4><p>+227 91 12 78 70</p></div>
-                        <div class="contact-card"><i class="fas fa-envelope" aria-hidden="true"></i><h4>Email</h4><p>zoubeirou.zakariya@gmail.com</p></div>
+                        <div class="contact-card">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <h4>Téléphone</h4>
+                            <a href="tel:+22791127870" class="contact-link">+227 91 12 78 70</a>
+                        </div>
+                        <div class="contact-card">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <h4>Email</h4>
+                            <a href="mailto:zoubeirou.zakariya@gmail.com" class="contact-link">zoubeirou.zakariya@gmail.com</a>
+                        </div>
+                        <div class="contact-card">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <h4>Adresse</h4>
+                            <p>Niamey, Niger</p>
+                        </div>
                     </div>
                     <form id="contactForm" class="contact-form" data-aos="fade-up" data-aos-delay="200" novalidate>
                         <div class="form-group"><label for="contactName">Nom complet *</label><input type="text" id="contactName" required autocomplete="name"></div>
@@ -315,7 +331,12 @@
                 </div>
             </div>
             <div class="footer-col"><h4>Liens rapides</h4><a href="#" data-page="home">Accueil</a><a href="#" data-page="products">Produits</a><a href="#" data-page="about">À propos</a><a href="#" data-page="contact">Contact</a></div>
-            <div class="footer-col"><h4>Informations</h4><a href="#">Livraison</a><a href="#">Paiement sécurisé</a><a href="#">Conditions générales</a><a href="#">Politique de confidentialité</a></div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="tel:+22791127870" class="footer-link"><i class="fas fa-phone" aria-hidden="true"></i> +227 91-12-78-70</a>
+                <a href="mailto:zoubeirou.zakariya@gmail.com" class="footer-link"><i class="fas fa-envelope" aria-hidden="true"></i> zoubeirou.zakariya@gmail.com</a>
+                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Niamey, Niger</p>
+            </div>
             <div class="footer-col"><h4>Horaires d'ouverture</h4><p>Lundi - Vendredi: 8h - 18h</p><p>Samedi: 9h - 13h</p><p>Dimanche: Fermé</p></div>
         </div>
         <div class="footer-bottom">
@@ -367,7 +388,6 @@
 <!-- PRODUCT DETAIL MODAL -->
 <div class="modal" id="productDetailModal" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle" aria-hidden="true">
     <div class="modal-content modal-product">
-        <button class="modal-close" id="closeProductDetailModal" aria-label="Fermer">&times;</button>
         <div id="productDetailContent"></div>
     </div>
 </div>
