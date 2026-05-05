@@ -1,5 +1,6 @@
 /**
  * Niger Laptop - Page Panier dédiée
+ * @version 2.0 - Avec livraison et WhatsApp
  */
 
 // ========== DONNÉES ==========
@@ -7,6 +8,18 @@ let cart = [];
 let promoCode = null;
 const PROMOS = { 'NIGER10': 0.1, 'TECH20': 0.2 };
 let products = [];
+
+// Tarifs de livraison
+const DELIVERY_PRICES = {
+    standard: 2500,
+    express: 5000
+};
+
+let selectedDelivery = 'standard';
+let currentTotal = 0;
+
+// Numéro WhatsApp du commerçant (format international sans +)
+const WHATSAPP_NUMBER = "22791127870"; // À remplacer par le vrai numéro
 
 // ========== CHARGEMENT DES PRODUITS ==========
 async function loadProducts() {
@@ -17,6 +30,7 @@ async function loadProducts() {
         loadCart();
     } catch (error) {
         console.error('Erreur chargement produits:', error);
+        document.getElementById('cartItemsList').innerHTML = '<div class="error-message">Erreur de chargement du catalogue</div>';
     }
 }
 
@@ -29,6 +43,18 @@ function loadCart() {
         } catch(e) { cart = []; }
     }
     promoCode = localStorage.getItem('nigerLaptopPromo') || null;
+    
+    if (promoCode && document.getElementById('promoCodeInput')) {
+        document.getElementById('promoCodeInput').value = promoCode;
+        if (PROMOS[promoCode]) {
+            const msg = document.getElementById('promoMessagePage');
+            if (msg) {
+                msg.textContent = `Code promo appliqué : -${PROMOS[promoCode] * 100}%`;
+                msg.className = 'promo-message success';
+            }
+        }
+    }
+    
     renderCart();
     updateSummary();
     updateCartCount();
@@ -116,26 +142,38 @@ function getDiscount() {
     return 0;
 }
 
+function getDeliveryFee() {
+    return DELIVERY_PRICES[selectedDelivery] || 0;
+}
+
 function getTotal() {
-    return getSubtotal() - getDiscount();
+    return getSubtotal() - getDiscount() + getDeliveryFee();
 }
 
 function updateSummary() {
     const subtotal = getSubtotal();
     const discount = getDiscount();
+    const deliveryFee = getDeliveryFee();
     const total = getTotal();
+    currentTotal = total;
     
-    document.getElementById('subtotal').textContent = formatPrice(subtotal);
-    document.getElementById('cartTotalPage').textContent = formatPrice(total);
-    
+    const subtotalEl = document.getElementById('subtotal');
+    const totalEl = document.getElementById('cartTotalPage');
     const discountRow = document.getElementById('discountRow');
     const discountAmount = document.getElementById('discountAmount');
+    const deliveryFeeEl = document.getElementById('deliveryFee');
     
-    if (discount > 0) {
-        discountRow.style.display = 'flex';
-        discountAmount.textContent = `-${formatPrice(discount)}`;
-    } else {
-        discountRow.style.display = 'none';
+    if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+    if (deliveryFeeEl) deliveryFeeEl.textContent = formatPrice(deliveryFee);
+    if (totalEl) totalEl.textContent = formatPrice(total);
+    
+    if (discountRow && discountAmount) {
+        if (discount > 0) {
+            discountRow.style.display = 'flex';
+            discountAmount.textContent = `-${formatPrice(discount)}`;
+        } else {
+            discountRow.style.display = 'none';
+        }
     }
 }
 
@@ -158,14 +196,19 @@ function removeFromCart(productId) {
 function clearCart() {
     cart = [];
     promoCode = null;
-    document.getElementById('promoCodeInput').value = '';
-    document.getElementById('promoMessagePage').textContent = '';
+    const promoInput = document.getElementById('promoCodeInput');
+    const promoMsg = document.getElementById('promoMessagePage');
+    if (promoInput) promoInput.value = '';
+    if (promoMsg) promoMsg.textContent = '';
     saveCart();
+    showToast('Panier vidé', 'success');
 }
 
 function applyPromo() {
     const input = document.getElementById('promoCodeInput');
     const message = document.getElementById('promoMessagePage');
+    if (!input || !message) return;
+    
     const code = input.value.trim().toUpperCase();
     
     if (PROMOS[code]) {
@@ -173,23 +216,110 @@ function applyPromo() {
         message.textContent = `Code promo appliqué : -${PROMOS[code] * 100}%`;
         message.className = 'promo-message success';
         saveCart();
+        showToast('Code promo appliqué !', 'success');
     } else {
         promoCode = null;
         message.textContent = 'Code invalide';
         message.className = 'promo-message error';
         saveCart();
+        showToast('Code promo invalide', 'error');
     }
 }
 
-function checkout() {
-    if (cart.length === 0) {
-        showToast('Votre panier est vide', 'error');
-        return;
+// ========== GÉNÉRATION DU MESSAGE WHATSAPP ==========
+function generateWhatsAppMessage() {
+    // Récupérer les informations de livraison
+    const fullName = document.getElementById('fullName')?.value.trim();
+    const phoneNumber = document.getElementById('phoneNumber')?.value.trim();
+    const address = document.getElementById('address')?.value.trim();
+    const city = document.getElementById('city')?.value.trim();
+    const quarter = document.getElementById('quarter')?.value.trim();
+    const deliveryNotes = document.getElementById('deliveryNotes')?.value.trim();
+    
+    // Validation
+    if (!fullName) { showToast('Veuillez entrer votre nom complet', 'error'); return null; }
+    if (!phoneNumber) { showToast('Veuillez entrer votre numéro de téléphone', 'error'); return null; }
+    if (!address) { showToast('Veuillez entrer votre adresse', 'error'); return null; }
+    if (!city) { showToast('Veuillez entrer votre ville', 'error'); return null; }
+    
+    if (cart.length === 0) { showToast('Votre panier est vide', 'error'); return null; }
+    
+    // Construction du message
+    let message = "🛍️ *NOUVELLE COMMANDE - Niger Laptop* 🛍️\n\n";
+    message += "━═━═━═━═━═━═━\n";
+    message += "📋 *DÉTAILS DE LA COMMANDE*\n";
+    message += "━═━═━═━═━═━═━\n\n";
+    
+    // Produits
+    message += "*PRODUITS:*\n";
+    cart.forEach((item, index) => {
+        const product = products.find(p => p.id === item.id);
+        const total = item.price * item.quantity;
+        message += `${index + 1}. ${item.name}\n`;
+        message += `   • Prix: ${formatPrice(item.price)}\n`;
+        message += `   • Quantité: ${item.quantity}\n`;
+        message += `   • Total: ${formatPrice(total)}\n\n`;
+    });
+    
+    // Résumé financier
+    message += "━═━═━═━═━═━═━\n";
+    message += "*RÉSUMÉ FINANCIER*\n";
+    message += "━═━═━═━═━═━═━\n";
+    message += `💰 Sous-total: ${formatPrice(getSubtotal())}\n`;
+    
+    const discount = getDiscount();
+    if (discount > 0) {
+        message += `🏷️ Réduction: -${formatPrice(discount)}\n`;
+        if (promoCode) message += `   (Code: ${promoCode})\n`;
     }
-    openModal('checkoutModalPage');
+    
+    const deliveryName = selectedDelivery === 'express' ? 'Express ⚡' : 'Standard 📦';
+    message += `🚚 Livraison (${deliveryName}): ${formatPrice(getDeliveryFee())}\n`;
+    message += `💵 *TOTAL: ${formatPrice(getTotal())}*\n\n`;
+    
+    // Informations client
+    message += "━═━═━═━═━═━═━\n";
+    message += "👤 *INFORMATIONS CLIENT*\n";
+    message += "━═━═━═━═━═━═━\n";
+    message += `👨‍💼 Nom: ${fullName}\n`;
+    message += `📞 Téléphone: ${phoneNumber}\n`;
+    message += `📍 Adresse: ${address}\n`;
+    message += `🏙️ Ville: ${city}\n`;
+    if (quarter) message += `🏘️ Quartier: ${quarter}\n`;
+    if (deliveryNotes) message += `📝 Instructions: ${deliveryNotes}\n\n`;
+    
+    // Mode de paiement
+    message += "━═━═━═━═━═━═━\n";
+    message += "*MODE DE PAIEMENT*\n";
+    message += "━═━═━═━═━═━═━\n";
+    message += "💰 Espèces à la livraison\n\n";
+    
+    message += "━═━═━═━═━═━═━\n";
+    message += "✅ Merci pour votre commande !\n";
+    message += "📦 Livraison à venir sous 24-72h\n";
+    message += "━═━═━═━═━═━═━";
+    
+    return encodeURIComponent(message);
 }
 
-// ========== MODALS ==========
+// Envoi vers WhatsApp
+function sendToWhatsApp() {
+    const message = generateWhatsAppMessage();
+    if (!message) return;
+    
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+    
+    // Optionnel : vider le panier après commande
+    setTimeout(() => {
+        showConfirm('Commande envoyée ! Vider le panier ?', () => {
+            clearCart();
+            showToast('Panier vidé, merci !', 'success');
+        });
+    }, 500);
+}
+
+// ========== MODALS & TOAST ==========
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -206,6 +336,7 @@ function closeModal(modalId) {
     }
 }
 
+let confirmCallback = null;
 function showConfirm(message, onConfirm) {
     const modal = document.getElementById('confirmModalPage');
     const msg = document.getElementById('confirmMessagePage');
@@ -218,6 +349,7 @@ function showConfirm(message, onConfirm) {
     openModal('confirmModalPage');
     
     const cleanup = () => {
+        confirmCallback = null;
         cancel.removeEventListener('click', cancelHandler);
         ok.removeEventListener('click', okHandler);
         closeModal('confirmModalPage');
@@ -225,7 +357,7 @@ function showConfirm(message, onConfirm) {
     
     const cancelHandler = () => cleanup();
     const okHandler = () => {
-        onConfirm();
+        if (onConfirm) onConfirm();
         cleanup();
     };
     
@@ -234,7 +366,6 @@ function showConfirm(message, onConfirm) {
 }
 
 function showToast(message, type = 'success') {
-    // Créer un toast temporaire
     const toast = document.createElement('div');
     toast.className = `toast-notification ${type}`;
     toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
@@ -244,10 +375,7 @@ function showToast(message, type = 'success') {
     toast.style.zIndex = '10000';
     document.body.appendChild(toast);
     
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
+    setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
@@ -256,43 +384,61 @@ function showToast(message, type = 'success') {
 
 // ========== ÉVÉNEMENTS ==========
 function bindEvents() {
-    // Délégation d'événements pour les boutons du panier
+    // Événements panier
     document.addEventListener('click', (e) => {
         const minusBtn = e.target.closest('.qty-btn.minus');
         const plusBtn = e.target.closest('.qty-btn.plus');
         const removeBtn = e.target.closest('.remove-btn');
         
-        if (minusBtn) {
-            const id = parseInt(minusBtn.dataset.id);
-            updateQuantity(id, -1);
-        }
-        if (plusBtn) {
-            const id = parseInt(plusBtn.dataset.id);
-            updateQuantity(id, 1);
-        }
+        if (minusBtn) updateQuantity(parseInt(minusBtn.dataset.id), -1);
+        if (plusBtn) updateQuantity(parseInt(plusBtn.dataset.id), 1);
         if (removeBtn) {
             const id = parseInt(removeBtn.dataset.id);
             showConfirm('Retirer ce produit du panier ?', () => removeFromCart(id));
         }
     });
     
-    document.getElementById('applyPromoBtnPage')?.addEventListener('click', applyPromo);
-    document.getElementById('clearCartBtnPage')?.addEventListener('click', () => {
-        if (cart.length > 0) {
-            showConfirm('Vider tout le panier ?', () => clearCart());
-        }
+    // Options de livraison
+    const deliveryOptions = document.querySelectorAll('input[name="delivery"]');
+    deliveryOptions.forEach(option => {
+        option.addEventListener('change', (e) => {
+            selectedDelivery = e.target.value;
+            updateSummary();
+        });
     });
-    document.getElementById('checkoutBtnPage')?.addEventListener('click', checkout);
-    document.getElementById('closeCheckoutModalPage')?.addEventListener('click', () => {
-        closeModal('checkoutModalPage');
-        if (cart.length === 0) {
-            window.location.href = 'index.html';
-        }
-    });
+    
+    // Boutons
+    const applyBtn = document.getElementById('applyPromoBtnPage');
+    if (applyBtn) applyBtn.addEventListener('click', applyPromo);
+    
+    const clearBtn = document.getElementById('clearCartBtnPage');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (cart.length > 0) {
+                showConfirm('Vider tout le panier ?', () => clearCart());
+            }
+        });
+    }
+    
+    const checkoutBtn = document.getElementById('checkoutBtnPage');
+    if (checkoutBtn) checkoutBtn.addEventListener('click', sendToWhatsApp);
+}
+
+// ========== MENU MOBILE ==========
+function initMobileMenu() {
+    const toggle = document.getElementById('mobileToggle');
+    const menu = document.getElementById('navMenu');
+    if (toggle && menu) {
+        toggle.addEventListener('click', () => {
+            const expanded = menu.classList.toggle('active');
+            toggle.setAttribute('aria-expanded', expanded);
+        });
+    }
 }
 
 // ========== INITIALISATION ==========
 async function init() {
+    initMobileMenu();
     await loadProducts();
     bindEvents();
 }
