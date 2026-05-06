@@ -1,6 +1,6 @@
 /**
  * Niger Laptop - Page Panier dédiée
- * @version 2.1 - Compteur et bouton vider corrigés
+ * @version 2.2 - Intégration backend via api.js
  */
 
 // ========== DONNÉES ==========
@@ -218,7 +218,7 @@ function applyPromo() {
     }
 }
 
-// ========== WHATSAPP ==========
+// ========== GÉNÉRATION MESSAGE WHATSAPP (fallback) ==========
 function generateWhatsAppMessage() {
     const fullName = document.getElementById('fullName')?.value.trim();
     const phoneNumber = document.getElementById('phoneNumber')?.value.trim();
@@ -226,12 +226,6 @@ function generateWhatsAppMessage() {
     const city = document.getElementById('city')?.value.trim();
     const quarter = document.getElementById('quarter')?.value.trim();
     const deliveryNotes = document.getElementById('deliveryNotes')?.value.trim();
-    
-    if (!fullName) { showToast('Veuillez entrer votre nom complet', 'error'); return null; }
-    if (!phoneNumber) { showToast('Veuillez entrer votre numéro', 'error'); return null; }
-    if (!address) { showToast('Veuillez entrer votre adresse', 'error'); return null; }
-    if (!city) { showToast('Veuillez entrer votre ville', 'error'); return null; }
-    if (cart.length === 0) { showToast('Votre panier est vide', 'error'); return null; }
     
     let message = "🛍️ *NOUVELLE COMMANDE - Niger Laptop*\n\n";
     message += "━═━═━═━═━═━═━\n📋 *DÉTAILS DE LA COMMANDE*\n━═━═━═━═━═━═━\n\n";
@@ -264,10 +258,84 @@ function generateWhatsAppMessage() {
     return encodeURIComponent(message);
 }
 
-function sendToWhatsApp() {
-    const message = generateWhatsAppMessage();
-    if (!message) return;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+// ========== ENVOI VERS LE BACKEND (NOUVELLE VERSION) ==========
+async function sendToWhatsApp() {
+    // Récupérer les données du formulaire
+    const fullName = document.getElementById('fullName')?.value.trim();
+    const phoneNumber = document.getElementById('phoneNumber')?.value.trim();
+    const email = document.getElementById('email')?.value.trim();
+    const address = document.getElementById('address')?.value.trim();
+    const city = document.getElementById('city')?.value.trim();
+    const quarter = document.getElementById('quarter')?.value.trim();
+    const deliveryNotes = document.getElementById('deliveryNotes')?.value.trim();
+    
+    // Validation
+    if (!fullName) { showToast('Veuillez entrer votre nom complet', 'error'); return; }
+    if (!phoneNumber) { showToast('Veuillez entrer votre numéro de téléphone', 'error'); return; }
+    if (!address) { showToast('Veuillez entrer votre adresse', 'error'); return; }
+    if (!city) { showToast('Veuillez entrer votre ville', 'error'); return; }
+    if (cart.length === 0) { showToast('Votre panier est vide', 'error'); return; }
+    
+    // Vérifier que api.js est chargé
+    if (typeof submitOrder === 'undefined') {
+        console.error('❌ api.js non chargé !');
+        showToast('Erreur technique, réessayez plus tard', 'error');
+        return;
+    }
+    
+    // Construire les données de la commande
+    const orderData = {
+        customer: {
+            name: fullName,
+            phone: phoneNumber,
+            email: email || null,
+            address: address,
+            city: city,
+            quarter: quarter || null,
+            notes: deliveryNotes || null
+        },
+        items: cart.map(item => ({
+            productId: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            total: item.price * item.quantity
+        })),
+        delivery: {
+            type: selectedDelivery,
+            fee: getDeliveryFee()
+        },
+        promoCode: promoCode,
+        discount: getDiscount(),
+        subtotal: getSubtotal(),
+        total: getTotal()
+    };
+    
+    console.log('📦 Envoi au backend:', orderData);
+    showToast('Envoi de la commande en cours...', 'info');
+    
+    // Envoyer au backend
+    const result = await submitOrder(orderData);
+    
+    if (result.success) {
+        showToast(`✅ Commande ${result.orderNumber} enregistrée !`, 'success');
+        
+        // Ouvrir WhatsApp en parallèle (optionnel)
+        const whatsappMessage = generateWhatsAppMessage();
+        if (whatsappMessage) {
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`, '_blank');
+        }
+        
+        // Vider le panier
+        clearCart();
+        
+        // Rediriger après 3 secondes
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+    } else {
+        showToast(`❌ Erreur: ${result.error}`, 'error');
+    }
 }
 
 // ========== UI ==========
