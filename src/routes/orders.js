@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
@@ -55,7 +54,12 @@ router.post('/create', async (req, res) => {
         console.log(`✅ Commande créée: ${order.orderNumber}`);
         
         await sendWhatsAppOrder(order);
-        if (customer.email) await sendOrderConfirmationEmail(order);
+        
+        try {
+            if (customer.email) await sendOrderConfirmationEmail(order);
+        } catch (emailError) {
+            console.log('⚠️ Email non envoyé:', emailError.message);
+        }
         
         res.status(201).json({ success: true, orderNumber: order.orderNumber, message: 'Commande créée' });
     } catch (error) {
