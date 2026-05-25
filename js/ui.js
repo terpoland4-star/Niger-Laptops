@@ -248,7 +248,7 @@ function renderProfilePage() {
     </div>`;
 }
 
-/* --- Page connexion / inscription --- */
+/* --- Page connexion / inscription (CORRIGÉE) --- */
 function renderLoginPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -262,17 +262,34 @@ function renderLoginPage() {
         </div>
     </div>`;
 
-    document.getElementById('send-otp-btn').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const phone = document.getElementById('login-phone').value;
-        await handleSendOTP(phone);
-        document.getElementById('otp-section').style.display = 'block';
+    document.getElementById('send-otp-btn').addEventListener('click', async () => {
+        const phone = document.getElementById('login-phone').value.trim();
+        if (!phone) {
+            showToast('Veuillez saisir votre numéro');
+            return;
+        }
+        try {
+            await handleSendOTP(phone);
+            document.getElementById('otp-section').style.display = 'block';
+            document.getElementById('send-otp-btn').disabled = true;
+            document.getElementById('send-otp-btn').textContent = 'Code envoyé';
+        } catch (e) {
+            showToast('Erreur lors de l\'envoi du code');
+        }
     });
-    document.getElementById('verify-otp-btn').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const code = document.getElementById('otp-code').value;
-        await handleVerifyOTP(code);
-        navigateTo('/');
+
+    document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+        const code = document.getElementById('otp-code').value.trim();
+        if (code.length !== 6) {
+            showToast('Code invalide');
+            return;
+        }
+        try {
+            await handleVerifyOTP(code);
+            navigateTo('/');
+        } catch (e) {
+            showToast(e.message || 'Code incorrect');
+        }
     });
 }
 
@@ -280,8 +297,6 @@ function renderLoginPage() {
 window.searchProducts = function () {
     const query = document.getElementById('search-input')?.value;
     if (!query) return;
-    // On pourrait améliorer avec un paramètre, ici on recharge simplement la liste filtrée
-    // Pour l'instant, on recharge tous les produits et on filtre côté client (simpliste)
     getProducts({ search: query }).then(res => {
         const products = res.data || [];
         const grid = document.getElementById('product-list');
