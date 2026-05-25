@@ -1,108 +1,53 @@
-/**
- * Niger Laptop - API Client
- * Communication avec le backend
- */
+const API_BASE = 'http://localhost:3000/api/v1'; // À modifier selon votre serveur
 
-// Configuration de l'API (change l'URL si besoin)
-const API_URL = 'https://niger-laptop-backend.onrender.com/api';
+async function apiCall(endpoint, options = {}) {
+    const token = localStorage.getItem('access_token');
+    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-// Pour les tests en local, décommente la ligne ci-dessous et commente celle du dessus
-// const API_URL = 'http://localhost:5000/api';
-
-/**
- * Envoyer une commande au backend
- * @param {Object} orderData - Les données de la commande
- * @returns {Promise<Object>} Résultat de l'envoi
- */
-async function submitOrder(orderData) {
-    try {
-        console.log('📦 Envoi de la commande au backend...', orderData);
-        
-        const response = await fetch(`${API_URL}/orders/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderData)
-        });
-        
-        const result = await response.json();
-        console.log('📦 Réponse du backend:', result);
-        
-        if (result.success) {
-            // Stocker le numéro de commande
-            localStorage.setItem('lastOrderNumber', result.orderNumber);
-            return { 
-                success: true, 
-                orderNumber: result.orderNumber,
-                message: result.message 
-            };
-        }
-        
-        return { 
-            success: false, 
-            error: result.error || 'Erreur inconnue' 
-        };
-        
-    } catch (error) {
-        console.error('❌ Erreur lors de l\'envoi de la commande:', error);
-        return { 
-            success: false, 
-            error: 'Impossible de contacter le serveur. Vérifiez votre connexion.' 
-        };
+    const response = await fetch(API_BASE + endpoint, { ...options, headers });
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Erreur réseau');
     }
+    return response.json();
 }
 
-/**
- * Envoyer un message depuis le formulaire de contact
- * @param {Object} data - Les données du formulaire { name, email, phone, message }
- * @returns {Promise<Object>} Résultat de l'envoi
- */
-async function sendContactMessage(data) {
-    try {
-        console.log('📧 Envoi du message de contact...', data);
-        
-        const response = await fetch(`${API_URL}/contact/send`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        
-        const result = await response.json();
-        console.log('📧 Réponse du backend:', result);
-        
-        return result;
-        
-    } catch (error) {
-        console.error('❌ Erreur lors de l\'envoi du message:', error);
-        return { 
-            success: false, 
-            error: 'Impossible de contacter le serveur. Vérifiez votre connexion.' 
-        };
-    }
+// Auth
+async function sendOTP(phone) {
+    return apiCall('/auth/send-otp', { method: 'POST', body: JSON.stringify({ phone }) });
+}
+async function verifyOTP(phone, code, firstName, lastName) {
+    return apiCall('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ phone, code, first_name: firstName, last_name: lastName }) });
+}
+async function logout() {
+    try { await apiCall('/auth/logout', { method: 'POST' }); } catch(e) {}
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    navigateTo('/login');
 }
 
-/**
- * Vérifier le statut de l'API (health check)
- * @returns {Promise<Object>} Statut de l'API
- */
-async function checkApiHealth() {
-    try {
-        const response = await fetch(`${API_URL}/health`);
-        const result = await response.json();
-        return { success: true, status: result };
-    } catch (error) {
-        console.error('❌ API hors ligne:', error);
-        return { success: false, error: error.message };
-    }
+// Produits
+async function getProducts(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return apiCall('/products?' + query);
+}
+async function getProduct(id) {
+    return apiCall('/products/' + id);
 }
 
-// Exporter les fonctions pour les rendre disponibles globalement
-window.submitOrder = submitOrder;
-window.sendContactMessage = sendContactMessage;
-window.checkApiHealth = checkApiHealth;
-window.API_URL = API_URL;
+// Commandes
+async function createOrder(data) {
+    return apiCall('/orders', { method: 'POST', body: JSON.stringify(data) });
+}
+async function getOrders() {
+    return apiCall('/orders/my-orders');
+}
+async function getOrder(id) {
+    return apiCall('/orders/' + id);
+}
 
-console.log('🟢 API Client chargé - Backend:', API_URL);
+// Paiement (inclut toutes les méthodes)
+async function initiatePayment(orderId, phone, method) {
+    return apiCall('/payments/initiate', { method: 'POST', body: JSON.stringify({ order_id: orderId, phone, method }) });
+}
