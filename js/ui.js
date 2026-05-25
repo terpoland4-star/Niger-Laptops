@@ -2,7 +2,6 @@
 // ui.js – Composants et rendu des pages
 // ==========================================
 
-/* --- Composant carte produit --- */
 function productCard(product) {
     const discount = product.compare_at_price
         ? Math.round((1 - product.price / product.compare_at_price) * 100)
@@ -23,7 +22,6 @@ function productCard(product) {
     </div>`;
 }
 
-/* --- Page d'accueil (catalogue) --- */
 async function renderHomePage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -49,7 +47,6 @@ async function renderHomePage() {
     }
 }
 
-/* --- Ajout rapide depuis la carte produit --- */
 window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
@@ -60,7 +57,6 @@ window.addToCartFromCard = async function (productId) {
     }
 };
 
-/* --- Page détail produit --- */
 async function renderProductPage(productId) {
     const app = document.getElementById('app');
     app.innerHTML = '<div class="container">Chargement...</div>';
@@ -85,14 +81,12 @@ async function renderProductPage(productId) {
     }
 }
 
-/* --- Ajout depuis la page détail --- */
 window.addToCartFromDetail = function (productId, stock) {
     getProduct(productId).then(res => {
         addToCart(res.data, 1);
     });
 };
 
-/* --- Page panier --- */
 function renderCartPage() {
     const app = document.getElementById('app');
     if (cart.length === 0) {
@@ -135,7 +129,6 @@ window.cartUpdateQuantity = function (productId, qty) {
     renderCartPage();
 };
 
-/* --- Page checkout (finalisation de commande) --- */
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -177,7 +170,6 @@ function renderCheckoutPage() {
             const order = res.data;
 
             if (payment !== 'cash_on_delivery') {
-                // Pour les paiements électroniques, on initie le paiement
                 await initiatePayment(order.id, phone, payment);
             }
 
@@ -191,7 +183,6 @@ function renderCheckoutPage() {
     });
 }
 
-/* --- Page liste des commandes --- */
 async function renderOrdersPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -213,7 +204,6 @@ async function renderOrdersPage() {
     }
 }
 
-/* --- Page détail d'une commande --- */
 async function renderOrderDetail(orderId) {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -236,7 +226,6 @@ async function renderOrderDetail(orderId) {
     }
 }
 
-/* --- Page profil --- */
 function renderProfilePage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -248,7 +237,6 @@ function renderProfilePage() {
     </div>`;
 }
 
-/* --- Page connexion / inscription (CORRIGÉE) --- */
 function renderLoginPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -293,7 +281,6 @@ function renderLoginPage() {
     });
 }
 
-/* --- Recherche (rapide, redirige vers l'accueil avec le paramètre search) --- */
 window.searchProducts = function () {
     const query = document.getElementById('search-input')?.value;
     if (!query) return;
