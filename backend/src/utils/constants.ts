@@ -1,8 +1,7 @@
 // ==========================================
-// CONSTANTES NIGER LAPTOPS
+// CONSTANTES NIGER LAPTOPS – Méthodes de paiement étendues
 // ==========================================
 
-// Statuts de commande
 export const ORDER_STATUS = {
   PENDING: 'pending',
   CONFIRMED: 'confirmed',
@@ -14,7 +13,6 @@ export const ORDER_STATUS = {
   REFUNDED: 'refunded',
 } as const;
 
-// Transitions valides de statuts
 export const VALID_ORDER_TRANSITIONS: Record<string, string[]> = {
   pending: ['confirmed', 'cancelled'],
   confirmed: ['processing', 'cancelled'],
@@ -26,7 +24,6 @@ export const VALID_ORDER_TRANSITIONS: Record<string, string[]> = {
   refunded: [],
 };
 
-// Statuts de paiement
 export const PAYMENT_STATUS = {
   PENDING: 'pending',
   PROCESSING: 'processing',
@@ -35,28 +32,28 @@ export const PAYMENT_STATUS = {
   REFUNDED: 'refunded',
 } as const;
 
-// Méthodes de paiement
+// Méthodes de paiement (ajoutez MyNita, AmanaTa, carte, virement)
 export const PAYMENT_METHODS = {
   ORANGE_MONEY: 'orange_money',
   AIRTEL_MONEY: 'airtel_money',
+  MYNITA: 'mynita',
+  AMANATA: 'amanata',
+  CARD: 'card',                    // Carte bancaire Visa / Mastercard
+  BANK_TRANSFER: 'bank_transfer',  // Virement bancaire classique
   CASH_ON_DELIVERY: 'cash_on_delivery',
-  BANK_TRANSFER: 'bank_transfer',
 } as const;
 
-// Méthodes de livraison
 export const DELIVERY_METHODS = {
   HOME_DELIVERY: 'home_delivery',
   PICKUP_POINT: 'pickup_point',
 } as const;
 
-// Rôles admin
 export const ADMIN_ROLES = {
   SUPER_ADMIN: 'super_admin',
   MANAGER: 'manager',
   STAFF: 'staff',
 } as const;
 
-// Catégories de produits
 export const PRODUCT_CATEGORIES = [
   { id: 'cartouches-toners', name: 'Cartouches & Toners', icon: 'print' },
   { id: 'cables-adaptateurs', name: 'Câbles & Adaptateurs', icon: 'cable' },
@@ -67,7 +64,6 @@ export const PRODUCT_CATEGORIES = [
   { id: 'batteries-alimentation', name: 'Batteries & Alimentation', icon: 'battery_charging_full' },
 ];
 
-// Zones de livraison à Niamey
 export const DELIVERY_ZONES = [
   { commune: 'Niamey I', areas: ['Plateau', 'Yantala', 'Grande Mosquée'] },
   { commune: 'Niamey II', areas: ['Cité Député', 'Banizoumbou', 'Dar Es Salam'] },
@@ -76,18 +72,15 @@ export const DELIVERY_ZONES = [
   { commune: 'Niamey V', areas: ['Wadata', 'Karadjé', 'Lazaret'] },
 ];
 
-// Frais de livraison par défaut
 export const DEFAULT_DELIVERY_FEES = {
-  SHORT: 1000,   // 0-3km
-  MEDIUM: 1500,  // 3-7km
-  LONG: 2000,    // 7-12km
-  EXTRA: 2500,   // 12km+
+  SHORT: 1000,
+  MEDIUM: 1500,
+  LONG: 2000,
+  EXTRA: 2500,
 };
 
-// Seuil livraison gratuite
-export const FREE_DELIVERY_THRESHOLD = 25000; // FCFA
+export const FREE_DELIVERY_THRESHOLD = 25000;
 
-// Limites
 export const LIMITS = {
   MAX_ITEMS_PER_ORDER: 20,
   MAX_QUANTITY_PER_ITEM: 10,
@@ -101,25 +94,23 @@ export const LIMITS = {
   CART_EXPIRY_HOURS: 24,
 };
 
-// Messages SMS
 export const SMS_TEMPLATES = {
-  OTP: (code: string) => `[Niger Laptops] Votre code de vérification est: ${code}. Valable 10 minutes. Ne partagez jamais ce code.`,
-  ORDER_CONFIRMED: (orderNumber: string) => `[Niger Laptops] Commande ${orderNumber} confirmée ! Nous préparons votre livraison. Suivez-la sur l'application.`,
-  ORDER_OUT_FOR_DELIVERY: (orderNumber: string) => `[Niger Laptops] Votre commande ${orderNumber} est en cours de livraison. À bientôt !`,
-  ORDER_DELIVERED: (orderNumber: string) => `[Niger Laptops] Commande ${orderNumber} livrée ! Merci pour votre confiance. Laissez-nous un avis ⭐`,
+  OTP: (code: string) => `[Niger Laptops] Votre code de vérification est: ${code}. Valable 10 minutes.`,
+  ORDER_CONFIRMED: (orderNumber: string) => `[Niger Laptops] Commande ${orderNumber} confirmée !`,
+  ORDER_OUT_FOR_DELIVERY: (orderNumber: string) => `[Niger Laptops] Commande ${orderNumber} en cours de livraison.`,
+  ORDER_DELIVERED: (orderNumber: string) => `[Niger Laptops] Commande ${orderNumber} livrée ! Merci.`,
 };
 
-// Messages d'erreur courants
 export const ERROR_MESSAGES = {
   PRODUCT_NOT_FOUND: 'Produit non trouvé',
   PRODUCT_OUT_OF_STOCK: 'Produit en rupture de stock',
   ORDER_NOT_FOUND: 'Commande non trouvée',
   CUSTOMER_NOT_FOUND: 'Client non trouvé',
   INVALID_OTP: 'Code OTP invalide ou expiré',
-  PHONE_ALREADY_EXISTS: 'Ce numéro de téléphone est déjà utilisé',
+  PHONE_ALREADY_EXISTS: 'Ce numéro est déjà utilisé',
   INVALID_PHONE: 'Numéro de téléphone invalide',
   INVALID_CREDENTIALS: 'Identifiants invalides',
-  INSUFFICIENT_STOCK: 'Stock insuffisant pour ce produit',
+  INSUFFICIENT_STOCK: 'Stock insuffisant',
   PAYMENT_FAILED: 'Le paiement a échoué',
   UNAUTHORIZED: 'Accès non autorisé',
   FORBIDDEN: 'Action interdite',
