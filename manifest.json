@@ -1,0 +1,16 @@
+{
+    "name": "Niger Laptops",
+    "short_name": "NigerLaptops",
+    "description": "Boutique en ligne de consommables informatiques à Niamey",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0066CC",
+    "icons": [
+        {
+            "src": "assets/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
