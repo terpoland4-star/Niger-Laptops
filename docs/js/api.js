@@ -1,4 +1,5 @@
 const API_BASE = 'http://localhost:3000/api/v1'; // À modifier selon votre serveur
+const USE_LOCAL_DATA = true;
 
 async function apiCall(endpoint, options = {}) {
     const token = localStorage.getItem('access_token');
