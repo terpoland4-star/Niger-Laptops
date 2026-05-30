@@ -78,7 +78,4 @@ async function getOrder(id) {
     return apiCall('/orders/' + id);
 }
 
-// Paiement
-async function initiatePayment(orderId, phone, method) {
-    return apiCall('/payments/initiate', { method: 'POST', body: JSON.stringify({ order_id: orderId, phone, method }) });
-}
+// La fonction initiatePayment() a été déplacée dans payments.js pour une meilleure organisation.
