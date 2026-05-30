@@ -48,38 +48,18 @@
         <!-- Contenu généré dynamiquement par app.js -->
     </div>
 
-    <!-- Barre de navigation mobile (visible sur toutes les pages) -->
-    <nav class="bottom-nav">
-        <a href="#/">
-            <img src="assets/icons/icon-home.png" alt="Accueil" style="height:24px; width:auto;"><br>
-            Accueil
-        </a>
-        <a href="#/cart">
-            <img src="assets/icons/icon-cart.png" alt="Panier" style="height:24px; width:auto;"><br>
-            Panier
-        </a>
-        <a href="#/orders">
-            <img src="assets/icons/icon-orders.png" alt="Commandes" style="height:24px; width:auto;"><br>
-            Commandes
-        </a>
-        <a href="#/profile">
-            <img src="assets/icons/icon-profile.png" alt="Profil" style="height:24px; width:auto;"><br>
-            Profil
-        </a>
-    </nav>
-
-    <!-- Pied de page -->
+    <!-- Pied de page (maintenant bien visible) -->
     <footer class="promo-footer" role="contentinfo">
-        <div class="promo-footer-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+        <div class="promo-footer-content">
             <!-- Colonne Boutique -->
-            <div>
+            <div class="promo-left">
                 <h4 style="margin-bottom: 0.5rem; color: white;">🖥️ Niger Laptops</h4>
                 <p style="margin-bottom: 0.5rem;">
                     📍 Cité Sonuci, sur la latérite de chez Seyni Omar, Niamey (Niger)
                 </p>
                 <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" 
                    class="btn btn-outline btn-sm" style="color:white; border-color:white; margin-bottom:0.8rem;">
-                    <img src="assets/icons/icon-map.png" alt="Map" style="height:20px; vertical-align:middle;"> Ouvrir dans Google Maps
+                    <i class="fas fa-map-marker-alt"></i> Ouvrir dans Google Maps
                 </a>
                 <p style="margin-bottom: 0.5rem;">
                     <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="promo-link">
@@ -89,7 +69,7 @@
                 </p>
                 <p style="margin-bottom: 0.5rem;">
                     <a href="mailto:zoubeirou.zakariya@gmail.com" class="promo-link">
-                        <img src="assets/icons/icon-email.png" alt="Email" style="height:18px; vertical-align:middle;"> zoubeirou.zakariya@gmail.com
+                        <i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com
                     </a>
                 </p>
                 <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
@@ -100,7 +80,7 @@
             </div>
 
             <!-- Colonne Développeur -->
-            <div style="text-align: right;">
+            <div class="promo-right">
                 <img src="assets/images/logo/logoHAM.png" alt="HAM Global Words" style="height:30px; border-radius:4px; margin-bottom:0.5rem;">
                 <div class="promo-name">Hamadine AG MOCTAR</div>
                 <div class="promo-title">CEO de HAM Global Words</div>
@@ -110,12 +90,12 @@
                         <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 86 76 29 03
                     </a><br>
                     <a href="mailto:hamadineagmoctar@gmail.com" class="promo-link">
-                        <img src="assets/icons/icon-email.png" alt="Email" style="height:18px; vertical-align:middle;"> hamadineagmoctar@gmail.com
+                        <i class="fas fa-envelope"></i> hamadineagmoctar@gmail.com
                     </a>
                 </div>
             </div>
         </div>
-        <p class="promo-tagline" style="margin-top: 1.5rem;">💡 Besoin d'une application ou d'un site web ? Contactez‑moi !</p>
+        <p class="promo-tagline">💡 Besoin d'une application ou d'un site web ? Contactez‑moi !</p>
     </footer>
 
     <!-- Scripts -->
@@ -127,4 +107,4 @@
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 </body>
-        </html>
+</html>
