@@ -26,7 +26,7 @@ async function renderHomePage() {
     const app = document.getElementById('app');
     app.innerHTML = `
         <header class="container app-header">
-            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" style="height:50px; width:auto;" onerror="this.style.display='none'">
+            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
             <h1 style="font-size:1.5rem;">Niger Laptops</h1>
             <span style="flex:1"></span>
             <span id="cart-count" class="badge">${getCartCount()}</span>
@@ -299,7 +299,7 @@ function renderContactPage() {
 
         <div class="card">
             <h3>📍 Adresse</h3>
-            <p>Tchangarey, Marché de Bétail, Niamey (Niger)</p>
+            <p>Cité Sonuci, sur la latérite de chez Seyni Omar, Niamey (Niger)</p>
             <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" class="btn btn-outline btn-block">
                 🗺️ Ouvrir dans Google Maps
             </a>
