@@ -424,6 +424,51 @@ textarea:focus {
   background: rgba(224,82,6,0.1);
 }
 
+/* ---------- CARROUSEL PAR CATÉGORIE ---------- */
+.category-section {
+  margin-bottom: 1.5rem;
+}
+
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 0.75rem;
+  padding: 0.5rem 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;          /* Firefox */
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none;                  /* Chrome, Safari */
+}
+
+.carousel-container .product-card {
+  flex: 0 0 45%;                  /* largeur d'une carte (ajustez selon vos besoins) */
+  scroll-snap-align: start;
+}
+
+/* Flèches de navigation */
+.carousel-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carousel-controls .btn-sm {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.carousel-controls .btn-sm:hover {
+  background: var(--orange);
+  color: white;
+}
+
 /* ---------- PIED DE PAGE PROMOTIONNEL ---------- */
 .promo-footer {
   background: linear-gradient(135deg, var(--river-dark) 0%, var(--river) 100%);
@@ -512,4 +557,4 @@ textarea:focus {
 @keyframes floatLogo {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
-   }
+     }
