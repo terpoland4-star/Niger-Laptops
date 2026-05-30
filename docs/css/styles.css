@@ -504,3 +504,12 @@ textarea:focus {
     padding: 1.5rem 2rem;
   }
     }
+/* Animation de flottement pour le logo */
+.logo-animated {
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
