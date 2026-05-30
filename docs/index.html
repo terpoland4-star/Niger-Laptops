@@ -21,6 +21,9 @@
 
     <link rel="manifest" href="manifest.json">
 
+    <!-- Font Awesome (pour les icônes) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -53,27 +56,54 @@
         <a href="#/profile">👤 Profil</a>
     </nav>
 
-    <!-- Pied de page promotionnel visible sur toutes les pages -->
+    <!-- Pied de page -->
     <footer class="promo-footer" role="contentinfo">
-        <div class="promo-footer-content">
-            <div class="promo-left">
-                <img src="assets/images/logo/logoHAM.png" alt="HAM Global Words" style="height:30px; border-radius:4px; margin-bottom:4px;">
-                <span class="promo-name">Hamadine AG MOCTAR</span>
-                <span class="promo-title">CEO de HAM Global Words | Développeur full‑stack malien</span>
-                <span class="promo-location">📍 Tchangarey, Marché de Bétail, Niamey (Niger)</span>
+        <div class="promo-footer-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+            <!-- Colonne Boutique -->
+            <div>
+                <h4 style="margin-bottom: 0.5rem; color: white;">🖥️ Niger Laptops</h4>
+                <p style="margin-bottom: 0.5rem;">
+                    📍 Tchangarey, Marché de Bétail, Niamey (Niger)
+                </p>
+                <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" 
+                   class="btn btn-outline btn-sm" style="color:white; border-color:white; margin-bottom:0.8rem;">
+                    🗺️ Ouvrir dans Google Maps
+                </a>
+                <p style="margin-bottom: 0.5rem;">
+                    <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="promo-link">
+                        <img src="assets/images/logo/whatsapp.png" alt="WhatsApp" style="height:24px; vertical-align:middle;">
+                        +227 91 12 78 70
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.5rem;">
+                    <a href="mailto:zoubeirou.zakariya@gmail.com" class="promo-link">
+                        ✉️ zoubeirou.zakariya@gmail.com
+                    </a>
+                </p>
+                <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
+                    <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
             </div>
-            <div class="promo-right">
-                <a href="https://wa.me/22786762903" target="_blank" rel="noopener" class="promo-link">
-    <img src="assets/images/logo/whatsapp.png" alt="WhatsApp" style="height:24px; vertical-align:middle; margin-right:4px;">
-    +227 86 76 29 03
-                </a>
-                </a>
-                <a href="mailto:hamadineagmoctar@gmail.com" class="promo-link">
-                    ✉️ hamadineagmoctar@gmail.com
-                </a>
+
+            <!-- Colonne Développeur -->
+            <div style="text-align: right;">
+                <img src="assets/images/logo/logoHAM.png" alt="HAM Global Words" style="height:30px; border-radius:4px; margin-bottom:0.5rem;">
+                <div class="promo-name">Hamadine AG MOCTAR</div>
+                <div class="promo-title">CEO de HAM Global Words</div>
+                <div class="promo-location">📍 Tchangarey, Marché de Bétail, Niamey (Niger)</div>
+                <div style="margin-top: 0.8rem;">
+                    <a href="https://wa.me/22786762903" target="_blank" rel="noopener" class="promo-link">
+                        <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 86 76 29 03
+                    </a><br>
+                    <a href="mailto:hamadineagmoctar@gmail.com" class="promo-link">
+                        ✉️ hamadineagmoctar@gmail.com
+                    </a>
+                </div>
             </div>
         </div>
-        <p class="promo-tagline">💡 Besoin d'une application ou d'un site web ? Contactez‑moi !</p>
+        <p class="promo-tagline" style="margin-top: 1.5rem;">💡 Besoin d'une application ou d'un site web ? Contactez‑moi !</p>
     </footer>
 
     <!-- Scripts -->
