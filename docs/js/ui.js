@@ -68,7 +68,12 @@ async function renderHomePage() {
     app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
-            <h1 style="font-size:1.5rem;">Niger Laptops</h1>
+            <div>
+                <h1 style="font-size:1.5rem;">Niger Laptops</h1>
+                <p style="font-size:0.85rem; color: var(--text-light); margin: 0;">
+                    Consommables & accessoires informatiques à Niamey. Paiement par Zamani Cash, Airtel Money, MyNita, AmanaTa, carte bancaire. Livraison express sous 60 minutes.
+                </p>
+            </div>
             <span style="flex:1"></span>
             <span id="cart-count" class="badge">${getCartCount()}</span>
         </header>
@@ -207,11 +212,11 @@ function renderCheckoutPage() {
         <h2>Finaliser la commande</h2>
         <form id="checkout-form">
             <input type="text" id="fullname" placeholder="Nom complet" required>
-            <input type="tel" id="phone" placeholder="Téléphone (obligatoire pour Orange, Airtel, MyNita, AmanaTa)" required>
+            <input type="tel" id="phone" placeholder="Téléphone (obligatoire pour Airtel, MyNita, AmanaTa)" required>
             <textarea id="address" placeholder="Adresse complète" required></textarea>
             <select id="payment-method" required>
                 <option value="">-- Mode de paiement --</option>
-                <option value="orange_money">Orange Money</option>
+                <option value="zamani_cash">Zamani Cash</option>
                 <option value="airtel_money">Airtel Money</option>
                 <option value="mynita">MyNita</option>
                 <option value="amanata">AmanaTa</option>
