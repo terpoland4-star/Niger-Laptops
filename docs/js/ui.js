@@ -26,7 +26,7 @@ async function renderHomePage() {
     const app = document.getElementById('app');
     app.innerHTML = `
         <header class="container app-header">
-            <img src="assets/images/logos/logolap.jpeg" alt="Logo" onerror="this.style.display='none'">
+            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" onerror="this.style.display='none'">
             <h1 style="font-size:1.5rem;">Niger Laptops</h1>
             <span style="flex:1"></span>
             <span id="cart-count" class="badge">${getCartCount()}</span>
