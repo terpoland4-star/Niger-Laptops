@@ -22,8 +22,49 @@ function productCard(product) {
     </div>`;
 }
 
+// ==========================================
+// PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE)
+// ==========================================
 async function renderHomePage() {
     const app = document.getElementById('app');
+
+    // Récupérer les produits
+    let allProducts = [];
+    try {
+        const res = await getProducts({ limit: 200 });
+        allProducts = res.data || [];
+    } catch (e) {
+        allProducts = [];
+    }
+
+    // Regrouper par catégorie
+    const categoriesMap = {};
+    allProducts.forEach(p => {
+        const cat = p.category || 'Sans catégorie';
+        if (!categoriesMap[cat]) categoriesMap[cat] = [];
+        categoriesMap[cat].push(p);
+    });
+
+    // Générer le HTML des catégories
+    let categoriesHTML = '';
+    for (const [catName, products] of Object.entries(categoriesMap)) {
+        const catId = catName.replace(/\s+/g, '-').toLowerCase();
+        categoriesHTML += `
+        <section class="category-section mb-2">
+            <div class="flex-between" style="padding: 0 16px;">
+                <h3>${catName}</h3>
+                <div class="carousel-controls">
+                    <button class="btn btn-sm btn-outline prev-btn" data-target="${catId}">←</button>
+                    <button class="btn btn-sm btn-outline next-btn" data-target="${catId}">→</button>
+                </div>
+            </div>
+            <div class="carousel-container" id="${catId}">
+                ${products.map(p => productCard(p)).join('')}
+            </div>
+        </section>`;
+    }
+
+    // Assembler la page
     app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
@@ -32,7 +73,6 @@ async function renderHomePage() {
             <span id="cart-count" class="badge">${getCartCount()}</span>
         </header>
 
-        <!-- Barre de navigation rapide (au‑dessus de la recherche) -->
         <nav class="home-nav">
             <a href="#/" class="active"><i class="fas fa-home"></i> Accueil</a>
             <a href="#/cart"><i class="fas fa-shopping-cart"></i> Panier</a>
@@ -40,22 +80,32 @@ async function renderHomePage() {
             <a href="#/profile"><i class="fas fa-user"></i> Profil</a>
         </nav>
 
-        <main class="container">
+        <main class="container" style="padding-top: 0;">
             <input type="search" id="search-input" placeholder="Rechercher un produit..." onkeyup="if(event.key==='Enter')searchProducts()">
-            <div id="product-list" class="product-grid mt-2"></div>
+            ${categoriesHTML || '<p style="text-align:center; padding:2rem;">Aucun produit trouvé.</p>'}
         </main>
     `;
 
-    try {
-        const res = await getProducts({ limit: 200 });
-        const products = res.data || [];
-        const grid = document.getElementById('product-list');
-        grid.innerHTML = products.map(p => productCard(p)).join('');
-    } catch (e) {
-        showToast('Erreur de chargement des produits');
-    }
+    // Attacher les événements de défilement aux flèches
+    document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const container = document.getElementById(targetId);
+            if (container) {
+                const scrollAmount = 280; // largeur approximative d'une carte
+                if (btn.classList.contains('prev-btn')) {
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }
+        });
+    });
 }
 
+// ==========================================
+// FONCTIONS D'AJOUT AU PANIER
+// ==========================================
 window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
@@ -66,6 +116,15 @@ window.addToCartFromCard = async function (productId) {
     }
 };
 
+window.addToCartFromDetail = function (productId, stock) {
+    getProduct(productId).then(res => {
+        addToCart(res.data, 1);
+    });
+};
+
+// ==========================================
+// PAGE DÉTAIL PRODUIT (bouton retour déjà présent)
+// ==========================================
 async function renderProductPage(productId) {
     const app = document.getElementById('app');
     app.innerHTML = '<div class="container">Chargement...</div>';
@@ -90,23 +149,21 @@ async function renderProductPage(productId) {
     }
 }
 
-window.addToCartFromDetail = function (productId, stock) {
-    getProduct(productId).then(res => {
-        addToCart(res.data, 1);
-    });
-};
-
+// ==========================================
+// PAGE PANIER (bouton retour ajouté)
+// ==========================================
 function renderCartPage() {
     const app = document.getElementById('app');
     if (cart.length === 0) {
         app.innerHTML = `
         <div class="container">
+            <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Retour</button>
             <h2>🛒 Panier vide</h2>
             <button class="btn btn-primary" onclick="navigateTo('/')">Voir les produits</button>
         </div>`;
         return;
     }
-    let html = '<div class="container"><h2>Mon panier</h2>';
+    let html = '<div class="container"><button onclick="navigateTo(\'/\')" style="margin-bottom:16px;">← Retour</button><h2>Mon panier</h2>';
     cart.forEach(item => {
         html += `
         <div class="card flex-between">
@@ -138,11 +195,15 @@ window.cartUpdateQuantity = function (productId, qty) {
     renderCartPage();
 };
 
+// ==========================================
+// PAGE CHECKOUT (bouton retour ajouté)
+// ==========================================
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
     app.innerHTML = `
     <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Retour</button>
         <h2>Finaliser la commande</h2>
         <form id="checkout-form">
             <input type="text" id="fullname" placeholder="Nom complet" required>
@@ -192,10 +253,13 @@ function renderCheckoutPage() {
     });
 }
 
+// ==========================================
+// PAGE COMMANDES (bouton retour ajouté)
+// ==========================================
 async function renderOrdersPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
-    app.innerHTML = '<div class="container"><h2>Mes commandes</h2></div>';
+    app.innerHTML = '<div class="container"><button onclick="navigateTo(\'/\')" style="margin-bottom:16px;">← Retour</button><h2>Mes commandes</h2></div>';
     try {
         const res = await getOrders();
         const orders = res.data || [];
@@ -207,12 +271,15 @@ async function renderOrdersPage() {
                 <small>${new Date(order.created_at).toLocaleDateString()}</small>
             </div>`;
         });
-        app.innerHTML = `<div class="container"><h2>Mes commandes</h2>${html}</div>`;
+        app.innerHTML = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">← Retour</button><h2>Mes commandes</h2>${html}</div>`;
     } catch (e) {
         app.innerHTML = '<div class="container">Erreur</div>';
     }
 }
 
+// ==========================================
+// DÉTAIL COMMANDE (bouton retour déjà présent)
+// ==========================================
 async function renderOrderDetail(orderId) {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -235,21 +302,29 @@ async function renderOrderDetail(orderId) {
     }
 }
 
+// ==========================================
+// PAGE PROFIL (bouton retour ajouté)
+// ==========================================
 function renderProfilePage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
     app.innerHTML = `
     <div class="container text-center">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px; display:block; text-align:left;">← Retour</button>
         <h2>👤 Profil</h2>
         <p>${currentUser.full_name || currentUser.phone}</p>
         <button class="btn btn-danger btn-block" onclick="logout()">Déconnexion</button>
     </div>`;
 }
 
+// ==========================================
+// PAGE CONNEXION (bouton retour ajouté)
+// ==========================================
 function renderLoginPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
     <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Retour</button>
         <h2>Connexion</h2>
         <input type="tel" id="login-phone" placeholder="Téléphone (+227...)" required>
         <button id="send-otp-btn" class="btn btn-primary btn-block">Recevoir le code</button>
@@ -280,6 +355,9 @@ function renderLoginPage() {
     });
 }
 
+// ==========================================
+// PAGE À PROPOS (bouton retour déjà présent)
+// ==========================================
 function renderAboutPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -298,6 +376,9 @@ function renderAboutPage() {
     </div>`;
 }
 
+// ==========================================
+// PAGE CONTACT (bouton retour déjà présent)
+// ==========================================
 function renderContactPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -334,12 +415,14 @@ function renderContactPage() {
                 <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
                     <i class="fab fa-facebook"></i>
                 </a>
-                <!-- Ajoutez d'autres icônes de réseaux sociaux si besoin -->
             </div>
         </div>
     </div>`;
 }
 
+// ==========================================
+// RECHERCHE
+// ==========================================
 window.searchProducts = function () {
     const query = document.getElementById('search-input')?.value;
     if (!query) return;
