@@ -26,7 +26,7 @@ async function renderHomePage() {
     const app = document.getElementById('app');
     app.innerHTML = `
         <header class="container app-header">
-            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" onerror="this.style.display='none'">
+            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" style="height:50px; width:auto;" onerror="this.style.display='none'">
             <h1 style="font-size:1.5rem;">Niger Laptops</h1>
             <span style="flex:1"></span>
             <span id="cart-count" class="badge">${getCartCount()}</span>
@@ -294,14 +294,40 @@ function renderContactPage() {
     app.innerHTML = `
     <div class="container">
         <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Accueil</button>
-        <h2>Contactez-nous</h2>
+        <h2>Contactez Niger Laptops</h2>
+        <p class="text-center">Votre boutique de consommables informatiques à Niamey. Livraison sous 60 minutes.</p>
+
         <div class="card">
-            <p><strong>📞 Téléphone :</strong> <a href="tel:+22786762903">+227 86 76 29 03</a></p>
-            <p><strong>📧 Email :</strong> <a href="mailto:hamadineagmoctar@gmail.com">hamadineagmoctar@gmail.com</a></p>
-            <p><strong>📍 Adresse :</strong> Tchangarey, Marché de Bétail, Niamey (Niger)</p>
+            <h3>📍 Adresse</h3>
+            <p>Tchangarey, Marché de Bétail, Niamey (Niger)</p>
+            <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" class="btn btn-outline btn-block">
+                🗺️ Ouvrir dans Google Maps
+            </a>
         </div>
-        <p>Ou via WhatsApp :</p>
-        <a href="https://wa.me/22786762903" class="btn btn-primary btn-block">💬 Envoyer un message WhatsApp</a>
+
+        <div class="card">
+            <h3>📞 WhatsApp</h3>
+            <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+                <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 91 12 78 70
+            </a>
+        </div>
+
+        <div class="card">
+            <h3>📧 Email</h3>
+            <a href="mailto:zoubeirou.zakariya@gmail.com" class="btn btn-outline btn-block">
+                ✉️ zoubeirou.zakariya@gmail.com
+            </a>
+        </div>
+
+        <div class="card text-center">
+            <h3>Suivez-nous</h3>
+            <div class="flex" style="justify-content:center; gap:20px; font-size:2rem;">
+                <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <!-- Ajoutez d'autres icônes de réseaux sociaux si besoin -->
+            </div>
+        </div>
     </div>`;
 }
 
