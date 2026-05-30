@@ -25,20 +25,20 @@ function productCard(product) {
 async function renderHomePage() {
     const app = document.getElementById('app');
     app.innerHTML = `
-        <header class="container">
-            <h1>🖥️ Niger Laptops</h1>
-            <div class="flex-between">
-                <input type="search" id="search-input" placeholder="Rechercher un produit..." onkeyup="if(event.key==='Enter')searchProducts()">
-                <span id="cart-count" class="badge">${getCartCount()}</span>
-            </div>
+        <header class="container app-header">
+            <img src="assets/images/logos/logolap.jpeg" alt="Logo" onerror="this.style.display='none'">
+            <h1 style="font-size:1.5rem;">Niger Laptops</h1>
+            <span style="flex:1"></span>
+            <span id="cart-count" class="badge">${getCartCount()}</span>
         </header>
         <main class="container">
-            <div id="product-list" class="product-grid"></div>
+            <input type="search" id="search-input" placeholder="Rechercher un produit..." onkeyup="if(event.key==='Enter')searchProducts()">
+            <div id="product-list" class="product-grid mt-2"></div>
         </main>
     `;
 
     try {
-        const res = await getProducts({ limit: 20 });
+        const res = await getProducts({ limit: 200 });
         const products = res.data || [];
         const grid = document.getElementById('product-list');
         grid.innerHTML = products.map(p => productCard(p)).join('');
@@ -190,7 +190,7 @@ async function renderOrdersPage() {
     try {
         const res = await getOrders();
         const orders = res.data || [];
-        let html = '';
+        let html = orders.length ? '' : '<p>Aucune commande</p>';
         orders.forEach(order => {
             html += `<div class="card" onclick="navigateTo('/order/${order.id}')">
                 <div class="flex-between"><strong>${order.order_number}</strong><span class="badge">${order.status}</span></div>
@@ -252,26 +252,16 @@ function renderLoginPage() {
 
     document.getElementById('send-otp-btn').addEventListener('click', async () => {
         const phone = document.getElementById('login-phone').value.trim();
-        if (!phone) {
-            showToast('Veuillez saisir votre numéro');
-            return;
-        }
-        try {
-            await handleSendOTP(phone);
-            document.getElementById('otp-section').style.display = 'block';
-            document.getElementById('send-otp-btn').disabled = true;
-            document.getElementById('send-otp-btn').textContent = 'Code envoyé';
-        } catch (e) {
-            showToast('Erreur lors de l\'envoi du code');
-        }
+        if (!phone) { showToast('Veuillez saisir votre numéro'); return; }
+        await handleSendOTP(phone);
+        document.getElementById('otp-section').style.display = 'block';
+        document.getElementById('send-otp-btn').disabled = true;
+        document.getElementById('send-otp-btn').textContent = 'Code envoyé';
     });
 
     document.getElementById('verify-otp-btn').addEventListener('click', async () => {
         const code = document.getElementById('otp-code').value.trim();
-        if (code.length !== 6) {
-            showToast('Code invalide');
-            return;
-        }
+        if (code.length !== 6) { showToast('Code invalide'); return; }
         try {
             await handleVerifyOTP(code);
             navigateTo('/');
@@ -281,14 +271,46 @@ function renderLoginPage() {
     });
 }
 
+function renderAboutPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Accueil</button>
+        <h2>À propos de Niger Laptops</h2>
+        <p>Niger Laptops est une boutique en ligne spécialisée dans la vente de consommables et accessoires informatiques à Niamey.</p>
+        <p>Notre mission : offrir aux particuliers, étudiants, entreprises et administrations un accès rapide et fiable aux produits informatiques du quotidien, avec une livraison en moins de 60 minutes.</p>
+        <h3>Nos valeurs</h3>
+        <ul>
+            <li>🛍️ Large choix de produits</li>
+            <li>🚚 Livraison rapide dans Niamey</li>
+            <li>💳 Paiement mobile sécurisé</li>
+            <li>📞 Support client réactif</li>
+        </ul>
+    </div>`;
+}
+
+function renderContactPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">← Accueil</button>
+        <h2>Contactez-nous</h2>
+        <div class="card">
+            <p><strong>📞 Téléphone :</strong> <a href="tel:+22786762903">+227 86 76 29 03</a></p>
+            <p><strong>📧 Email :</strong> <a href="mailto:hamadineagmoctar@gmail.com">hamadineagmoctar@gmail.com</a></p>
+            <p><strong>📍 Adresse :</strong> Tchangarey, Marché de Bétail, Niamey (Niger)</p>
+        </div>
+        <p>Ou via WhatsApp :</p>
+        <a href="https://wa.me/22786762903" class="btn btn-primary btn-block">💬 Envoyer un message WhatsApp</a>
+    </div>`;
+}
+
 window.searchProducts = function () {
     const query = document.getElementById('search-input')?.value;
     if (!query) return;
     getProducts({ search: query }).then(res => {
         const products = res.data || [];
         const grid = document.getElementById('product-list');
-        if (grid) {
-            grid.innerHTML = products.map(p => productCard(p)).join('');
-        }
+        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
     });
 };
