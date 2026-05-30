@@ -29,6 +29,10 @@ function handleRoute() {
     } else if (path.match(/^\/order\/(.+)/)) {
         const orderId = path.split('/')[2];
         renderOrderDetail(orderId);
+    } else if (path === '/about') {
+        renderAboutPage();
+    } else if (path === '/contact') {
+        renderContactPage();
     } else {
         document.getElementById('app').innerHTML = '<div class="container"><h2>Page non trouvée</h2></div>';
     }
