@@ -31,6 +31,15 @@ async function renderHomePage() {
             <span style="flex:1"></span>
             <span id="cart-count" class="badge">${getCartCount()}</span>
         </header>
+
+        <!-- Barre de navigation rapide (au‑dessus de la recherche) -->
+        <nav class="home-nav">
+            <a href="#/" class="active"><i class="fas fa-home"></i> Accueil</a>
+            <a href="#/cart"><i class="fas fa-shopping-cart"></i> Panier</a>
+            <a href="#/orders"><i class="fas fa-box"></i> Commandes</a>
+            <a href="#/profile"><i class="fas fa-user"></i> Profil</a>
+        </nav>
+
         <main class="container">
             <input type="search" id="search-input" placeholder="Rechercher un produit..." onkeyup="if(event.key==='Enter')searchProducts()">
             <div id="product-list" class="product-grid mt-2"></div>
