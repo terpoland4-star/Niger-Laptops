@@ -69,7 +69,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   -webkit-tap-highlight-color: transparent;
-  padding-bottom: 80px; /* pour la bottom nav */
+  /* Retrait du padding-bottom pour libérer l'espace du footer */
 }
 
 img {
@@ -390,39 +390,38 @@ textarea:focus {
   }
 }
 
-/* ---------- BARRE DE NAVIGATION MOBILE ---------- */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--surface);
+/* ---------- BARRE DE NAVIGATION SUR LA PAGE D'ACCUEIL ---------- */
+.home-nav {
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  padding: 0.6rem 0;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
-  z-index: 100;
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.92);
+  background: white;
+  padding: 10px 0;
+  margin: 0 16px 8px 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
-.bottom-nav a {
+.home-nav a {
   text-decoration: none;
   color: var(--text-light);
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  transition: color var(--ease-fast);
-  font-weight: 500;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
 }
 
-.bottom-nav a:hover,
-.bottom-nav a.active {
+.home-nav a i {
+  font-size: 1.2rem;
+}
+
+.home-nav a.active,
+.home-nav a:hover {
   color: var(--orange);
+  background: rgba(224,82,6,0.1);
 }
 
 /* ---------- PIED DE PAGE PROMOTIONNEL ---------- */
@@ -503,7 +502,8 @@ textarea:focus {
   .container {
     padding: 1.5rem 2rem;
   }
-    }
+}
+
 /* Animation de flottement pour le logo */
 .logo-animated {
     animation: floatLogo 3s ease-in-out infinite;
@@ -512,4 +512,4 @@ textarea:focus {
 @keyframes floatLogo {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
-}
+   }
