@@ -3,11 +3,12 @@ window.addEventListener('load', async () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js');
     }
-    initTheme();       // ← Mode sombre
-    initLanguage();    // ← Sélecteur de langue
-    renderFooter();    // ← Pied de page multilingue
-    await checkAuth();
-    handleRoute();
+    initTheme();          // Mode sombre / clair
+    initLanguage();       // Sélecteur de langue
+    renderFooter();       // Pied de page multilingue
+    await loadAllProducts(); // Précharger les produits pour la recherche
+    await checkAuth();    // Vérifier si un utilisateur est connecté
+    handleRoute();        // Afficher la page correspondant à l'URL
 });
 
 function handleRoute() {
@@ -29,6 +30,8 @@ function handleRoute() {
         renderProfilePage();
     } else if (path === '/login') {
         renderLoginPage();
+    } else if (path === '/register') {
+        renderRegisterPage();
     } else if (path.match(/^\/order\/(.+)/)) {
         const orderId = path.split('/')[2];
         renderOrderDetail(orderId);
