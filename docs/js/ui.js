@@ -2,8 +2,9 @@
 // ui.js – Composants et rendu des pages (internationalisé)
 // ==========================================
 
+// ---------- CARTE PRODUIT ----------
 function productCard(product) {
-    const localized = getLocalizedProduct(product);       // on récupère les champs traduits
+    const localized = getLocalizedProduct(product);
     const discount = localized.compare_at_price
         ? Math.round((1 - localized.price / localized.compare_at_price) * 100)
         : 0;
@@ -23,12 +24,11 @@ function productCard(product) {
     </div>`;
 }
 
-// ==========================================
-// PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE)
-// ==========================================
+// ---------- PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE + RECHERCHE AVANCÉE + ACCESSIBILITÉ) ----------
 async function renderHomePage() {
     const app = document.getElementById('app');
 
+    // Récupération des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -37,6 +37,7 @@ async function renderHomePage() {
         allProducts = [];
     }
 
+    // Regroupement par catégorie
     const categoriesMap = {};
     allProducts.forEach(p => {
         const cat = p.category || 'Sans catégorie';
@@ -62,7 +63,32 @@ async function renderHomePage() {
         </section>`;
     }
 
-    app.innerHTML = `
+    // Barre d'outils (langue, thème, accessibilité)
+    const toolbarHTML = `
+        <div style="display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
+            <select id="lang-selector" style="width: auto; padding: 4px 8px;">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+            </select>
+            <button id="theme-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Mode sombre">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="accessibility-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="${t('accessibilityTitle')}">
+                <i class="fas fa-universal-access"></i>
+            </button>
+        </div>
+        <div id="accessibility-panel" style="display:none; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
+            <label><input type="checkbox" id="high-contrast-toggle"> ${t('highContrast')}</label>
+            <div style="margin-top: 8px;">
+                <span>${t('fontSize')}: </span>
+                <button id="font-decrease" class="btn btn-sm">${t('decrease')}</button>
+                <button id="font-increase" class="btn btn-sm">${t('increase')}</button>
+                <button id="font-reset" class="btn btn-sm">${t('resetAccessibility')}</button>
+            </div>
+        </div>
+    `;
+
+    app.innerHTML = toolbarHTML + `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
             <div>
@@ -82,15 +108,17 @@ async function renderHomePage() {
 
         <main class="container" style="padding-top: 0;">
             <div class="search-wrapper">
-                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" onkeyup="if(event.key==='Enter')searchProducts()">
-                <button class="search-btn" onclick="searchProducts()" aria-label="Rechercher">
+                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
+                <button class="search-btn" onclick="executeSearch()" aria-label="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
+                <div id="suggestions-dropdown" class="suggestions-dropdown" style="display:none;"></div>
             </div>
             ${categoriesHTML || `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`}
         </main>
     `;
 
+    // Événements des carrousels
     document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.dataset.target;
@@ -105,13 +133,129 @@ async function renderHomePage() {
             }
         });
     });
+
+    // Initialisation des modules
+    initAccessibilityControls();
+    initTheme();
+    initLanguage();
 }
 
+// ---------- RECHERCHE AVANCÉE ----------
+let allProductsCache = [];
+
+async function loadAllProducts() {
+    if (allProductsCache.length > 0) return;
+    try {
+        const res = await getProducts({ limit: 200 });
+        allProductsCache = res.data || [];
+    } catch (e) {
+        allProductsCache = [];
+    }
+}
+
+function handleSearchSuggestions() {
+    const input = document.getElementById('search-input');
+    const dropdown = document.getElementById('suggestions-dropdown');
+    if (!input || !dropdown) return;
+
+    const query = input.value.trim().toLowerCase();
+    if (query.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    const filtered = allProductsCache.filter(p => {
+        const loc = getLocalizedProduct(p);
+        return loc.name.toLowerCase().includes(query) ||
+               loc.description.toLowerCase().includes(query);
+    });
+
+    if (filtered.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    const suggestions = filtered.slice(0, 5).map(p => {
+        const loc = getLocalizedProduct(p);
+        return `<div class="suggestion-item" onclick="navigateTo('/product/${loc.id}'); document.getElementById('suggestions-dropdown').style.display='none';">
+            <strong>${loc.name}</strong> – ${formatPrice(loc.price)}
+        </div>`;
+    }).join('');
+
+    dropdown.innerHTML = suggestions;
+    dropdown.style.display = 'block';
+}
+
+function executeSearch() {
+    const query = document.getElementById('search-input').value.trim();
+    if (!query) return;
+    getProducts({ search: query }).then(res => {
+        const products = res.data || [];
+        const grid = document.getElementById('product-list');
+        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
+    });
+    document.getElementById('suggestions-dropdown').style.display = 'none';
+}
+
+// ---------- ACCESSIBILITÉ ----------
+function initAccessibilityControls() {
+    const toggleBtn = document.getElementById('accessibility-toggle');
+    const panel = document.getElementById('accessibility-panel');
+    if (toggleBtn && panel) {
+        toggleBtn.addEventListener('click', () => {
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+    }
+
+    const highContrastToggle = document.getElementById('high-contrast-toggle');
+    if (highContrastToggle) {
+        highContrastToggle.checked = localStorage.getItem('highContrast') === 'true';
+        applyHighContrast();
+        highContrastToggle.addEventListener('change', () => {
+            localStorage.setItem('highContrast', highContrastToggle.checked);
+            applyHighContrast();
+        });
+    }
+
+    const fontIncrease = document.getElementById('font-increase');
+    const fontDecrease = document.getElementById('font-decrease');
+    const fontReset = document.getElementById('font-reset');
+    if (fontIncrease) fontIncrease.addEventListener('click', () => changeFontSize(1));
+    if (fontDecrease) fontDecrease.addEventListener('click', () => changeFontSize(-1));
+    if (fontReset) fontReset.addEventListener('click', resetFontSize);
+}
+
+function applyHighContrast() {
+    if (localStorage.getItem('highContrast') === 'true') {
+        document.body.classList.add('high-contrast');
+    } else {
+        document.body.classList.remove('high-contrast');
+    }
+}
+
+let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+document.body.style.fontSize = currentFontSize + 'px';
+
+function changeFontSize(delta) {
+    currentFontSize += delta;
+    if (currentFontSize < 12) currentFontSize = 12;
+    if (currentFontSize > 24) currentFontSize = 24;
+    document.body.style.fontSize = currentFontSize + 'px';
+    localStorage.setItem('fontSize', currentFontSize);
+}
+
+function resetFontSize() {
+    currentFontSize = 16;
+    document.body.style.fontSize = '16px';
+    localStorage.setItem('fontSize', '16');
+}
+
+// ---------- FONCTIONS D'AJOUT AU PANIER ----------
 window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
         const product = res.data;
-        addToCart(product, 1);      // le produit brut est stocké, on localisera à l'affichage
+        addToCart(product, 1);
     } catch (e) {
         showToast(t('errorProduct'));
     }
@@ -123,12 +267,13 @@ window.addToCartFromDetail = function (productId, stock) {
     });
 };
 
+// ---------- PAGE DÉTAIL PRODUIT ----------
 async function renderProductPage(productId) {
     const app = document.getElementById('app');
     app.innerHTML = `<div class="container">${t('loading')}</div>`;
     try {
         const res = await getProduct(productId);
-        const p = getLocalizedProduct(res.data);       // on localise pour l'affichage
+        const p = getLocalizedProduct(res.data);
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
@@ -147,6 +292,7 @@ async function renderProductPage(productId) {
     }
 }
 
+// ---------- PAGE PANIER ----------
 function renderCartPage() {
     const app = document.getElementById('app');
     if (cart.length === 0) {
@@ -160,7 +306,7 @@ function renderCartPage() {
     }
     let html = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button><h2>${t('cart')}</h2>`;
     cart.forEach(item => {
-        const localized = getLocalizedProduct(item);   // localisation pour le panier
+        const localized = getLocalizedProduct(item);
         html += `
         <div class="card flex-between">
             <div>
@@ -191,6 +337,7 @@ window.cartUpdateQuantity = function (productId, qty) {
     renderCartPage();
 };
 
+// ---------- PAGE CHECKOUT ----------
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -246,6 +393,7 @@ function renderCheckoutPage() {
     });
 }
 
+// ---------- PAGE COMMANDES ----------
 async function renderOrdersPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -289,6 +437,7 @@ async function renderOrderDetail(orderId) {
     }
 }
 
+// ---------- PAGE PROFIL ----------
 function renderProfilePage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -296,111 +445,15 @@ function renderProfilePage() {
     <div class="container text-center">
         <button onclick="navigateTo('/')" style="margin-bottom:16px; display:block; text-align:left;">${t('back')}</button>
         <h2>${t('profileTitle')}</h2>
-        <p>${currentUser.full_name || currentUser.phone}</p>
+        <p>${currentUser.full_name || currentUser.email}</p>
         <button class="btn btn-danger btn-block" onclick="logout()">${t('logoutBtn')}</button>
     </div>`;
 }
 
+// ---------- PAGE CONNEXION (email/mot de passe) ----------
 function renderLoginPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
     <div class="container">
         <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
-        <h2>${t('loginTitle')}</h2>
-        <input type="tel" id="login-phone" placeholder="${t('phonePlaceholder')}" required>
-        <button id="send-otp-btn" class="btn btn-primary btn-block">${t('sendCode')}</button>
-        <div id="otp-section" style="display:none;">
-            <input type="text" id="otp-code" placeholder="Code SMS" maxlength="6">
-            <button id="verify-otp-btn" class="btn btn-primary btn-block">${t('verifyCode')}</button>
-        </div>
-    </div>`;
-
-    document.getElementById('send-otp-btn').addEventListener('click', async () => {
-        const phone = document.getElementById('login-phone').value.trim();
-        if (!phone) { showToast(t('enterPhone')); return; }
-        await handleSendOTP(phone);
-        document.getElementById('otp-section').style.display = 'block';
-        document.getElementById('send-otp-btn').disabled = true;
-        document.getElementById('send-otp-btn').textContent = t('codeSent');
-    });
-
-    document.getElementById('verify-otp-btn').addEventListener('click', async () => {
-        const code = document.getElementById('otp-code').value.trim();
-        if (code.length !== 6) { showToast(t('invalidCode')); return; }
-        try {
-            await handleVerifyOTP(code);
-            navigateTo('/');
-        } catch (e) {
-            showToast(e.message || t('invalidCode'));
-        }
-    });
-}
-
-function renderAboutPage() {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-    <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
-        <h2>${t('aboutTitle')}</h2>
-        <p>${t('aboutText1')}</p>
-        <p>${t('aboutText2')}</p>
-        <h3>${t('valuesTitle')}</h3>
-        <ul>
-            <li>${t('value1')}</li>
-            <li>${t('value2')}</li>
-            <li>${t('value3')}</li>
-            <li>${t('value4')}</li>
-        </ul>
-    </div>`;
-}
-
-function renderContactPage() {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-    <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
-        <h2>${t('contactTitle')}</h2>
-        <p class="text-center">${t('contactDesc')}</p>
-
-        <div class="card">
-            <h3>${t('addressLabel')}</h3>
-            <p>${t('address')}</p>
-            <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" class="btn btn-outline btn-block">
-                ${t('openMaps')}
-            </a>
-        </div>
-
-        <div class="card">
-            <h3>${t('whatsappLabel')}</h3>
-            <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="btn btn-primary btn-block">
-                <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 91 12 78 70
-            </a>
-        </div>
-
-        <div class="card">
-            <h3>${t('emailLabel')}</h3>
-            <a href="mailto:zoubeirou.zakariya@gmail.com" class="btn btn-outline btn-block">
-                ✉️ zoubeirou.zakariya@gmail.com
-            </a>
-        </div>
-
-        <div class="card text-center">
-            <h3>${t('followUs')}</h3>
-            <div class="flex" style="justify-content:center; gap:20px; font-size:2rem;">
-                <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
-                    <i class="fab fa-facebook"></i>
-                </a>
-            </div>
-        </div>
-    </div>`;
-}
-
-window.searchProducts = function () {
-    const query = document.getElementById('search-input')?.value;
-    if (!query) return;
-    getProducts({ search: query }).then(res => {
-        const products = res.data || [];
-        const grid = document.getElementById('product-list');
-        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
-    });
-};
+        <
