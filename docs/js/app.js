@@ -3,6 +3,9 @@ window.addEventListener('load', async () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js');
     }
+    initTheme();       // ← Mode sombre
+    initLanguage();    // ← Sélecteur de langue
+    renderFooter();    // ← Pied de page multilingue
     await checkAuth();
     handleRoute();
 });
