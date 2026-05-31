@@ -24,7 +24,7 @@ function productCard(product) {
     </div>`;
 }
 
-// ---------- PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE + RECHERCHE AVANCÉE + ACCESSIBILITÉ) ----------
+// ---------- PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE + RECHERCHE DYNAMIQUE) ----------
 async function renderHomePage() {
     const app = document.getElementById('app');
 
@@ -49,7 +49,7 @@ async function renderHomePage() {
     for (const [catName, products] of Object.entries(categoriesMap)) {
         const catId = catName.replace(/\s+/g, '-').toLowerCase();
         categoriesHTML += `
-        <section class="category-section mb-2">
+        <section class="category-section mb-2" id="cat-${catId}">
             <div class="flex-between" style="padding: 0 16px;">
                 <h3>${translateCategory(catName)}</h3>
                 <div class="carousel-controls">
@@ -109,11 +109,13 @@ async function renderHomePage() {
         <main class="container" style="padding-top: 0;">
             <div class="search-wrapper">
                 <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
-                <button class="search-btn" onclick="executeSearch()" aria-label="Rechercher">
+                <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
                 <div id="suggestions-dropdown" class="suggestions-dropdown" style="display:none;"></div>
             </div>
+            <!-- Conteneur pour les résultats de recherche dynamique -->
+            <div id="search-results-grid" class="product-grid mt-2" style="display:none;"></div>
             ${categoriesHTML || `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`}
         </main>
     `;
@@ -140,7 +142,7 @@ async function renderHomePage() {
     initLanguage();
 }
 
-// ---------- RECHERCHE AVANCÉE ----------
+// ---------- RECHERCHE DYNAMIQUE ----------
 let allProductsCache = [];
 
 async function loadAllProducts() {
@@ -156,45 +158,50 @@ async function loadAllProducts() {
 function handleSearchSuggestions() {
     const input = document.getElementById('search-input');
     const dropdown = document.getElementById('suggestions-dropdown');
-    if (!input || !dropdown) return;
+    const resultsGrid = document.getElementById('search-results-grid');
+    const categorySections = document.querySelectorAll('.category-section');
+
+    if (!input) return;
 
     const query = input.value.trim().toLowerCase();
+
+    // Si le champ est vide, réafficher les catégories et masquer la grille de recherche
     if (query.length === 0) {
         dropdown.style.display = 'none';
+        if (resultsGrid) resultsGrid.style.display = 'none';
+        categorySections.forEach(s => s.style.display = '');
         return;
     }
 
+    // Filtrer les produits en mémoire
     const filtered = allProductsCache.filter(p => {
         const loc = getLocalizedProduct(p);
         return loc.name.toLowerCase().includes(query) ||
                loc.description.toLowerCase().includes(query);
     });
 
-    if (filtered.length === 0) {
-        dropdown.style.display = 'none';
-        return;
+    // Mettre à jour la grille de recherche
+    if (resultsGrid) {
+        resultsGrid.innerHTML = filtered.map(p => productCard(p)).join('');
+        resultsGrid.style.display = 'block';
     }
 
-    const suggestions = filtered.slice(0, 5).map(p => {
-        const loc = getLocalizedProduct(p);
-        return `<div class="suggestion-item" onclick="navigateTo('/product/${loc.id}'); document.getElementById('suggestions-dropdown').style.display='none';">
-            <strong>${loc.name}</strong> – ${formatPrice(loc.price)}
-        </div>`;
-    }).join('');
+    // Masquer les sections de catégories
+    categorySections.forEach(s => s.style.display = 'none');
 
-    dropdown.innerHTML = suggestions;
-    dropdown.style.display = 'block';
-}
-
-function executeSearch() {
-    const query = document.getElementById('search-input').value.trim();
-    if (!query) return;
-    getProducts({ search: query }).then(res => {
-        const products = res.data || [];
-        const grid = document.getElementById('product-list');
-        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
-    });
-    document.getElementById('suggestions-dropdown').style.display = 'none';
+    // Mettre à jour les suggestions déroulantes
+    if (filtered.length === 0) {
+        dropdown.style.display = 'none';
+    } else {
+        const suggestions = filtered.slice(0, 5).map(p => {
+            const loc = getLocalizedProduct(p);
+            return `<div class="suggestion-item" onclick="navigateTo('/product/${loc.id}'); document.getElementById('suggestions-dropdown').style.display='none';">
+                <strong>${loc.name}</strong> – ${formatPrice(loc.price)}
+            </div>`;
+        }).join('');
+        dropdown.innerHTML = suggestions;
+        dropdown.style.display = 'block';
+    }
 }
 
 // ---------- ACCESSIBILITÉ ----------
