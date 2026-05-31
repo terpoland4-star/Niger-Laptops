@@ -3,21 +3,22 @@
 // ==========================================
 
 function productCard(product) {
-    const discount = product.compare_at_price
-        ? Math.round((1 - product.price / product.compare_at_price) * 100)
+    const localized = getLocalizedProduct(product);       // on récupère les champs traduits
+    const discount = localized.compare_at_price
+        ? Math.round((1 - localized.price / localized.compare_at_price) * 100)
         : 0;
     return `
-    <div class="product-card" onclick="navigateTo('/product/${product.id}')">
-        <img src="${product.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image'}" alt="${product.name}">
+    <div class="product-card" onclick="navigateTo('/product/${localized.id}')">
+        <img src="${localized.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image'}" alt="${localized.name}">
         <div class="product-info">
-            <small>${product.brand || ''}</small>
-            <h4>${product.name}</h4>
+            <small>${localized.brand || ''}</small>
+            <h4>${localized.name}</h4>
             <div class="flex-between">
-                <span class="price">${formatPrice(product.price)}</span>
-                ${product.compare_at_price ? `<span class="old-price">${formatPrice(product.compare_at_price)}</span>` : ''}
+                <span class="price">${formatPrice(localized.price)}</span>
+                ${localized.compare_at_price ? `<span class="old-price">${formatPrice(localized.compare_at_price)}</span>` : ''}
             </div>
             ${discount > 0 ? `<span class="badge">${t('discount', {discount})}</span>` : ''}
-            <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); addToCartFromCard('${product.id}')">${t('addToCart')}</button>
+            <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); addToCartFromCard('${localized.id}')">${t('addToCart')}</button>
         </div>
     </div>`;
 }
@@ -49,7 +50,7 @@ async function renderHomePage() {
         categoriesHTML += `
         <section class="category-section mb-2">
             <div class="flex-between" style="padding: 0 16px;">
-                <h3>${catName}</h3>
+                <h3>${translateCategory(catName)}</h3>
                 <div class="carousel-controls">
                     <button class="btn btn-sm btn-outline prev-btn" data-target="${catId}">←</button>
                     <button class="btn btn-sm btn-outline next-btn" data-target="${catId}">→</button>
@@ -110,7 +111,7 @@ window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
         const product = res.data;
-        addToCart(product, 1);
+        addToCart(product, 1);      // le produit brut est stocké, on localisera à l'affichage
     } catch (e) {
         showToast(t('errorProduct'));
     }
@@ -127,7 +128,7 @@ async function renderProductPage(productId) {
     app.innerHTML = `<div class="container">${t('loading')}</div>`;
     try {
         const res = await getProduct(productId);
-        const p = res.data;
+        const p = getLocalizedProduct(res.data);       // on localise pour l'affichage
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
@@ -159,17 +160,18 @@ function renderCartPage() {
     }
     let html = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button><h2>${t('cart')}</h2>`;
     cart.forEach(item => {
+        const localized = getLocalizedProduct(item);   // localisation pour le panier
         html += `
         <div class="card flex-between">
             <div>
-                <strong>${item.name}</strong><br>
-                <small>${formatPrice(item.price)} x ${item.quantity}</small>
+                <strong>${localized.name}</strong><br>
+                <small>${formatPrice(localized.price)} x ${item.quantity}</small>
             </div>
             <div class="flex">
-                <button class="btn" onclick="cartUpdateQuantity('${item.id}', ${item.quantity - 1})">−</button>
+                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity - 1})">−</button>
                 <span>${item.quantity}</span>
-                <button class="btn" onclick="cartUpdateQuantity('${item.id}', ${item.quantity + 1})">+</button>
-                <button class="btn btn-danger" onclick="removeFromCart('${item.id}'); renderCartPage();">🗑</button>
+                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity + 1})">+</button>
+                <button class="btn btn-danger" onclick="removeFromCart('${localized.id}'); renderCartPage();">🗑</button>
             </div>
         </div>`;
     });
