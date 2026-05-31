@@ -456,4 +456,127 @@ function renderLoginPage() {
     app.innerHTML = `
     <div class="container">
         <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
-        <
+        <h2>${t('loginTitle')}</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="${t('emailPlaceholder')}" required>
+            <input type="password" id="login-password" placeholder="${t('passwordPlaceholder')}" required>
+            <button type="submit" class="btn btn-primary btn-block">${t('loginBtn')}</button>
+        </form>
+        <p style="text-align:center; margin-top:1rem;">
+            <a href="#/register">${t('createAccount')}</a>
+        </p>
+    </div>`;
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        try {
+            await handleLogin(email, password);
+        } catch (err) {
+            showToast(err.message);
+        }
+    });
+}
+
+// ---------- PAGE INSCRIPTION (email/mot de passe) ----------
+function renderRegisterPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/login')" style="margin-bottom:16px;">${t('back')}</button>
+        <h2>${t('registerTitle')}</h2>
+        <form id="register-form">
+            <input type="text" id="reg-fullname" placeholder="${t('fullnamePlaceholder')}" required>
+            <input type="email" id="reg-email" placeholder="${t('emailPlaceholder')}" required>
+            <input type="password" id="reg-password" placeholder="${t('passwordPlaceholder')}" required>
+            <button type="submit" class="btn btn-primary btn-block">${t('registerBtn')}</button>
+        </form>
+    </div>`;
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullname = document.getElementById('reg-fullname').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        try {
+            register(email, password, fullname);
+            showToast(t('registerSuccess'));
+            navigateTo('/');
+        } catch (err) {
+            showToast(err.message);
+        }
+    });
+}
+
+// ---------- PAGE À PROPOS ----------
+function renderAboutPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
+        <h2>${t('aboutTitle')}</h2>
+        <p>${t('aboutText1')}</p>
+        <p>${t('aboutText2')}</p>
+        <h3>${t('valuesTitle')}</h3>
+        <ul>
+            <li>${t('value1')}</li>
+            <li>${t('value2')}</li>
+            <li>${t('value3')}</li>
+            <li>${t('value4')}</li>
+        </ul>
+    </div>`;
+}
+
+// ---------- PAGE CONTACT ----------
+function renderContactPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
+        <h2>${t('contactTitle')}</h2>
+        <p class="text-center">${t('contactDesc')}</p>
+
+        <div class="card">
+            <h3>${t('addressLabel')}</h3>
+            <p>${t('address')}</p>
+            <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" class="btn btn-outline btn-block">
+                ${t('openMaps')}
+            </a>
+        </div>
+
+        <div class="card">
+            <h3>${t('whatsappLabel')}</h3>
+            <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+                <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 91 12 78 70
+            </a>
+        </div>
+
+        <div class="card">
+            <h3>${t('emailLabel')}</h3>
+            <a href="mailto:zoubeirou.zakariya@gmail.com" class="btn btn-outline btn-block">
+                ✉️ zoubeirou.zakariya@gmail.com
+            </a>
+        </div>
+
+        <div class="card text-center">
+            <h3>${t('followUs')}</h3>
+            <div class="flex" style="justify-content:center; gap:20px; font-size:2rem;">
+                <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ---------- RECHERCHE RAPIDE (appelée par la loupe) ----------
+window.searchProducts = function () {
+    const query = document.getElementById('search-input')?.value;
+    if (!query) return;
+    getProducts({ search: query }).then(res => {
+        const products = res.data || [];
+        const grid = document.getElementById('product-list');
+        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
+    });
+};
