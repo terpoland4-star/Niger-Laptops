@@ -3,335 +3,391 @@ const demoData = {
     // ────────── Ordinateurs portables ──────────
     {
       id: "1",
-      name: "HP Victus 15-fb3093dx",
+      name_fr: "HP Victus 15-fb3093dx",
+      name_en: "HP Victus 15-fb3093dx",
       category: "Ordinateurs",
       price: 780000,
       oldPrice: null,
       thumbnail: "assets/images/products/hp-victus-15-fb3093dx.jpg",
       featured: true,
       rating: 4.6,
-      description: "PC portable gaming 15.6\" FHD 144 Hz, AMD Ryzen 7-7445HS, 16 Go RAM, SSD 1 To, RTX 4050."
+      description_fr: "PC portable gaming 15.6\" FHD 144 Hz, AMD Ryzen 7-7445HS, 16 Go RAM, SSD 1 To, RTX 4050.",
+      description_en: "15.6\" FHD 144Hz gaming laptop, AMD Ryzen 7-7445HS, 16GB RAM, 1TB SSD, RTX 4050."
     },
     {
       id: "2",
-      name: "HP ProBook 450 G7",
+      name_fr: "HP ProBook 450 G7",
+      name_en: "HP ProBook 450 G7",
       category: "Ordinateurs",
       price: 650000,
       oldPrice: 720000,
       thumbnail: "assets/images/products/hp-probook-450-g7.jpg",
       featured: true,
       rating: 4.5,
-      description: "Professionnel 15.6\" Full HD IPS, Core i7-10510U, 16 Go, SSD 512 Go, Windows 10 Pro."
+      description_fr: "Professionnel 15.6\" Full HD IPS, Core i7-10510U, 16 Go, SSD 512 Go, Windows 10 Pro.",
+      description_en: "15.6\" Full HD IPS professional laptop, Core i7-10510U, 16GB RAM, 512GB SSD, Windows 10 Pro."
     },
     {
       id: "3",
-      name: "HP ProBook 450 G8",
+      name_fr: "HP ProBook 450 G8",
+      name_en: "HP ProBook 450 G8",
       category: "Ordinateurs",
       price: 720000,
       oldPrice: null,
       thumbnail: "assets/images/products/HP ProBook 450 G8..jpg",
       featured: false,
       rating: 4.4,
-      description: "Évolution du G7, processeur 11e génération, toujours aussi robuste."
+      description_fr: "Évolution du G7, processeur 11e génération, toujours aussi robuste.",
+      description_en: "Evolution of G7, 11th Gen processor, just as robust."
     },
     {
       id: "4",
-      name: "Lenovo ThinkPad X13 Yoga",
+      name_fr: "Lenovo ThinkPad X13 Yoga",
+      name_en: "Lenovo ThinkPad X13 Yoga",
       category: "Ordinateurs",
       price: 850000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad X13 Yoga..jpg",
       featured: false,
       rating: 4.7,
-      description: "Convertible 13.3\" tactile, stylet intégré, idéal pour les pros nomades."
+      description_fr: "Convertible 13.3\" tactile, stylet intégré, idéal pour les pros nomades.",
+      description_en: "13.3\" touch convertible, built-in stylus, ideal for mobile professionals."
     },
     {
       id: "5",
-      name: "Lenovo ThinkPad X1 Yoga",
+      name_fr: "Lenovo ThinkPad X1 Yoga",
+      name_en: "Lenovo ThinkPad X1 Yoga",
       category: "Ordinateurs",
       price: 920000,
       oldPrice: 1050000,
       thumbnail: "assets/images/products/Lenovo ThinkPad X1 Yoga.jpg",
       featured: true,
       rating: 4.8,
-      description: "Premium 14\" HDR, légèreté et puissance, stylet rechargeable."
+      description_fr: "Premium 14\" HDR, légèreté et puissance, stylet rechargeable.",
+      description_en: "Premium 14\" HDR, lightweight and powerful, rechargeable stylus."
     },
     {
       id: "6",
-      name: "Lenovo ThinkPad T470S",
+      name_fr: "Lenovo ThinkPad T470S",
+      name_en: "Lenovo ThinkPad T470S",
       category: "Ordinateurs",
       price: 450000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T470S.jpg",
       featured: false,
       rating: 4.2,
-      description: "14\" Full HD, Core i5 7e gén., 8 Go, SSD 256 Go, ultraportable fiable."
+      description_fr: "14\" Full HD, Core i5 7e gén., 8 Go, SSD 256 Go, ultraportable fiable.",
+      description_en: "14\" Full HD, Core i5 7th Gen, 8GB RAM, 256GB SSD, reliable ultrabook."
     },
     {
       id: "7",
-      name: "Lenovo ThinkPad T14",
+      name_fr: "Lenovo ThinkPad T14",
+      name_en: "Lenovo ThinkPad T14",
       category: "Ordinateurs",
       price: 680000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T14.jpg",
       featured: false,
       rating: 4.5,
-      description: "Génération récente, écran 14\", autonomie excellente."
+      description_fr: "Génération récente, écran 14\", autonomie excellente.",
+      description_en: "Recent generation, 14\" display, excellent battery life."
     },
     {
       id: "8",
-      name: "Lenovo ThinkPad T14 Gen",
+      name_fr: "Lenovo ThinkPad T14 Gen",
+      name_en: "Lenovo ThinkPad T14 Gen",
       category: "Ordinateurs",
       price: 710000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T14 Gen.jpg",
       featured: false,
       rating: 4.6,
-      description: "Dernière génération Intel/AMD, robustesse militaire."
+      description_fr: "Dernière génération Intel/AMD, robustesse militaire.",
+      description_en: "Latest generation Intel/AMD, military-grade durability."
     },
     {
       id: "9",
-      name: "Lenovo ThinkBook 15 G2",
+      name_fr: "Lenovo ThinkBook 15 G2",
+      name_en: "Lenovo ThinkBook 15 G2",
       category: "Ordinateurs",
       price: 580000,
       oldPrice: 650000,
       thumbnail: "assets/images/products/LENOVO ThinkBook 15 G2..jpg",
       featured: false,
       rating: 4.3,
-      description: "15.6\" Full HD, Core i5 11e gén., 8 Go, SSD 512 Go, pour PME."
+      description_fr: "15.6\" Full HD, Core i5 11e gén., 8 Go, SSD 512 Go, pour PME.",
+      description_en: "15.6\" Full HD, 11th Gen Core i5, 8GB RAM, 512GB SSD, for SMBs."
     },
 
     // ────────── PC tout-en-un ──────────
     {
       id: "10",
-      name: "HP Tout-en-un 24 pouces",
+      name_fr: "HP Tout-en-un 24 pouces",
+      name_en: "HP All-in-One 24\"",
       category: "Ordinateurs",
       price: 450000,
       oldPrice: null,
       thumbnail: "assets/images/products/HP Tout-en-un de 24 pouces.jpg",
       featured: false,
       rating: 4.1,
-      description: "PC tout-en-un avec écran 24\" tactile, Core i3, 8 Go, 512 Go SSD."
+      description_fr: "PC tout-en-un avec écran 24\" tactile, Core i3, 8 Go, 512 Go SSD.",
+      description_en: "All-in-one PC with 24\" touchscreen, Core i3, 8GB RAM, 512GB SSD."
     },
 
     // ────────── Tablettes ──────────
     {
       id: "11",
-      name: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
+      name_fr: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
+      name_en: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
       category: "Tablettes",
       price: 320000,
       oldPrice: null,
       thumbnail: "assets/images/products/Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)..jpg",
       featured: true,
       rating: 4.6,
-      description: "Tablette 12.4\" 128 Go, 8 Go RAM, stylet S Pen inclus, Android."
+      description_fr: "Tablette 12.4\" 128 Go, 8 Go RAM, stylet S Pen inclus, Android.",
+      description_en: "12.4\" tablet, 128GB, 8GB RAM, S Pen included, Android."
     },
     {
       id: "12",
-      name: "Samsung Galaxy Tab A9+ 128 Go",
+      name_fr: "Samsung Galaxy Tab A9+ 128 Go",
+      name_en: "Samsung Galaxy Tab A9+ 128GB",
       category: "Tablettes",
       price: 180000,
       oldPrice: 210000,
       thumbnail: "assets/images/products/Samsung Galaxy TAB A9+ ROM8_128GB.jpg",
       featured: false,
       rating: 4.4,
-      description: "11\" TFT, 128 Go, 8 Go RAM, idéale multimédia."
+      description_fr: "11\" TFT, 128 Go, 8 Go RAM, idéale multimédia.",
+      description_en: "11\" TFT, 128GB, 8GB RAM, perfect for multimedia."
     },
     {
       id: "13",
-      name: "Samsung Galaxy Tab A8",
+      name_fr: "Samsung Galaxy Tab A8",
+      name_en: "Samsung Galaxy Tab A8",
       category: "Tablettes",
       price: 140000,
       oldPrice: null,
       thumbnail: "assets/images/products/Samsung Galaxy TAB A8.jpg",
       featured: false,
       rating: 4.3,
-      description: "10.5\", 64 Go, 4 Go RAM, pour toute la famille."
+      description_fr: "10.5\", 64 Go, 4 Go RAM, pour toute la famille.",
+      description_en: "10.5\", 64GB, 4GB RAM, for the whole family."
     },
 
     // ────────── Photo / Vidéo ──────────
     {
       id: "14",
-      name: "Canon EOS R6",
+      name_fr: "Canon EOS R6",
+      name_en: "Canon EOS R6",
       category: "Photo & Vidéo",
       price: 1450000,
       oldPrice: null,
       thumbnail: "assets/images/products/Canon EOS R6.jpg",
       featured: true,
       rating: 4.9,
-      description: "Hybride plein format 20 Mp, stabilisation 5 axes, vidéo 4K 60p."
+      description_fr: "Hybride plein format 20 Mp, stabilisation 5 axes, vidéo 4K 60p.",
+      description_en: "20MP full-frame mirrorless, 5-axis stabilization, 4K60p video."
     },
     {
       id: "15",
-      name: "Nikon D5300",
+      name_fr: "Nikon D5300",
+      name_en: "Nikon D5300",
       category: "Photo & Vidéo",
       price: 380000,
       oldPrice: 450000,
       thumbnail: "assets/images/products/Nikon D5300..jpg",
       featured: false,
       rating: 4.4,
-      description: "Reflex 24 Mp, écran orientable, Wi‑Fi, idéal débutant/expert."
+      description_fr: "Reflex 24 Mp, écran orientable, Wi‑Fi, idéal débutant/expert.",
+      description_en: "24MP DSLR, vari-angle screen, Wi‑Fi, great for beginners and experts."
     },
 
     // ────────── Audio ──────────
     {
       id: "16",
-      name: "Enceinte Bluetooth JBL Flip 7",
+      name_fr: "Enceinte Bluetooth JBL Flip 7",
+      name_en: "JBL Flip 7 Bluetooth Speaker",
       category: "Audio",
       price: 75000,
       oldPrice: 85000,
       thumbnail: "assets/images/products/enceintes Bluetooth JBL Flip 7.jpg",
       featured: true,
       rating: 4.7,
-      description: "Son puissant, grave profond, IP67, autonomie 14 h."
+      description_fr: "Son puissant, grave profond, IP67, autonomie 14 h.",
+      description_en: "Powerful sound, deep bass, IP67, 14-hour battery."
     },
 
     // ────────── Réseau / WiFi ──────────
     {
       id: "17",
-      name: "Grandstream GWN7664ELR",
+      name_fr: "Grandstream GWN7664ELR",
+      name_en: "Grandstream GWN7664ELR",
       category: "Réseau & Connectique",
       price: 220000,
       oldPrice: null,
       thumbnail: "assets/images/products/Grandstream GWN7664ELR..jpg",
       featured: false,
       rating: 4.3,
-      description: "Point d'accès WiFi 6E, portée étendue, idéal pour les entreprises."
+      description_fr: "Point d'accès WiFi 6E, portée étendue, idéal pour les entreprises.",
+      description_en: "WiFi 6E access point, extended range, great for businesses."
     },
     {
       id: "18",
-      name: "Ruijie Reyee RG-AirMetro460F",
+      name_fr: "Ruijie Reyee RG-AirMetro460F",
+      name_en: "Ruijie Reyee RG-AirMetro460F",
       category: "Réseau & Connectique",
       price: 180000,
       oldPrice: null,
       thumbnail: "assets/images/products/Ruijie Reyee RG-AirMetro460F..jpg",
       featured: false,
       rating: 4.2,
-      description: "Liaison sans fil point à point 5 GHz, jusqu'à 867 Mbps."
+      description_fr: "Liaison sans fil point à point 5 GHz, jusqu'à 867 Mbps.",
+      description_en: "5GHz point-to-point wireless link, up to 867 Mbps."
     },
     {
       id: "19",
-      name: "MikroTik hAP ax² C52iG-5HaxD2HaxD-TC",
+      name_fr: "MikroTik hAP ax² C52iG-5HaxD2HaxD-TC",
+      name_en: "MikroTik hAP ax² C52iG-5HaxD2HaxD-TC",
       category: "Réseau & Connectique",
       price: 95000,
       oldPrice: 110000,
       thumbnail: "assets/images/products/MikroTik hAP ax² C52iG-5HaxD2HaxD-TC.jpg",
       featured: false,
       rating: 4.5,
-      description: "Routeur WiFi 6, 5 ports Gigabit, USB, puissant et configurable."
+      description_fr: "Routeur WiFi 6, 5 ports Gigabit, USB, puissant et configurable.",
+      description_en: "WiFi 6 router, 5 Gigabit ports, USB, powerful and configurable."
     },
 
     // ────────── Projecteurs ──────────
     {
       id: "20",
-      name: "Vidéoprojecteur Epson EB-535W",
+      name_fr: "Vidéoprojecteur Epson EB-535W",
+      name_en: "Epson EB-535W Projector",
       category: "Projecteurs",
       price: 350000,
       oldPrice: null,
       thumbnail: "assets/images/products/vidéoprojecteur Epson EB-535W.jpg",
       featured: false,
       rating: 4.4,
-      description: "Courte focale, 3400 lumens, WXGA, idéal pour salles de classe."
+      description_fr: "Courte focale, 3400 lumens, WXGA, idéal pour salles de classe.",
+      description_en: "Short throw, 3400 lumens, WXGA, ideal for classrooms."
     },
 
     // ────────── Impression ──────────
     {
       id: "21",
-      name: "Imprimante HP Laser MFP 137fnw",
+      name_fr: "Imprimante HP Laser MFP 137fnw",
+      name_en: "HP Laser MFP 137fnw Printer",
       category: "Impression",
       price: 180000,
       oldPrice: 210000,
       thumbnail: "assets/images/products/imprimante HP Laser MFP 137fnw..jpg",
       featured: false,
       rating: 4.1,
-      description: "Multifonction laser N&B, WiFi, recto-verso automatique."
+      description_fr: "Multifonction laser N&B, WiFi, recto-verso automatique.",
+      description_en: "Black & white laser MFP, WiFi, automatic duplex."
     },
 
     // ────────── Énergie / Divers ──────────
     {
       id: "22",
-      name: "Huafon ESS P600 de 600 watts",
+      name_fr: "Huafon ESS P600 de 600 watts",
+      name_en: "Huafon ESS P600 600W UPS",
       category: "Énergie & Onduleurs",
       price: 95000,
       oldPrice: null,
       thumbnail: "assets/images/products/Huafon ESS P600 de 600 watts..jpg",
       featured: false,
       rating: 4.0,
-      description: "Onduleur 600 VA / 360 W, protection surtension, compact."
+      description_fr: "Onduleur 600 VA / 360 W, protection surtension, compact.",
+      description_en: "600 VA / 360 W UPS, surge protection, compact."
     },
     {
       id: "23",
-      name: "Support de toit Starlink Mini",
+      name_fr: "Support de toit Starlink Mini",
+      name_en: "Starlink Mini Roof Mount",
       category: "Accessoires",
       price: 25000,
       oldPrice: null,
       thumbnail: "assets/images/products/Support de toit Starlink Mini.jpg",
       featured: false,
       rating: 4.2,
-      description: "Fixation solide pour antenne Starlink Mini sur tout type de toit."
+      description_fr: "Fixation solide pour antenne Starlink Mini sur tout type de toit.",
+      description_en: "Sturdy mount for Starlink Mini dish on any roof type."
     },
     {
       id: "24",
-      name: "RECRSI RE-S680",
+      name_fr: "RECRSI RE-S680",
+      name_en: "RECRSI RE-S680",
       category: "Accessoires",
       price: 15000,
       oldPrice: null,
       thumbnail: "assets/images/products/RECRSI RE-S680 .jpg",
       featured: false,
       rating: 4.0,
-      description: "Accessoire pratique (veuillez préciser)."
+      description_fr: "Accessoire pratique pour usage quotidien.",
+      description_en: "Practical accessory for daily use."
     },
 
     // ────────── Communication ──────────
     {
       id: "25",
-      name: "Talkies-walkies Baofeng BF-888S",
+      name_fr: "Talkies-walkies Baofeng BF-888S",
+      name_en: "Baofeng BF-888S Walkie-Talkies",
       category: "Communication",
       price: 18000,
       oldPrice: null,
       thumbnail: "assets/images/products/talkies-walkies Baofeng BF-888S..jpg",
       featured: false,
       rating: 4.3,
-      description: "Lot de 2 talkies-walkies UHF, portée jusqu'à 5 km."
+      description_fr: "Lot de 2 talkies-walkies UHF, portée jusqu'à 5 km.",
+      description_en: "Set of 2 UHF walkie-talkies, range up to 5 km."
     },
 
     // ────────── Gaming ──────────
     {
       id: "26",
-      name: "Sony DualShock 4",
+      name_fr: "Sony DualShock 4",
+      name_en: "Sony DualShock 4",
       category: "Gaming",
       price: 32000,
       oldPrice: 38000,
       thumbnail: "assets/images/products/Sony DualShock 4.jpg",
       featured: false,
       rating: 4.6,
-      description: "Manette sans fil officielle PS4, compatible PC."
+      description_fr: "Manette sans fil officielle PS4, compatible PC.",
+      description_en: "Official PS4 wireless controller, PC compatible."
     },
 
     // ────────── Visioconférence ──────────
     {
       id: "27",
-      name: "Logitech GROUP système de vidéoconférence",
+      name_fr: "Logitech GROUP système de vidéoconférence",
+      name_en: "Logitech GROUP Video Conferencing System",
       category: "Visioconférence",
       price: 420000,
       oldPrice: null,
       thumbnail: "assets/images/products/Logitech GROUP système de vidéoconférence.jpg",
       featured: true,
       rating: 4.5,
-      description: "Caméra Full HD, haut-parleur, micros, télécommande, pour salles de réunion."
+      description_fr: "Caméra Full HD, haut-parleur, micros, télécommande, pour salles de réunion.",
+      description_en: "Full HD camera, speaker, mics, remote, for meeting rooms."
     },
 
     // ────────── Comptage / Bureau ──────────
     {
       id: "28",
-      name: "Trieuse de billets Kisan Newton III",
+      name_fr: "Trieuse de billets Kisan Newton III",
+      name_en: "Kisan Newton III Banknote Sorter",
       category: "Matériel de bureau",
       price: 280000,
       oldPrice: 320000,
       thumbnail: "assets/images/products/trieuse de billets Kisan Newton III .jpg",
       featured: false,
       rating: 4.3,
-      description: "Compteuse trieuse de billets, détection faux, capacité 200 billets."
+      description_fr: "Compteuse trieuse de billets, détection faux, capacité 200 billets.",
+      description_en: "Banknote sorter & counter, counterfeit detection, 200-bill capacity."
     }
   ]
 };
