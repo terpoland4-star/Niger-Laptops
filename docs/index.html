@@ -44,63 +44,28 @@
     <title>Niger Laptops – Informatique & Technologie au Niger</title>
 </head>
 <body>
+    <!-- Barre d'outils (langue + thème) -->
+    <div style="display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
+        <select id="lang-selector" style="width: auto; padding: 4px 8px;">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+        <button id="theme-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Mode sombre">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
     <div id="app">
         <!-- Contenu généré dynamiquement par app.js -->
     </div>
 
-    <!-- Pied de page (maintenant bien visible) -->
-    <footer class="promo-footer" role="contentinfo">
-        <div class="promo-footer-content">
-            <!-- Colonne Boutique -->
-            <div class="promo-left">
-                <h4 style="margin-bottom: 0.5rem; color: white;">🖥️ Niger Laptops</h4>
-                <p style="margin-bottom: 0.5rem;">
-                    📍 Cité Sonuci, sur la latérite de chez Seyni Omar, Niamey (Niger)
-                </p>
-                <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" 
-                   class="btn btn-outline btn-sm" style="color:white; border-color:white; margin-bottom:0.8rem;">
-                    <i class="fas fa-map-marker-alt"></i> Ouvrir dans Google Maps
-                </a>
-                <p style="margin-bottom: 0.5rem;">
-                    <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="promo-link">
-                        <img src="assets/images/logo/whatsapp.png" alt="WhatsApp" style="height:24px; vertical-align:middle;">
-                        +227 91 12 78 70
-                    </a>
-                </p>
-                <p style="margin-bottom: 0.5rem;">
-                    <a href="mailto:zoubeirou.zakariya@gmail.com" class="promo-link">
-                        <i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com
-                    </a>
-                </p>
-                <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
-                    <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Colonne Développeur -->
-            <div class="promo-right">
-                <img src="assets/images/logo/logoHAM.png" alt="HAM Global Words" style="height:50px; border-radius:50px; margin-bottom:1.5rem;">
-                <div class="promo-name">Plateforme conçu par Hamadine AG MOCTAR</div>
-                <div class="promo-title">Développeur web full stack & CEO de HAM Global Words</div>
-                <div class="promo-location">📍 Tchangarey, Marché de Bétail, Niamey (Niger)</div>
-                <div style="margin-top: 0.8rem;">
-                    <p class="promo-tagline">💡 Besoin d'une application ou d'un site web ? Contactez‑moi !</p>
-                    <a href="https://wa.me/22786762903" target="_blank" rel="noopener" class="promo-link">
-                        <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 86 76 29 03
-                    </a><br>
-                    <a href="mailto:hamadineagmoctar@gmail.com" class="promo-link">
-                        <i class="fas fa-envelope"></i> hamadineagmoctar@gmail.com
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-    </footer>
+    <!-- Pied de page (sera généré dynamiquement par renderFooter()) -->
+    <div id="footer-app"></div>
 
     <!-- Scripts -->
     <script src="js/utils.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/data.js"></script>
     <script src="js/api.js"></script>
     <script src="js/payments.js"></script>
