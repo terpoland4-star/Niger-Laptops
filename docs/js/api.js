@@ -44,12 +44,18 @@ async function getProduct(id) {
     return apiCall('/products/' + id);
 }
 
-// Fonctions locales
+// Fonctions locales adaptées aux données bilingues
 function getLocalProducts(params = {}) {
     let products = [...demoData.products];
     if (params.search) {
         const q = params.search.toLowerCase();
-        products = products.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+        products = products.filter(p => {
+            // Cherche dans les noms et descriptions français et anglais
+            return (p.name_fr && p.name_fr.toLowerCase().includes(q)) ||
+                   (p.name_en && p.name_en.toLowerCase().includes(q)) ||
+                   (p.description_fr && p.description_fr.toLowerCase().includes(q)) ||
+                   (p.description_en && p.description_en.toLowerCase().includes(q));
+        });
     }
     return { data: products, pagination: { page:1, totalPages:1, total: products.length } };
 }
