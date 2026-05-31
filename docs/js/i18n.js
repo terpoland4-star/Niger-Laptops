@@ -72,6 +72,10 @@ const TRANSLATIONS = {
         errorProduct: 'Erreur',
         noProducts: 'Aucun produit trouvé.',
         discount: '-{discount}%',
+        developerTitle: 'Plateforme conçu par Hamadine AG MOCTAR',
+        developerSub: 'Développeur web full stack & CEO de HAM Global Words',
+        developerAddress: '📍 Tchangarey, Marché de Bétail, Niamey (Niger)',
+        devContact: '💡 Besoin d\'une application ou d\'un site web ? Contactez‑moi !',
     },
     en: {
         siteName: 'Niger Laptops',
@@ -146,7 +150,46 @@ const TRANSLATIONS = {
         errorProduct: 'Error',
         noProducts: 'No products found.',
         discount: '-{discount}%',
+        developerTitle: 'Platform designed by Hamadine AG MOCTAR',
+        developerSub: 'Full Stack Web Developer & CEO of HAM Global Words',
+        developerAddress: '📍 Tchangarey, Marché de Bétail, Niamey (Niger)',
+        devContact: '💡 Need an application or a website? Contact me!',
     }
+};
+
+const CATEGORIES_TRANSLATIONS = {
+  fr: {
+    'Ordinateurs': 'Ordinateurs',
+    'Tablettes': 'Tablettes',
+    'Photo & Vidéo': 'Photo & Vidéo',
+    'Audio': 'Audio',
+    'Réseau & Connectique': 'Réseau & Connectique',
+    'Projecteurs': 'Projecteurs',
+    'Impression': 'Impression',
+    'Énergie & Onduleurs': 'Énergie & Onduleurs',
+    'Accessoires': 'Accessoires',
+    'Communication': 'Communication',
+    'Gaming': 'Gaming',
+    'Visioconférence': 'Visioconférence',
+    'Matériel de bureau': 'Matériel de bureau',
+    'Sans catégorie': 'Sans catégorie'
+  },
+  en: {
+    'Ordinateurs': 'Laptops',
+    'Tablettes': 'Tablets',
+    'Photo & Vidéo': 'Photo & Video',
+    'Audio': 'Audio',
+    'Réseau & Connectique': 'Networking',
+    'Projecteurs': 'Projectors',
+    'Impression': 'Printing',
+    'Énergie & Onduleurs': 'Power & UPS',
+    'Accessoires': 'Accessories',
+    'Communication': 'Communication',
+    'Gaming': 'Gaming',
+    'Visioconférence': 'Video Conferencing',
+    'Matériel de bureau': 'Office Equipment',
+    'Sans catégorie': 'Uncategorized'
+  }
 };
 
 let currentLang = localStorage.getItem('lang') || 'fr';
@@ -157,6 +200,19 @@ function t(key, params = {}) {
         text = text.replace(`{${p}}`, params[p]);
     });
     return text;
+}
+
+function translateCategory(category) {
+    return CATEGORIES_TRANSLATIONS[currentLang]?.[category] || category;
+}
+
+function getLocalizedProduct(product) {
+    const lang = currentLang;
+    return {
+        ...product,
+        name: product[`name_${lang}`] || product.name_fr || product.name,
+        description: product[`description_${lang}`] || product.description_fr || product.description,
+    };
 }
 
 function setLanguage(lang) {
@@ -173,4 +229,53 @@ function initLanguage() {
             setLanguage(e.target.value);
         });
     }
+}
+
+function renderFooter() {
+    const footer = document.getElementById('footer-app');
+    if (!footer) return;
+    footer.innerHTML = `
+        <footer class="promo-footer" role="contentinfo">
+            <div class="promo-footer-content">
+                <div class="promo-left">
+                    <h4 style="margin-bottom: 0.5rem; color: white;">🖥️ ${t('siteName')}</h4>
+                    <p style="margin-bottom: 0.5rem;">📍 ${t('address')}</p>
+                    <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" 
+                       class="btn btn-outline btn-sm" style="color:white; border-color:white; margin-bottom:0.8rem;">
+                        <i class="fas fa-map-marker-alt"></i> ${t('openMaps')}
+                    </a>
+                    <p style="margin-bottom: 0.5rem;">
+                        <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="promo-link">
+                            <img src="assets/images/logo/whatsapp.png" alt="WhatsApp" style="height:24px; vertical-align:middle;"> +227 91 12 78 70
+                        </a>
+                    </p>
+                    <p style="margin-bottom: 0.5rem;">
+                        <a href="mailto:zoubeirou.zakariya@gmail.com" class="promo-link">
+                            <i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com
+                        </a>
+                    </p>
+                    <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
+                        <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="promo-right">
+                    <img src="assets/images/logo/logoHAM.png" alt="HAM Global Words" style="height:50px; border-radius:50px; margin-bottom:1.5rem;">
+                    <div class="promo-name">${t('developerTitle')}</div>
+                    <div class="promo-title">${t('developerSub')}</div>
+                    <div class="promo-location">${t('developerAddress')}</div>
+                    <div style="margin-top: 0.8rem;">
+                        <p class="promo-tagline">${t('devContact')}</p>
+                        <a href="https://wa.me/22786762903" target="_blank" rel="noopener" class="promo-link">
+                            <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 86 76 29 03
+                        </a><br>
+                        <a href="mailto:hamadineagmoctar@gmail.com" class="promo-link">
+                            <i class="fas fa-envelope"></i> hamadineagmoctar@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    `;
 }
