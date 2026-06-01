@@ -92,6 +92,14 @@ const TRANSLATIONS = {
         increase: 'Augmenter',
         decrease: 'Diminuer',
         resetAccessibility: 'Réinitialiser',
+        installTitle: 'Ajouter à l\'écran d\'accueil',
+        installSubtitle: 'Installez cette application pour une meilleure expérience',
+        installBtn: 'Installer',
+        later: 'Plus tard',
+        iosInstallStep1: 'Appuyez sur le bouton Partager',
+        iosInstallStep2: 'Sélectionnez "Sur l\'écran d\'accueil"',
+        iosInstallStep3: 'Puis appuyez sur "Ajouter"',
+        close: 'Fermer',
     },
     en: {
         siteName: 'Niger Laptops',
@@ -186,6 +194,14 @@ const TRANSLATIONS = {
         increase: 'Increase',
         decrease: 'Decrease',
         resetAccessibility: 'Reset',
+        installTitle: 'Add to Home Screen',
+        installSubtitle: 'Install this app for a better experience',
+        installBtn: 'Install',
+        later: 'Later',
+        iosInstallStep1: 'Tap the Share button',
+        iosInstallStep2: 'Select "Add to Home Screen"',
+        iosInstallStep3: 'Then tap "Add"',
+        close: 'Close',
     }
 };
 
@@ -310,4 +326,4 @@ function renderFooter() {
             </div>
         </footer>
     `;
-}
+            }
