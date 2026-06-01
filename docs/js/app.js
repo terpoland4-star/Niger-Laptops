@@ -8,6 +8,7 @@ window.addEventListener('load', async () => {
     renderFooter();       // Pied de page multilingue
     await loadAllProducts(); // Précharger les produits pour la recherche
     await checkAuth();    // Vérifier si un utilisateur est connecté
+    initInstallBanner();  // Bannière d'installation PWA
     handleRoute();        // Afficher la page correspondant à l'URL
 });
 
