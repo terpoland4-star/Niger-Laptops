@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://unpkg.com">
 
-    <!-- Favicons (générés par RealFaviconGenerator, chemins relatifs corrigés) -->
+    <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96x96.png">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link rel="shortcut icon" href="assets/favicon.ico">
@@ -26,7 +26,7 @@
     <!-- Manifest PWA -->
     <link rel="manifest" href="assets/site.webmanifest?v=2">
 
-    <!-- Font Awesome (pour les icônes) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script type="application/ld+json">
@@ -49,22 +49,34 @@
     <title>Niger Laptops – Informatique & Technologie au Niger</title>
 </head>
 <body>
-    <!-- Barre d'outils (langue + thème) -->
-    <div style="display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
-        <select id="lang-selector" style="width: auto; padding: 4px 8px;">
-            <option value="fr">🇫🇷 Français</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
-        <button id="theme-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Mode sombre">
-            <i class="fas fa-moon"></i>
-        </button>
-    </div>
+    <!-- Barre d'outils unifiée -->
+    <header class="toolbar">
+        <div class="toolbar-left">
+            <select id="lang-selector" class="toolbar-select" aria-label="Langue">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+        </div>
+        <div class="toolbar-right">
+            <button id="theme-toggle" class="toolbar-btn" title="Mode sombre" aria-label="Mode sombre">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="high-contrast-toggle" class="toolbar-btn" title="Contraste élevé" aria-label="Contraste élevé">
+                <i class="fas fa-adjust"></i>
+            </button>
+            <button id="font-decrease" class="toolbar-btn" title="Diminuer la taille du texte" aria-label="Texte plus petit">A−</button>
+            <button id="font-increase" class="toolbar-btn" title="Augmenter la taille du texte" aria-label="Texte plus grand">A+</button>
+            <button id="font-reset" class="toolbar-btn" title="Taille du texte par défaut" aria-label="Réinitialiser la taille">
+                <i class="fas fa-undo-alt"></i>
+            </button>
+        </div>
+    </header>
 
     <div id="app">
         <!-- Contenu généré dynamiquement par app.js -->
     </div>
 
-    <!-- Pied de page (sera généré dynamiquement par renderFooter()) -->
+    <!-- Pied de page (généré par renderFooter()) -->
     <div id="footer-app"></div>
 
     <!-- Scripts -->
@@ -79,12 +91,5 @@
     <script src="js/cart.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker enregistré', reg.scope))
-            .catch(err => console.error('Erreur SW', err));
-    }
-    </script>
 </body>
 </html>
