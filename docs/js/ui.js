@@ -63,32 +63,7 @@ async function renderHomePage() {
         </section>`;
     }
 
-    // Barre d'outils (langue, thème, accessibilité)
-    const toolbarHTML = `
-        <div style="display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
-            <select id="lang-selector" style="width: auto; padding: 4px 8px;">
-                <option value="fr">🇫🇷 Français</option>
-                <option value="en">🇬🇧 English</option>
-            </select>
-            <button id="theme-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Mode sombre">
-                <i class="fas fa-moon"></i>
-            </button>
-            <button id="accessibility-toggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="${t('accessibilityTitle')}">
-                <i class="fas fa-universal-access"></i>
-            </button>
-        </div>
-        <div id="accessibility-panel" style="display:none; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border);">
-            <label><input type="checkbox" id="high-contrast-toggle"> ${t('highContrast')}</label>
-            <div style="margin-top: 8px;">
-                <span>${t('fontSize')}: </span>
-                <button id="font-decrease" class="btn btn-sm">${t('decrease')}</button>
-                <button id="font-increase" class="btn btn-sm">${t('increase')}</button>
-                <button id="font-reset" class="btn btn-sm">${t('resetAccessibility')}</button>
-            </div>
-        </div>
-    `;
-
-    app.innerHTML = toolbarHTML + `
+    app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
             <div>
@@ -135,11 +110,6 @@ async function renderHomePage() {
             }
         });
     });
-
-    // Initialisation des modules
-    initAccessibilityControls();
-    initTheme();
-    initLanguage();
 }
 
 // ---------- RECHERCHE DYNAMIQUE ----------
@@ -206,20 +176,13 @@ function handleSearchSuggestions() {
 
 // ---------- ACCESSIBILITÉ ----------
 function initAccessibilityControls() {
-    const toggleBtn = document.getElementById('accessibility-toggle');
-    const panel = document.getElementById('accessibility-panel');
-    if (toggleBtn && panel) {
-        toggleBtn.addEventListener('click', () => {
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        });
-    }
-
     const highContrastToggle = document.getElementById('high-contrast-toggle');
     if (highContrastToggle) {
         highContrastToggle.checked = localStorage.getItem('highContrast') === 'true';
         applyHighContrast();
-        highContrastToggle.addEventListener('change', () => {
-            localStorage.setItem('highContrast', highContrastToggle.checked);
+        highContrastToggle.addEventListener('click', () => {
+            const current = localStorage.getItem('highContrast') === 'true';
+            localStorage.setItem('highContrast', !current);
             applyHighContrast();
         });
     }
