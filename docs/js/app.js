@@ -5,6 +5,7 @@ window.addEventListener('load', async () => {
     }
     initTheme();          // Mode sombre / clair
     initLanguage();       // Sélecteur de langue
+    initAccessibilityControls(); // Contrôles d'accessibilité
     renderFooter();       // Pied de page multilingue
     await loadAllProducts(); // Précharger les produits pour la recherche
     await checkAuth();    // Vérifier si un utilisateur est connecté
