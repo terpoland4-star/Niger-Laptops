@@ -660,3 +660,59 @@ textarea:focus {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
      }
+
+/* ---------- BARRE D'OUTILS UNIQUE ---------- */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+}
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toolbar-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.toolbar-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    font-weight: 500;
+}
+
+.toolbar-btn:hover {
+    background: var(--bg);
+    color: var(--orange);
+}
+
+.toolbar-btn i {
+    font-size: 1rem;
+   }
