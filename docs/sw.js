@@ -1,6 +1,7 @@
-const CACHE_NAME = 'niger-laptops-v3'; // nouvelle version pour forcer la mise à jour
+const CACHE_NAME = 'niger-laptops-v4'; // nouvelle version
+
+// Liste des ressources à mettre en cache
 const ASSETS = [
-    './',                     // ← important : la racine du site
     './index.html',
     './css/styles.css',
     './js/app.js',
@@ -22,38 +23,53 @@ const ASSETS = [
     './assets/web-app-manifest-512x512.png',
 ];
 
+// Installation : mise en cache
 self.addEventListener('install', event => {
+    console.log('[SW] Installation');
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+        caches.open(CACHE_NAME).then(cache => {
+            console.log('[SW] Mise en cache des assets');
+            return cache.addAll(ASSETS);
+        })
     );
     self.skipWaiting();
 });
 
+// Activation : nettoyage des anciens caches
 self.addEventListener('activate', event => {
+    console.log('[SW] Activation');
     event.waitUntil(
-        caches.keys().then(keys => Promise.all(
-            keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-        ))
+        caches.keys().then(keys => {
+            return Promise.all(
+                keys.filter(key => key !== CACHE_NAME).map(key => {
+                    console.log('[SW] Suppression du cache obsolète:', key);
+                    return caches.delete(key);
+                })
+            );
+        })
     );
     self.clients.claim();
 });
 
+// Interception des requêtes
 self.addEventListener('fetch', event => {
-    // Requêtes API : réseau d'abord, puis cache
+    // Ne pas intercepter les requêtes API
     if (event.request.url.includes('/api/')) {
-        event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+        event.respondWith(fetch(event.request));
         return;
     }
 
-    // Pour les requêtes de navigation (ex: l'ouverture de l'app), servir index.html
+    // Pour les requêtes de navigation, toujours servir index.html
     if (event.request.mode === 'navigate') {
         event.respondWith(
-            caches.match('./index.html').then(cached => cached || fetch(event.request))
+            caches.match('./index.html').then(cached => {
+                return cached || fetch(event.request);
+            })
         );
         return;
     }
 
-    // Pour toutes les autres ressources : cache d'abord, puis réseau
+    // Pour les autres ressources : cache d'abord, puis réseau
     event.respondWith(
         caches.match(event.request).then(cached => {
             if (cached) return cached;
