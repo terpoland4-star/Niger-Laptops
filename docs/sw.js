@@ -1,7 +1,8 @@
-const CACHE_NAME = 'niger-laptops-v4'; // nouvelle version
+const CACHE_NAME = 'niger-laptops-v6'; // version pour niger-laptops.com
 
 // Liste des ressources à mettre en cache
 const ASSETS = [
+    './',
     './index.html',
     './css/styles.css',
     './js/app.js',
