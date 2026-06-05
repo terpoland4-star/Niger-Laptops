@@ -350,7 +350,7 @@ textarea:focus {
 }
 
 .app-header img {
-  height: 36px;
+  height: 70px;
   width: auto;
   border-radius: 8px;
 }
@@ -433,7 +433,7 @@ textarea:focus {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: 1rem;
-  position: relative; /* pour le dropdown des suggestions */
+  position: relative;
 }
 
 .search-wrapper input {
@@ -499,15 +499,15 @@ textarea:focus {
   gap: 0.75rem;
   padding: 0.5rem 16px;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;          /* Firefox */
+  scrollbar-width: none;
 }
 
 .carousel-container::-webkit-scrollbar {
-  display: none;                  /* Chrome, Safari */
+  display: none;
 }
 
 .carousel-container .product-card {
-  flex: 0 0 45%;                  /* largeur d'une carte (ajustez selon vos besoins) */
+  flex: 0 0 45%;
   scroll-snap-align: start;
 }
 
@@ -634,6 +634,8 @@ textarea:focus {
 }
 
 .high-contrast .btn {
+  background: var(--surface);
+  color: var(--text);
   border: 2px solid currentColor;
 }
 
@@ -659,7 +661,7 @@ textarea:focus {
 @keyframes floatLogo {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
-     }
+}
 
 /* ---------- BARRE D'OUTILS UNIQUE ---------- */
 .toolbar {
@@ -715,4 +717,4 @@ textarea:focus {
 
 .toolbar-btn i {
     font-size: 1rem;
-   }
+}
