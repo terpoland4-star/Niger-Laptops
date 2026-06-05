@@ -326,4 +326,4 @@ function renderFooter() {
             </div>
         </footer>
     `;
-            }
+}
