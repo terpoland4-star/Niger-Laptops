@@ -104,5 +104,35 @@
                 });
         }
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var test = document.createElement('div');
+        test.textContent = '✅ JS fonctionne';
+        test.style.position = 'fixed';
+        test.style.top = '0';
+        test.style.left = '0';
+        test.style.background = 'green';
+        test.style.color = 'white';
+        test.style.padding = '10px';
+        test.style.zIndex = '99999';
+        document.body.appendChild(test);
+    });
+    </script>
+    
+    <script>
+    window.onerror = function(msg, url, line, col, error) {
+        var el = document.createElement('div');
+        el.textContent = '❌ Erreur JS : ' + msg + ' (ligne ' + line + ')';
+        el.style.position = 'fixed';
+        el.style.bottom = '0';
+        el.style.left = '0';
+        el.style.background = 'red';
+        el.style.color = 'white';
+        el.style.padding = '10px';
+        el.style.zIndex = '99999';
+        document.body.appendChild(el);
+        return false;
+    };
+    </script>
 </body>
 </html>
