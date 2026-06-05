@@ -1,5 +1,5 @@
 // ==========================================
-// install.js – Bannière d'installation PWA (affichée à chaque visite jusqu'à installation)
+// install.js – Bannière d'installation PWA (délai de 3 jours après refus)
 // ==========================================
 
 let deferredPrompt = null;
@@ -52,6 +52,8 @@ function showInstallBanner() {
 
     document.getElementById('pwa-dismiss-btn').addEventListener('click', () => {
         if (banner.parentNode) banner.remove();
+        // Enregistrer la date de refus pour patienter 3 jours
+        localStorage.setItem('installBannerDismissedAt', Date.now());
     });
 }
 
@@ -79,6 +81,13 @@ function isIOS() {
 function initInstallBanner() {
     if (isAppInstalled()) return;
 
+    // Vérifier si l'utilisateur a déjà refusé il y a moins de 3 jours
+    const dismissedAt = localStorage.getItem('installBannerDismissedAt');
+    if (dismissedAt) {
+        const hoursSince = (Date.now() - parseInt(dismissedAt)) / (1000 * 60 * 60);
+        if (hoursSince < 72) return; // 3 jours = 72 heures
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -93,9 +102,9 @@ function initInstallBanner() {
     }, 2000);
 }
 
-// Écouter l'installation réussie pour masquer la bannière
 window.addEventListener('appinstalled', () => {
     console.log('PWA installée avec succès');
     const banner = document.getElementById('pwa-install-banner');
     if (banner) banner.remove();
+    localStorage.removeItem('installBannerDismissedAt');
 });
