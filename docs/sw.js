@@ -1,4 +1,4 @@
-const CACHE_NAME = 'niger-laptops-v6';
+const CACHE_NAME = 'niger-laptops-v7';
 
 // Ressources à mettre en cache (ajustez selon vos besoins)
 const ASSETS = [
