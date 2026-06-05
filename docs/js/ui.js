@@ -89,7 +89,6 @@ async function renderHomePage() {
                 </button>
                 <div id="suggestions-dropdown" class="suggestions-dropdown" style="display:none;"></div>
             </div>
-            <!-- Conteneur pour les résultats de recherche dynamique -->
             <div id="search-results-grid" class="product-grid mt-2" style="display:none;"></div>
             ${categoriesHTML || `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`}
         </main>
@@ -110,6 +109,9 @@ async function renderHomePage() {
             }
         });
     });
+
+    // Initialiser les contrôles d'accessibilité une fois le DOM prêt
+    initAccessibilityControls();
 }
 
 // ---------- RECHERCHE DYNAMIQUE ----------
@@ -135,7 +137,6 @@ function handleSearchSuggestions() {
 
     const query = input.value.trim().toLowerCase();
 
-    // Si le champ est vide, réafficher les catégories et masquer la grille de recherche
     if (query.length === 0) {
         dropdown.style.display = 'none';
         if (resultsGrid) resultsGrid.style.display = 'none';
@@ -143,23 +144,19 @@ function handleSearchSuggestions() {
         return;
     }
 
-    // Filtrer les produits en mémoire
     const filtered = allProductsCache.filter(p => {
         const loc = getLocalizedProduct(p);
         return loc.name.toLowerCase().includes(query) ||
                loc.description.toLowerCase().includes(query);
     });
 
-    // Mettre à jour la grille de recherche
     if (resultsGrid) {
         resultsGrid.innerHTML = filtered.map(p => productCard(p)).join('');
         resultsGrid.style.display = 'block';
     }
 
-    // Masquer les sections de catégories
     categorySections.forEach(s => s.style.display = 'none');
 
-    // Mettre à jour les suggestions déroulantes
     if (filtered.length === 0) {
         dropdown.style.display = 'none';
     } else {
@@ -226,14 +223,18 @@ window.addToCartFromCard = async function (productId) {
         const res = await getProduct(productId);
         const product = res.data;
         addToCart(product, 1);
+        showToast(t('addedToCart'), 'success');
     } catch (e) {
-        showToast(t('errorProduct'));
+        showToast(t('errorProduct'), 'error');
     }
 };
 
 window.addToCartFromDetail = function (productId, stock) {
     getProduct(productId).then(res => {
         addToCart(res.data, 1);
+        showToast(t('addedToCart'), 'success');
+    }).catch(() => {
+        showToast(t('errorProduct'), 'error');
     });
 };
 
@@ -244,6 +245,7 @@ async function renderProductPage(productId) {
     try {
         const res = await getProduct(productId);
         const p = getLocalizedProduct(res.data);
+        const stockQty = p.stock_quantity !== undefined ? p.stock_quantity : 10; // fallback si absent
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
@@ -254,8 +256,8 @@ async function renderProductPage(productId) {
                 <span class="price">${formatPrice(p.price)}</span>
                 ${p.compare_at_price ? `<span class="old-price">${formatPrice(p.compare_at_price)}</span>` : ''}
             </div>
-            <div>${t('stock')} : ${p.stock_quantity > 0 ? t('inStock') : t('outOfStock')}</div>
-            <button class="btn btn-primary btn-block mt-2" onclick="addToCartFromDetail('${p.id}', ${p.stock_quantity})">${t('addToCart')}</button>
+            <div>${t('stock')} : ${stockQty > 0 ? t('inStock') : t('outOfStock')}</div>
+            <button class="btn btn-primary btn-block mt-2" onclick="addToCartFromDetail('${p.id}', ${stockQty})">${t('addToCart')}</button>
         </div>`;
     } catch (e) {
         app.innerHTML = `<div class="container">${t('productNotFound')}</div>`;
@@ -355,10 +357,10 @@ function renderCheckoutPage() {
 
             cart = [];
             saveCart();
-            showToast(t('orderConfirmed'));
+            showToast(t('orderConfirmed'), 'success');
             navigateTo('/orders');
         } catch (err) {
-            showToast(err.message);
+            showToast(err.message, 'error');
         }
     });
 }
@@ -444,7 +446,7 @@ function renderLoginPage() {
         try {
             await handleLogin(email, password);
         } catch (err) {
-            showToast(err.message);
+            showToast(err.message, 'error');
         }
     });
 }
@@ -471,10 +473,10 @@ function renderRegisterPage() {
         const password = document.getElementById('reg-password').value;
         try {
             register(email, password, fullname);
-            showToast(t('registerSuccess'));
+            showToast(t('registerSuccess'), 'success');
             navigateTo('/');
         } catch (err) {
-            showToast(err.message);
+            showToast(err.message, 'error');
         }
     });
 }
@@ -539,14 +541,3 @@ function renderContactPage() {
         </div>
     </div>`;
 }
-
-// ---------- RECHERCHE RAPIDE (appelée par la loupe) ----------
-window.searchProducts = function () {
-    const query = document.getElementById('search-input')?.value;
-    if (!query) return;
-    getProducts({ search: query }).then(res => {
-        const products = res.data || [];
-        const grid = document.getElementById('product-list');
-        if (grid) grid.innerHTML = products.map(p => productCard(p)).join('');
-    });
-};
