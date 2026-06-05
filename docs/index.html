@@ -105,20 +105,5 @@
         }
     </script>
     
-    <script>
-    window.onerror = function(msg, url, line, col, error) {
-        var el = document.createElement('div');
-        el.textContent = '❌ Erreur JS : ' + msg + ' (ligne ' + line + ')';
-        el.style.position = 'fixed';
-        el.style.bottom = '0';
-        el.style.left = '0';
-        el.style.background = 'red';
-        el.style.color = 'white';
-        el.style.padding = '10px';
-        el.style.zIndex = '99999';
-        document.body.appendChild(el);
-        return false;
-    };
-    </script>
 </body>
 </html>
