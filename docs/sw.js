@@ -1,4 +1,4 @@
-const CACHE_NAME = 'niger-laptops-reset';
+const CACHE_NAME = 'niger-laptops-fix';
 
 self.addEventListener('install', event => {
     self.skipWaiting();
@@ -12,5 +12,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+    if (event.request.mode === 'navigate') {
+        event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')));
+        return;
+    }
     event.respondWith(fetch(event.request));
 });
