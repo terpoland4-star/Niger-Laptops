@@ -1,11 +1,12 @@
 const demoData = {
   products: [
-    // ────────── Ordinateurs portables ──────────
+    // ========== ORDINATEURS (10) ==========
     {
       id: "1",
       name_fr: "HP Victus 15-fb3093dx",
       name_en: "HP Victus 15-fb3093dx",
       category: "Ordinateurs",
+      condition: "new",
       price: 780000,
       oldPrice: null,
       thumbnail: "assets/images/products/hp-victus-15-fb3093dx.jpg",
@@ -19,6 +20,7 @@ const demoData = {
       name_fr: "HP ProBook 450 G7",
       name_en: "HP ProBook 450 G7",
       category: "Ordinateurs",
+      condition: "used",
       price: 650000,
       oldPrice: 720000,
       thumbnail: "assets/images/products/hp-probook-450-g7.jpg",
@@ -32,6 +34,7 @@ const demoData = {
       name_fr: "HP ProBook 450 G8",
       name_en: "HP ProBook 450 G8",
       category: "Ordinateurs",
+      condition: "new",
       price: 720000,
       oldPrice: null,
       thumbnail: "assets/images/products/HP ProBook 450 G8..jpg",
@@ -45,6 +48,7 @@ const demoData = {
       name_fr: "Lenovo ThinkPad X13 Yoga",
       name_en: "Lenovo ThinkPad X13 Yoga",
       category: "Ordinateurs",
+      condition: "new",
       price: 850000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad X13 Yoga..jpg",
@@ -58,6 +62,7 @@ const demoData = {
       name_fr: "Lenovo ThinkPad X1 Yoga",
       name_en: "Lenovo ThinkPad X1 Yoga",
       category: "Ordinateurs",
+      condition: "new",
       price: 920000,
       oldPrice: 1050000,
       thumbnail: "assets/images/products/Lenovo ThinkPad X1 Yoga.jpg",
@@ -71,6 +76,7 @@ const demoData = {
       name_fr: "Lenovo ThinkPad T470S",
       name_en: "Lenovo ThinkPad T470S",
       category: "Ordinateurs",
+      condition: "used",
       price: 450000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T470S.jpg",
@@ -84,6 +90,7 @@ const demoData = {
       name_fr: "Lenovo ThinkPad T14",
       name_en: "Lenovo ThinkPad T14",
       category: "Ordinateurs",
+      condition: "new",
       price: 680000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T14.jpg",
@@ -97,6 +104,7 @@ const demoData = {
       name_fr: "Lenovo ThinkPad T14 Gen",
       name_en: "Lenovo ThinkPad T14 Gen",
       category: "Ordinateurs",
+      condition: "new",
       price: 710000,
       oldPrice: null,
       thumbnail: "assets/images/products/Lenovo ThinkPad T14 Gen.jpg",
@@ -110,6 +118,7 @@ const demoData = {
       name_fr: "Lenovo ThinkBook 15 G2",
       name_en: "Lenovo ThinkBook 15 G2",
       category: "Ordinateurs",
+      condition: "new",
       price: 580000,
       oldPrice: 650000,
       thumbnail: "assets/images/products/LENOVO ThinkBook 15 G2..jpg",
@@ -118,13 +127,12 @@ const demoData = {
       description_fr: "15.6\" Full HD, Core i5 11e gén., 8 Go, SSD 512 Go, pour PME.",
       description_en: "15.6\" Full HD, 11th Gen Core i5, 8GB RAM, 512GB SSD, for SMBs."
     },
-
-    // ────────── PC tout-en-un ──────────
     {
       id: "10",
       name_fr: "HP Tout-en-un 24 pouces",
       name_en: "HP All-in-One 24\"",
       category: "Ordinateurs",
+      condition: "new",
       price: 450000,
       oldPrice: null,
       thumbnail: "assets/images/products/HP Tout-en-un de 24 pouces.jpg",
@@ -134,12 +142,13 @@ const demoData = {
       description_en: "All-in-one PC with 24\" touchscreen, Core i3, 8GB RAM, 512GB SSD."
     },
 
-    // ────────── Tablettes ──────────
+    // ========== STOCKAGE (3) – exemples avec tablettes ==========
     {
       id: "11",
       name_fr: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
       name_en: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
-      category: "Tablettes",
+      category: "Stockage",
+      condition: "new",
       price: 320000,
       oldPrice: null,
       thumbnail: "assets/images/products/Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)..jpg",
@@ -152,7 +161,8 @@ const demoData = {
       id: "12",
       name_fr: "Samsung Galaxy Tab A9+ 128 Go",
       name_en: "Samsung Galaxy Tab A9+ 128GB",
-      category: "Tablettes",
+      category: "Stockage",
+      condition: "new",
       price: 180000,
       oldPrice: 210000,
       thumbnail: "assets/images/products/Samsung Galaxy TAB A9+ ROM8_128GB.jpg",
@@ -165,7 +175,8 @@ const demoData = {
       id: "13",
       name_fr: "Samsung Galaxy Tab A8",
       name_en: "Samsung Galaxy Tab A8",
-      category: "Tablettes",
+      category: "Stockage",
+      condition: "used",
       price: 140000,
       oldPrice: null,
       thumbnail: "assets/images/products/Samsung Galaxy TAB A8.jpg",
@@ -175,12 +186,13 @@ const demoData = {
       description_en: "10.5\", 64GB, 4GB RAM, for the whole family."
     },
 
-    // ────────── Photo / Vidéo ──────────
+    // ========== ACCESSOIRES (15) ==========
     {
       id: "14",
       name_fr: "Canon EOS R6",
       name_en: "Canon EOS R6",
-      category: "Photo & Vidéo",
+      category: "Accessoires",
+      condition: "new",
       price: 1450000,
       oldPrice: null,
       thumbnail: "assets/images/products/Canon EOS R6.jpg",
@@ -193,7 +205,8 @@ const demoData = {
       id: "15",
       name_fr: "Nikon D5300",
       name_en: "Nikon D5300",
-      category: "Photo & Vidéo",
+      category: "Accessoires",
+      condition: "used",
       price: 380000,
       oldPrice: 450000,
       thumbnail: "assets/images/products/Nikon D5300..jpg",
@@ -202,13 +215,12 @@ const demoData = {
       description_fr: "Reflex 24 Mp, écran orientable, Wi‑Fi, idéal débutant/expert.",
       description_en: "24MP DSLR, vari-angle screen, Wi‑Fi, great for beginners and experts."
     },
-
-    // ────────── Audio ──────────
     {
       id: "16",
       name_fr: "Enceinte Bluetooth JBL Flip 7",
       name_en: "JBL Flip 7 Bluetooth Speaker",
-      category: "Audio",
+      category: "Accessoires",
+      condition: "new",
       price: 75000,
       oldPrice: 85000,
       thumbnail: "assets/images/products/enceintes Bluetooth JBL Flip 7.jpg",
@@ -217,13 +229,12 @@ const demoData = {
       description_fr: "Son puissant, grave profond, IP67, autonomie 14 h.",
       description_en: "Powerful sound, deep bass, IP67, 14-hour battery."
     },
-
-    // ────────── Réseau / WiFi ──────────
     {
       id: "17",
       name_fr: "Grandstream GWN7664ELR",
       name_en: "Grandstream GWN7664ELR",
-      category: "Réseau & Connectique",
+      category: "Accessoires",
+      condition: "new",
       price: 220000,
       oldPrice: null,
       thumbnail: "assets/images/products/Grandstream GWN7664ELR..jpg",
@@ -236,7 +247,8 @@ const demoData = {
       id: "18",
       name_fr: "Ruijie Reyee RG-AirMetro460F",
       name_en: "Ruijie Reyee RG-AirMetro460F",
-      category: "Réseau & Connectique",
+      category: "Accessoires",
+      condition: "new",
       price: 180000,
       oldPrice: null,
       thumbnail: "assets/images/products/Ruijie Reyee RG-AirMetro460F..jpg",
@@ -249,7 +261,8 @@ const demoData = {
       id: "19",
       name_fr: "MikroTik hAP ax² C52iG-5HaxD2HaxD-TC",
       name_en: "MikroTik hAP ax² C52iG-5HaxD2HaxD-TC",
-      category: "Réseau & Connectique",
+      category: "Accessoires",
+      condition: "new",
       price: 95000,
       oldPrice: 110000,
       thumbnail: "assets/images/products/MikroTik hAP ax² C52iG-5HaxD2HaxD-TC.jpg",
@@ -258,13 +271,12 @@ const demoData = {
       description_fr: "Routeur WiFi 6, 5 ports Gigabit, USB, puissant et configurable.",
       description_en: "WiFi 6 router, 5 Gigabit ports, USB, powerful and configurable."
     },
-
-    // ────────── Projecteurs ──────────
     {
       id: "20",
       name_fr: "Vidéoprojecteur Epson EB-535W",
       name_en: "Epson EB-535W Projector",
-      category: "Projecteurs",
+      category: "Accessoires",
+      condition: "new",
       price: 350000,
       oldPrice: null,
       thumbnail: "assets/images/products/vidéoprojecteur Epson EB-535W.jpg",
@@ -273,13 +285,12 @@ const demoData = {
       description_fr: "Courte focale, 3400 lumens, WXGA, idéal pour salles de classe.",
       description_en: "Short throw, 3400 lumens, WXGA, ideal for classrooms."
     },
-
-    // ────────── Impression ──────────
     {
       id: "21",
       name_fr: "Imprimante HP Laser MFP 137fnw",
       name_en: "HP Laser MFP 137fnw Printer",
-      category: "Impression",
+      category: "Accessoires",
+      condition: "new",
       price: 180000,
       oldPrice: 210000,
       thumbnail: "assets/images/products/imprimante HP Laser MFP 137fnw..jpg",
@@ -288,13 +299,12 @@ const demoData = {
       description_fr: "Multifonction laser N&B, WiFi, recto-verso automatique.",
       description_en: "Black & white laser MFP, WiFi, automatic duplex."
     },
-
-    // ────────── Énergie / Divers ──────────
     {
       id: "22",
       name_fr: "Huafon ESS P600 de 600 watts",
       name_en: "Huafon ESS P600 600W UPS",
-      category: "Énergie & Onduleurs",
+      category: "Accessoires",
+      condition: "new",
       price: 95000,
       oldPrice: null,
       thumbnail: "assets/images/products/Huafon ESS P600 de 600 watts..jpg",
@@ -308,6 +318,7 @@ const demoData = {
       name_fr: "Support de toit Starlink Mini",
       name_en: "Starlink Mini Roof Mount",
       category: "Accessoires",
+      condition: "new",
       price: 25000,
       oldPrice: null,
       thumbnail: "assets/images/products/Support de toit Starlink Mini.jpg",
@@ -321,6 +332,7 @@ const demoData = {
       name_fr: "RECRSI RE-S680",
       name_en: "RECRSI RE-S680",
       category: "Accessoires",
+      condition: "used",
       price: 15000,
       oldPrice: null,
       thumbnail: "assets/images/products/RECRSI RE-S680 .jpg",
@@ -329,13 +341,12 @@ const demoData = {
       description_fr: "Accessoire pratique pour usage quotidien.",
       description_en: "Practical accessory for daily use."
     },
-
-    // ────────── Communication ──────────
     {
       id: "25",
       name_fr: "Talkies-walkies Baofeng BF-888S",
       name_en: "Baofeng BF-888S Walkie-Talkies",
-      category: "Communication",
+      category: "Accessoires",
+      condition: "new",
       price: 18000,
       oldPrice: null,
       thumbnail: "assets/images/products/talkies-walkies Baofeng BF-888S..jpg",
@@ -344,13 +355,12 @@ const demoData = {
       description_fr: "Lot de 2 talkies-walkies UHF, portée jusqu'à 5 km.",
       description_en: "Set of 2 UHF walkie-talkies, range up to 5 km."
     },
-
-    // ────────── Gaming ──────────
     {
       id: "26",
       name_fr: "Sony DualShock 4",
       name_en: "Sony DualShock 4",
-      category: "Gaming",
+      category: "Accessoires",
+      condition: "new",
       price: 32000,
       oldPrice: 38000,
       thumbnail: "assets/images/products/Sony DualShock 4.jpg",
@@ -359,13 +369,12 @@ const demoData = {
       description_fr: "Manette sans fil officielle PS4, compatible PC.",
       description_en: "Official PS4 wireless controller, PC compatible."
     },
-
-    // ────────── Visioconférence ──────────
     {
       id: "27",
       name_fr: "Logitech GROUP système de vidéoconférence",
       name_en: "Logitech GROUP Video Conferencing System",
-      category: "Visioconférence",
+      category: "Accessoires",
+      condition: "new",
       price: 420000,
       oldPrice: null,
       thumbnail: "assets/images/products/Logitech GROUP système de vidéoconférence.jpg",
@@ -374,13 +383,12 @@ const demoData = {
       description_fr: "Caméra Full HD, haut-parleur, micros, télécommande, pour salles de réunion.",
       description_en: "Full HD camera, speaker, mics, remote, for meeting rooms."
     },
-
-    // ────────── Comptage / Bureau ──────────
     {
       id: "28",
       name_fr: "Trieuse de billets Kisan Newton III",
       name_en: "Kisan Newton III Banknote Sorter",
-      category: "Matériel de bureau",
+      category: "Accessoires",
+      condition: "used",
       price: 280000,
       oldPrice: 320000,
       thumbnail: "assets/images/products/trieuse de billets Kisan Newton III .jpg",
