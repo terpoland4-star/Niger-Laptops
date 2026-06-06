@@ -52,6 +52,7 @@ const TRANSLATIONS = {
         whatsappLabel: '📞 WhatsApp',
         emailLabel: '📧 Email',
         followUs: 'Suivez-nous',
+        usefulLinks: 'Liens utiles',
         loginTitle: 'Connexion',
         phonePlaceholder: 'Téléphone (+227...)',
         sendCode: 'Recevoir le code',
@@ -156,6 +157,7 @@ const TRANSLATIONS = {
         whatsappLabel: '📞 WhatsApp',
         emailLabel: '📧 Email',
         followUs: 'Follow us',
+        usefulLinks: 'Useful links',
         loginTitle: 'Login',
         phonePlaceholder: 'Phone (+227...)',
         sendCode: 'Send Code',
@@ -309,7 +311,25 @@ function renderFooter() {
                             <i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com
                         </a>
                     </p>
+                    <!-- Liens utiles -->
+                    <div class="useful-links" style="margin-top: 1rem;">
+                        <h4 style="color: white; margin-bottom: 0.5rem;">🔗 ${t('usefulLinks')}</h4>
+                        <a href="#/about" class="promo-link" style="display: block; margin-bottom: 0.3rem;">
+                            <i class="fas fa-info-circle"></i> ${t('aboutTitle')}
+                        </a>
+                        <a href="#/contact" class="promo-link" style="display: block; margin-bottom: 0.3rem;">
+                            <i class="fas fa-envelope"></i> ${t('contactTitle')}
+                        </a>
+                        <a href="#/orders" class="promo-link" style="display: block; margin-bottom: 0.3rem;">
+                            <i class="fas fa-box"></i> ${t('myOrders')}
+                        </a>
+                        <a href="#/cart" class="promo-link" style="display: block; margin-bottom: 0.3rem;">
+                            <i class="fas fa-shopping-cart"></i> ${t('cart')}
+                        </a>
+                    </div>
+                    <!-- Réseaux sociaux -->
                     <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
+                        <span style="color: white; font-size: 0.9rem; margin-right: 0.5rem;">${t('followUs')}</span>
                         <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
                             <i class="fab fa-facebook"></i>
                         </a>
