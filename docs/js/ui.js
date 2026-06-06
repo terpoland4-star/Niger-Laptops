@@ -33,11 +33,11 @@ function skeleton(columns = 2) {
     return `<div class="product-grid">${html}</div>`;
 }
 
-// ---------- PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE + RECHERCHE DYNAMIQUE) ----------
+// ---------- PAGE D'ACCUEIL (ONGLETS INSPIRÉS DE TEMU) ----------
 async function renderHomePage() {
     const app = document.getElementById('app');
 
-    // Afficher un squelette immédiatement
+    // Squelette immédiat
     app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
@@ -76,33 +76,51 @@ async function renderHomePage() {
         allProducts = [];
     }
 
-    // Regroupement par catégorie
-    const categoriesMap = {};
-    allProducts.forEach(p => {
-        const cat = p.category || 'Sans catégorie';
-        if (!categoriesMap[cat]) categoriesMap[cat] = [];
-        categoriesMap[cat].push(p);
-    });
+    window._allProducts = allProducts;
 
-    let categoriesHTML = '';
-    for (const [catName, products] of Object.entries(categoriesMap)) {
-        const catId = catName.replace(/\s+/g, '-').toLowerCase();
-        categoriesHTML += `
-        <section class="category-section mb-2" id="cat-${catId}">
-            <div class="flex-between" style="padding: 0 16px;">
-                <h3>${translateCategory(catName)}</h3>
-                <div class="carousel-controls">
-                    <button class="btn btn-sm btn-outline prev-btn" data-target="${catId}" aria-label="Défiler vers la gauche">←</button>
-                    <button class="btn btn-sm btn-outline next-btn" data-target="${catId}" aria-label="Défiler vers la droite">→</button>
-                </div>
+    const mainTabs = [
+        { key: 'Ordinateurs', label: '💻 Ordinateurs' },
+        { key: 'Stockage', label: '💾 Stockage' },
+        { key: 'Accessoires', label: '🎧 Accessoires' }
+    ];
+
+    let activeTab = 'Ordinateurs';
+
+    function buildContent() {
+        const products = window._allProducts.filter(p => p.category === activeTab);
+        const newProducts = products.filter(p => p.condition === 'new');
+        const usedProducts = products.filter(p => p.condition === 'used');
+
+        const sectionNew = newProducts.length ? `
+            <section class="category-section">
+                <h3 class="section-subtitle">🆕 ${t('newProducts')}</h3>
+                <div class="product-grid">${newProducts.map(p => productCard(p)).join('')}</div>
+            </section>` : '';
+
+        const sectionUsed = usedProducts.length ? `
+            <section class="category-section">
+                <h3 class="section-subtitle">🔄 ${t('usedProducts')}</h3>
+                <div class="product-grid">${usedProducts.map(p => productCard(p)).join('')}</div>
+            </section>` : '';
+
+        const emptyMsg = (!newProducts.length && !usedProducts.length)
+            ? `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`
+            : '';
+
+        return `
+            <div class="temu-tabs">
+                ${mainTabs.map(tab => `
+                    <button class="temu-tab ${tab.key === activeTab ? 'active' : ''}" data-tab="${tab.key}">
+                        ${tab.label}
+                    </button>
+                `).join('')}
             </div>
-            <div class="carousel-container" id="${catId}">
-                ${products.map(p => productCard(p)).join('')}
-            </div>
-        </section>`;
+            ${sectionNew}
+            ${sectionUsed}
+            ${emptyMsg}
+        `;
     }
 
-    // Remplacer le squelette par le contenu réel
     const main = document.querySelector('main.container');
     if (main) {
         main.innerHTML = `
@@ -114,44 +132,33 @@ async function renderHomePage() {
                 <div id="suggestions-dropdown" class="suggestions-dropdown" style="display:none;"></div>
             </div>
             <div id="search-results-grid" class="product-grid mt-2" style="display:none;"></div>
-            ${categoriesHTML || `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`}
+            <div id="temu-content">${buildContent()}</div>
         `;
 
-        // Réattacher les événements des carrousels
-        document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetId = btn.dataset.target;
-                const container = document.getElementById(targetId);
-                if (container) {
-                    const firstCard = container.querySelector('.product-card');
-                    const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 280;
-                    const scrollAmount = cardWidth * 0.8;
-                    if (btn.classList.contains('prev-btn')) {
-                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                    }
-                }
+        document.querySelectorAll('.temu-tab').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.temu-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeTab = this.dataset.tab;
+                document.getElementById('temu-content').innerHTML = buildContent();
+                attachAddToCartListeners();
+                initAccessibilityControls();
             });
         });
-
-        // Réattacher l'écouteur de recherche
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', handleSearchSuggestions);
-        }
     }
 
-    // Délégation d'événement pour les boutons "Ajouter au panier"
-    document.getElementById('app').addEventListener('click', function(e) {
-        const btn = e.target.closest('.add-to-cart-btn');
-        if (btn) {
-            e.stopPropagation();
-            const productId = btn.dataset.productId;
-            addToCartFromCard(productId);
-        }
-    });
+    function attachAddToCartListeners() {
+        document.getElementById('app').addEventListener('click', function (e) {
+            const btn = e.target.closest('.add-to-cart-btn');
+            if (btn) {
+                e.stopPropagation();
+                const productId = btn.dataset.productId;
+                addToCartFromCard(productId);
+            }
+        });
+    }
 
+    attachAddToCartListeners();
     initAccessibilityControls();
 }
 
