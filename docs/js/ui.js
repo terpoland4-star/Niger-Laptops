@@ -24,10 +24,50 @@ function productCard(product) {
     </div>`;
 }
 
+// ---------- SQUELETTE DE CHARGEMENT ----------
+function skeleton(columns = 2) {
+    let html = '';
+    for (let i = 0; i < columns * 2; i++) {
+        html += `<div class="skeleton-card"></div>`;
+    }
+    return `<div class="product-grid">${html}</div>`;
+}
+
 // ---------- PAGE D'ACCUEIL (CARROUSELS PAR CATÉGORIE + RECHERCHE DYNAMIQUE) ----------
 async function renderHomePage() {
     const app = document.getElementById('app');
 
+    // Afficher un squelette immédiatement
+    app.innerHTML = `
+        <header class="container app-header">
+            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
+            <div>
+                <h1 style="font-size:1.5rem;">${t('siteName')}</h1>
+                <p style="font-size:0.85rem; color: var(--text-light); margin: 0;">${t('tagline')}</p>
+            </div>
+            <span style="flex:1"></span>
+            <span id="cart-count" class="badge">${getCartCount()}</span>
+        </header>
+        <nav class="home-nav">
+            <a href="#/" class="active"><i class="fas fa-home"></i> ${t('home')}</a>
+            <a href="#/cart"><i class="fas fa-shopping-cart"></i> ${t('cart')}</a>
+            <a href="#/orders"><i class="fas fa-box"></i> ${t('orders')}</a>
+            <a href="#/profile"><i class="fas fa-user"></i> ${t('profile')}</a>
+        </nav>
+        <main class="container" style="padding-top: 0;">
+            <div class="search-wrapper">
+                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
+                <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div id="suggestions-dropdown" class="suggestions-dropdown" style="display:none;"></div>
+            </div>
+            <div id="search-results-grid" class="product-grid mt-2" style="display:none;"></div>
+            ${skeleton(2)}
+        </main>
+    `;
+
+    // Récupération des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -36,6 +76,7 @@ async function renderHomePage() {
         allProducts = [];
     }
 
+    // Regroupement par catégorie
     const categoriesMap = {};
     allProducts.forEach(p => {
         const cat = p.category || 'Sans catégorie';
@@ -61,25 +102,10 @@ async function renderHomePage() {
         </section>`;
     }
 
-    app.innerHTML = `
-        <header class="container app-header">
-            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
-            <div>
-                <h1 style="font-size:1.5rem;">${t('siteName')}</h1>
-                <p style="font-size:0.85rem; color: var(--text-light); margin: 0;">${t('tagline')}</p>
-            </div>
-            <span style="flex:1"></span>
-            <span id="cart-count" class="badge">${getCartCount()}</span>
-        </header>
-
-        <nav class="home-nav">
-            <a href="#/" class="active"><i class="fas fa-home"></i> ${t('home')}</a>
-            <a href="#/cart"><i class="fas fa-shopping-cart"></i> ${t('cart')}</a>
-            <a href="#/orders"><i class="fas fa-box"></i> ${t('orders')}</a>
-            <a href="#/profile"><i class="fas fa-user"></i> ${t('profile')}</a>
-        </nav>
-
-        <main class="container" style="padding-top: 0;">
+    // Remplacer le squelette par le contenu réel
+    const main = document.querySelector('main.container');
+    if (main) {
+        main.innerHTML = `
             <div class="search-wrapper">
                 <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
                 <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
@@ -89,28 +115,34 @@ async function renderHomePage() {
             </div>
             <div id="search-results-grid" class="product-grid mt-2" style="display:none;"></div>
             ${categoriesHTML || `<p style="text-align:center; padding:2rem;">${t('noProducts')}</p>`}
-        </main>
-    `;
+        `;
 
-    // Événements des carrousels – défilement adaptatif
-    document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const targetId = btn.dataset.target;
-            const container = document.getElementById(targetId);
-            if (container) {
-                const firstCard = container.querySelector('.product-card');
-                const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 280; // 16 = gap
-                const scrollAmount = cardWidth * 0.8; // fait défiler ~80% de la largeur d'une carte
-                if (btn.classList.contains('prev-btn')) {
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                } else {
-                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        // Réattacher les événements des carrousels
+        document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const container = document.getElementById(targetId);
+                if (container) {
+                    const firstCard = container.querySelector('.product-card');
+                    const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 280;
+                    const scrollAmount = cardWidth * 0.8;
+                    if (btn.classList.contains('prev-btn')) {
+                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
                 }
-            }
+            });
         });
-    });
 
-    // Délégation d'événement pour les boutons "Ajouter au panier" (évite les pertes d'écouteurs)
+        // Réattacher l'écouteur de recherche
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', handleSearchSuggestions);
+        }
+    }
+
+    // Délégation d'événement pour les boutons "Ajouter au panier"
     document.getElementById('app').addEventListener('click', function(e) {
         const btn = e.target.closest('.add-to-cart-btn');
         if (btn) {
@@ -153,7 +185,6 @@ function handleSearchSuggestions() {
         return;
     }
 
-    // S'assurer que le cache de produits est chargé
     if (allProductsCache.length === 0) {
         loadAllProducts().then(() => handleSearchSuggestions());
         return;
