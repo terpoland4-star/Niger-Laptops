@@ -1,5 +1,5 @@
 // ==========================================
-// ui.js – Composants et rendu des pages (internationalisé)
+// ui.js – Composants et rendu des pages (internationalisé, responsive, accessible)
 // ==========================================
 
 // ---------- CARTE PRODUIT ----------
@@ -10,7 +10,7 @@ function productCard(product) {
         : 0;
     return `
     <div class="product-card" onclick="navigateTo('/product/${localized.id}')">
-        <img src="${localized.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image'}" alt="${localized.name}">
+        <img src="${localized.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image'}" alt="${localized.name}" loading="lazy">
         <div class="product-info">
             <small>${localized.brand || ''}</small>
             <h4>${localized.name}</h4>
@@ -19,7 +19,7 @@ function productCard(product) {
                 ${localized.compare_at_price ? `<span class="old-price">${formatPrice(localized.compare_at_price)}</span>` : ''}
             </div>
             ${discount > 0 ? `<span class="badge">${t('discount', {discount})}</span>` : ''}
-            <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); addToCartFromCard('${localized.id}')">${t('addToCart')}</button>
+            <button class="btn btn-primary btn-block add-to-cart-btn" data-product-id="${localized.id}">${t('addToCart')}</button>
         </div>
     </div>`;
 }
@@ -28,7 +28,6 @@ function productCard(product) {
 async function renderHomePage() {
     const app = document.getElementById('app');
 
-    // Récupération des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -37,7 +36,6 @@ async function renderHomePage() {
         allProducts = [];
     }
 
-    // Regroupement par catégorie
     const categoriesMap = {};
     allProducts.forEach(p => {
         const cat = p.category || 'Sans catégorie';
@@ -53,8 +51,8 @@ async function renderHomePage() {
             <div class="flex-between" style="padding: 0 16px;">
                 <h3>${translateCategory(catName)}</h3>
                 <div class="carousel-controls">
-                    <button class="btn btn-sm btn-outline prev-btn" data-target="${catId}">←</button>
-                    <button class="btn btn-sm btn-outline next-btn" data-target="${catId}">→</button>
+                    <button class="btn btn-sm btn-outline prev-btn" data-target="${catId}" aria-label="Défiler vers la gauche">←</button>
+                    <button class="btn btn-sm btn-outline next-btn" data-target="${catId}" aria-label="Défiler vers la droite">→</button>
                 </div>
             </div>
             <div class="carousel-container" id="${catId}">
@@ -94,13 +92,15 @@ async function renderHomePage() {
         </main>
     `;
 
-    // Événements des carrousels
+    // Événements des carrousels – défilement adaptatif
     document.querySelectorAll('.prev-btn, .next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.dataset.target;
             const container = document.getElementById(targetId);
             if (container) {
-                const scrollAmount = 280;
+                const firstCard = container.querySelector('.product-card');
+                const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 280; // 16 = gap
+                const scrollAmount = cardWidth * 0.8; // fait défiler ~80% de la largeur d'une carte
                 if (btn.classList.contains('prev-btn')) {
                     container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                 } else {
@@ -110,7 +110,16 @@ async function renderHomePage() {
         });
     });
 
-    // Initialiser les contrôles d'accessibilité une fois le DOM prêt
+    // Délégation d'événement pour les boutons "Ajouter au panier" (évite les pertes d'écouteurs)
+    document.getElementById('app').addEventListener('click', function(e) {
+        const btn = e.target.closest('.add-to-cart-btn');
+        if (btn) {
+            e.stopPropagation();
+            const productId = btn.dataset.productId;
+            addToCartFromCard(productId);
+        }
+    });
+
     initAccessibilityControls();
 }
 
@@ -144,6 +153,12 @@ function handleSearchSuggestions() {
         return;
     }
 
+    // S'assurer que le cache de produits est chargé
+    if (allProductsCache.length === 0) {
+        loadAllProducts().then(() => handleSearchSuggestions());
+        return;
+    }
+
     const filtered = allProductsCache.filter(p => {
         const loc = getLocalizedProduct(p);
         return loc.name.toLowerCase().includes(query) ||
@@ -171,8 +186,13 @@ function handleSearchSuggestions() {
     }
 }
 
-// ---------- ACCESSIBILITÉ ----------
+// ---------- ACCESSIBILITÉ (initialisation unique) ----------
+let accessibilityInitialized = false;
+
 function initAccessibilityControls() {
+    if (accessibilityInitialized) return;
+    accessibilityInitialized = true;
+
     const highContrastToggle = document.getElementById('high-contrast-toggle');
     if (highContrastToggle) {
         highContrastToggle.checked = localStorage.getItem('highContrast') === 'true';
@@ -193,11 +213,7 @@ function initAccessibilityControls() {
 }
 
 function applyHighContrast() {
-    if (localStorage.getItem('highContrast') === 'true') {
-        document.body.classList.add('high-contrast');
-    } else {
-        document.body.classList.remove('high-contrast');
-    }
+    document.body.classList.toggle('high-contrast', localStorage.getItem('highContrast') === 'true');
 }
 
 let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
@@ -221,8 +237,7 @@ function resetFontSize() {
 window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
-        const product = res.data;
-        addToCart(product, 1);
+        addToCart(res.data, 1);
         showToast(t('addedToCart'), 'success');
     } catch (e) {
         showToast(t('errorProduct'), 'error');
@@ -233,9 +248,7 @@ window.addToCartFromDetail = function (productId, stock) {
     getProduct(productId).then(res => {
         addToCart(res.data, 1);
         showToast(t('addedToCart'), 'success');
-    }).catch(() => {
-        showToast(t('errorProduct'), 'error');
-    });
+    }).catch(() => showToast(t('errorProduct'), 'error'));
 };
 
 // ---------- PAGE DÉTAIL PRODUIT ----------
@@ -245,11 +258,11 @@ async function renderProductPage(productId) {
     try {
         const res = await getProduct(productId);
         const p = getLocalizedProduct(res.data);
-        const stockQty = p.stock_quantity !== undefined ? p.stock_quantity : 10; // fallback si absent
+        const stockQty = p.stock_quantity !== undefined ? p.stock_quantity : 10;
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
-            <img src="${p.thumbnail || 'https://placehold.co/600x400'}" style="width:100%; border-radius:12px; max-height:300px; object-fit:cover;">
+            <img src="${p.thumbnail || 'https://placehold.co/600x400'}" style="width:100%; border-radius:12px; max-height:300px; object-fit:cover;" alt="${p.name}">
             <h2>${p.name}</h2>
             <p>${p.description || ''}</p>
             <div class="flex-between">
@@ -286,10 +299,10 @@ function renderCartPage() {
                 <small>${formatPrice(localized.price)} x ${item.quantity}</small>
             </div>
             <div class="flex">
-                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity - 1})">−</button>
+                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity - 1})" aria-label="Réduire la quantité">−</button>
                 <span>${item.quantity}</span>
-                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity + 1})">+</button>
-                <button class="btn btn-danger" onclick="removeFromCart('${localized.id}'); renderCartPage();">🗑</button>
+                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity + 1})" aria-label="Augmenter la quantité">+</button>
+                <button class="btn btn-danger" onclick="removeFromCart('${localized.id}'); renderCartPage();" aria-label="Supprimer l'article">🗑</button>
             </div>
         </div>`;
     });
@@ -350,11 +363,9 @@ function renderCheckoutPage() {
         try {
             const res = await createOrder(orderData);
             const order = res.data;
-
             if (payment !== 'cash_on_delivery') {
                 await initiatePayment(order.id, phone, payment);
             }
-
             cart = [];
             saveCart();
             showToast(t('orderConfirmed'), 'success');
@@ -430,8 +441,8 @@ function renderLoginPage() {
         <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
         <h2>${t('loginTitle')}</h2>
         <form id="login-form">
-            <input type="email" id="login-email" placeholder="${t('emailPlaceholder')}" required>
-            <input type="password" id="login-password" placeholder="${t('passwordPlaceholder')}" required>
+            <input type="email" id="login-email" placeholder="${t('emailPlaceholder')}" required autocomplete="email">
+            <input type="password" id="login-password" placeholder="${t('passwordPlaceholder')}" required autocomplete="current-password">
             <button type="submit" class="btn btn-primary btn-block">${t('loginBtn')}</button>
         </form>
         <p style="text-align:center; margin-top:1rem;">
@@ -459,9 +470,9 @@ function renderRegisterPage() {
         <button onclick="navigateTo('/login')" style="margin-bottom:16px;">${t('back')}</button>
         <h2>${t('registerTitle')}</h2>
         <form id="register-form">
-            <input type="text" id="reg-fullname" placeholder="${t('fullnamePlaceholder')}" required>
-            <input type="email" id="reg-email" placeholder="${t('emailPlaceholder')}" required>
-            <input type="password" id="reg-password" placeholder="${t('passwordPlaceholder')}" required>
+            <input type="text" id="reg-fullname" placeholder="${t('fullnamePlaceholder')}" required autocomplete="name">
+            <input type="email" id="reg-email" placeholder="${t('emailPlaceholder')}" required autocomplete="email">
+            <input type="password" id="reg-password" placeholder="${t('passwordPlaceholder')}" required autocomplete="new-password">
             <button type="submit" class="btn btn-primary btn-block">${t('registerBtn')}</button>
         </form>
     </div>`;
@@ -520,7 +531,7 @@ function renderContactPage() {
         <div class="card">
             <h3>${t('whatsappLabel')}</h3>
             <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="btn btn-primary btn-block">
-                <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;"> +227 91 12 78 70
+                <img src="assets/images/logo/whatsapp.png" style="height:24px; vertical-align:middle;" alt="WhatsApp"> +227 91 12 78 70
             </a>
         </div>
 
