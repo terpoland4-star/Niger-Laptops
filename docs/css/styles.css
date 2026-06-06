@@ -1,7 +1,6 @@
 /* ============================================================
    Niger Laptops – Styles PWA (Responsive, Accessible, iOS Ready)
-   Palette : Désert, Fleuve Niger & Drapeau Nigérien
-   Meilleures pratiques : mobile-first, touches tactiles, contraste
+   Palette : Désert, Fleuve Niger & Drapeau Nigérie
    ============================================================ */
 
 /* ---------- RESET & VARIABLES ---------- */
@@ -77,7 +76,7 @@ body {
   line-height: 1.6;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
-  padding-bottom: env(safe-area-inset-bottom, 0); /* respecte la zone sécurisée iOS */
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 img {
@@ -464,26 +463,26 @@ textarea:focus {
   background: rgba(224,82,6,0.1);
 }
 
-/* ---------- BARRE DE RECHERCHE AVEC ICÔNE ---------- */
+/* ---------- BARRE DE RECHERCHE TEMU-LIKE (pilule) ---------- */
 .search-wrapper {
   display: flex;
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 30px;                   /* pilule */
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 1rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
   position: relative;
 }
 
 .search-wrapper input {
   flex: 1;
   border: none;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.5rem;                  /* plus grand */
   outline: none;
   background: transparent;
-  font-size: 1rem;
+  font-size: 1.1rem;
   min-height: var(--touch-target);
 }
 
@@ -495,13 +494,14 @@ textarea:focus {
   background: var(--orange);
   color: white;
   border: none;
-  padding: 0.75rem 1.2rem;
+  padding: 1rem 1.5rem;
   cursor: pointer;
   transition: background var(--ease-fast);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: var(--touch-target);
+  border-radius: 0 30px 30px 0;          /* pilule à droite */
 }
 
 .search-wrapper .search-btn:hover {
@@ -546,7 +546,7 @@ textarea:focus {
   scroll-snap-type: x mandatory;
   gap: 0.75rem;
   padding: 0.5rem 16px;
-  -webkit-overflow-scrolling: touch;   /* défilement fluide iOS */
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -555,7 +555,7 @@ textarea:focus {
 }
 
 .carousel-container .product-card {
-  flex: 0 0 70%;                     /* 70% largeur mobile */
+  flex: 0 0 70%;
   scroll-snap-align: start;
 }
 
@@ -752,6 +752,58 @@ textarea:focus {
 
 .toolbar-btn i {
   font-size: 1.2rem;
+}
+
+/* ---------- BANNIÈRE DÉFILANTE "EN CONSTRUCTION" ---------- */
+.construction-banner {
+  background: linear-gradient(90deg, #E05206, #FF8C00);
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 8px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1001; /* au-dessus de la toolbar */
+}
+
+.construction-banner__text {
+  display: inline-block;
+  animation: scrollBanner 25s linear infinite;
+  will-change: transform;
+}
+
+@keyframes scrollBanner {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 400px) {
+  .construction-banner {
+    font-size: 0.8rem;
+  }
+}
+
+/* ---------- SQUELETTES DE CHARGEMENT ---------- */
+.skeleton-card {
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-light) 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+  height: 220px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* ---------- ANIMATION LOGO ---------- */
