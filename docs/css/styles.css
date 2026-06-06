@@ -559,6 +559,61 @@ textarea:focus {
   color: var(--orange);
 }
 
+/* ---------- ONGLETS INSPIRÉS DE TEMU ---------- */
+.temu-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0 1.2rem 0;
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.temu-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.temu-tab {
+  flex: 0 0 auto;
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--ease-fast);
+  min-height: var(--touch-target);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.temu-tab.active {
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
+  box-shadow: 0 4px 12px rgba(224,82,6,0.3);
+}
+
+.temu-tab:hover:not(.active) {
+  background: var(--sand);
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+/* Sous-titre de section (Neuf / Occasion) */
+.section-subtitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  padding-left: 8px;
+  color: var(--text);
+}
+
 /* ---------- CARROUSEL PAR CATÉGORIE ---------- */
 .category-section {
   margin-bottom: 1.5rem;
