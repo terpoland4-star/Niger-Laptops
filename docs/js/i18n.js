@@ -100,6 +100,8 @@ const TRANSLATIONS = {
         iosInstallStep2: 'Sélectionnez "Sur l\'écran d\'accueil"',
         iosInstallStep3: 'Puis appuyez sur "Ajouter"',
         close: 'Fermer',
+        newProducts: 'Produits neufs',
+        usedProducts: 'Produits d\'occasion',
     },
     en: {
         siteName: 'Niger Laptops',
@@ -202,6 +204,8 @@ const TRANSLATIONS = {
         iosInstallStep2: 'Select "Add to Home Screen"',
         iosInstallStep3: 'Then tap "Add"',
         close: 'Close',
+        newProducts: 'New products',
+        usedProducts: 'Used products',
     }
 };
 
