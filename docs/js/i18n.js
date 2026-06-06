@@ -286,7 +286,10 @@ function renderFooter() {
         <footer class="promo-footer" role="contentinfo">
             <div class="promo-footer-content">
                 <div class="promo-left">
-                    <h4 style="margin-bottom: 0.5rem; color: white;">🖥️ ${t('siteName')}</h4>
+                    <h4 style="margin-bottom: 0.5rem; color: white;">
+                        <img src="assets/images/logo/logolap.png" alt="Niger Laptops" style="height:24px; width:auto; vertical-align:middle; margin-right:8px;">
+                        ${t('siteName')}
+                    </h4>
                     <p style="margin-bottom: 0.5rem;">📍 ${t('address')}</p>
                     <a href="https://maps.app.goo.gl/AyfgGYvvXYMBTxBv8" target="_blank" rel="noopener" 
                        class="btn btn-outline btn-sm" style="color:white; border-color:white; margin-bottom:0.8rem;">
