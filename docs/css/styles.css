@@ -1,6 +1,8 @@
 /* ============================================================
    Niger Laptops – Styles PWA (Responsive, Accessible, iOS Ready)
-   Palette : Désert, Fleuve Niger & Drapeau Nigérie
+   Palette : Désert, Fleuve Niger & Drapeau Nigérien
+   Meilleures pratiques : mobile-first, touches tactiles, contraste
+   Inspiré du design TEMU
    ============================================================ */
 
 /* ---------- RESET & VARIABLES ---------- */
@@ -231,11 +233,12 @@ small, .text-small {
   margin-bottom: 1rem;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  transition: box-shadow var(--ease);
+  transition: all var(--ease);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 /* ---------- FORMULAIRES ---------- */
@@ -297,6 +300,11 @@ textarea:focus {
   padding: 0.2em 0.6em;
   min-width: 1.6em;
   line-height: 1;
+  transition: transform var(--ease-fast);
+}
+
+.badge:hover {
+  transform: scale(1.1);
 }
 
 /* ---------- GRILLE PRODUITS (responsive) ---------- */
@@ -329,8 +337,8 @@ textarea:focus {
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
 }
 
 .product-card img {
@@ -338,6 +346,11 @@ textarea:focus {
   height: 160px;
   object-fit: cover;
   background: var(--sand);
+  transition: transform var(--ease);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
 }
 
 .product-info {
@@ -451,6 +464,7 @@ textarea:focus {
   min-width: 60px;
   min-height: var(--touch-target);
   justify-content: center;
+  transition: all var(--ease-fast);
 }
 
 .home-nav a i {
@@ -461,6 +475,7 @@ textarea:focus {
 .home-nav a:hover {
   color: var(--orange);
   background: rgba(224,82,6,0.1);
+  transform: translateY(-2px);
 }
 
 /* ---------- BARRE DE RECHERCHE TEMU-LIKE (pilule) ---------- */
@@ -469,17 +484,23 @@ textarea:focus {
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 30px;                   /* pilule */
+  border-radius: 30px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
   position: relative;
+  transition: box-shadow var(--ease-fast);
+}
+
+.search-wrapper:focus-within {
+  box-shadow: var(--shadow-md);
+  border-color: var(--orange);
 }
 
 .search-wrapper input {
   flex: 1;
   border: none;
-  padding: 1rem 1.5rem;                  /* plus grand */
+  padding: 1rem 1.5rem;
   outline: none;
   background: transparent;
   font-size: 1.1rem;
@@ -496,16 +517,17 @@ textarea:focus {
   border: none;
   padding: 1rem 1.5rem;
   cursor: pointer;
-  transition: background var(--ease-fast);
+  transition: background var(--ease-fast), transform var(--ease-fast);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: var(--touch-target);
-  border-radius: 0 30px 30px 0;          /* pilule à droite */
+  border-radius: 0 30px 30px 0;
 }
 
 .search-wrapper .search-btn:hover {
   background: var(--orange-dark);
+  transform: scale(1.05);
 }
 
 /* ---------- SUGGESTIONS DE RECHERCHE ---------- */
@@ -529,10 +551,12 @@ textarea:focus {
   min-height: var(--touch-target);
   display: flex;
   align-items: center;
+  transition: background var(--ease-fast);
 }
 
 .suggestion-item:hover {
-  background: var(--bg);
+  background: var(--sand);
+  color: var(--orange);
 }
 
 /* ---------- CARROUSEL PAR CATÉGORIE ---------- */
@@ -593,6 +617,7 @@ textarea:focus {
 .carousel-controls .btn-sm:hover {
   background: var(--orange);
   color: white;
+  transform: scale(1.1);
 }
 
 /* ---------- PIED DE PAGE PROMOTIONNEL ---------- */
@@ -639,11 +664,13 @@ textarea:focus {
   color: white;
   text-decoration: none;
   font-weight: 500;
-  transition: color var(--ease-fast);
+  transition: color var(--ease-fast), transform var(--ease-fast);
+  display: inline-block;
 }
 
 .promo-link:hover {
   color: #FFDDB5;
+  transform: translateX(4px);
 }
 
 .promo-tagline {
@@ -726,6 +753,11 @@ textarea:focus {
   color: var(--text);
   cursor: pointer;
   min-height: var(--touch-target);
+  transition: border-color var(--ease-fast);
+}
+
+.toolbar-select:hover {
+  border-color: var(--orange);
 }
 
 .toolbar-btn {
@@ -748,29 +780,33 @@ textarea:focus {
 .toolbar-btn:hover {
   background: var(--bg);
   color: var(--orange);
+  transform: scale(1.1);
 }
 
 .toolbar-btn i {
   font-size: 1.2rem;
 }
 
-/* ---------- BANNIÈRE DÉFILANTE "EN CONSTRUCTION" ---------- */
+/* ---------- BANNIÈRE DÉFILANTE (AMÉLIORÉE) ---------- */
 .construction-banner {
-  background: linear-gradient(90deg, #E05206, #FF8C00);
+  background: linear-gradient(90deg, #E05206 0%, #FF8C00 50%, #E05206 100%);
   color: white;
   overflow: hidden;
   white-space: nowrap;
-  padding: 8px 0;
+  padding: 10px 0;
   font-weight: 600;
   font-size: 0.9rem;
   position: relative;
-  z-index: 1001; /* au-dessus de la toolbar */
+  z-index: 1001;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .construction-banner__text {
   display: inline-block;
   animation: scrollBanner 25s linear infinite;
   will-change: transform;
+  min-width: 200%;
 }
 
 @keyframes scrollBanner {
@@ -785,6 +821,7 @@ textarea:focus {
 @media (max-width: 400px) {
   .construction-banner {
     font-size: 0.8rem;
+    padding: 8px 0;
   }
 }
 
