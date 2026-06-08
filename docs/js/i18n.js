@@ -103,6 +103,14 @@ const TRANSLATIONS = {
         close: 'Fermer',
         newProducts: 'Produits neufs',
         usedProducts: 'Produits d\'occasion',
+        messagePlaceholder: 'Votre message',
+        sendMessage: 'Envoyer le message',
+        kycTitle: 'Vérification d\'identité requise',
+        kycDescription: 'Pour les commandes de plus de 1 000 000 FCFA, nous devons vérifier votre identité.',
+        kycIdLabel: 'Pièce d\'identité (CNI, passeport)',
+        kycSelfieLabel: 'Selfie avec la pièce d\'identité',
+        kycSend: 'Envoyer pour vérification',
+        kycCancel: 'Annuler',
     },
     en: {
         siteName: 'Niger Laptops',
@@ -208,6 +216,14 @@ const TRANSLATIONS = {
         close: 'Close',
         newProducts: 'New products',
         usedProducts: 'Used products',
+        messagePlaceholder: 'Your message',
+        sendMessage: 'Send message',
+        kycTitle: 'Identity verification required',
+        kycDescription: 'For orders over 1,000,000 FCFA, we need to verify your identity.',
+        kycIdLabel: 'ID document (National ID, passport)',
+        kycSelfieLabel: 'Selfie with ID document',
+        kycSend: 'Submit for verification',
+        kycCancel: 'Cancel',
     }
 };
 
