@@ -360,7 +360,7 @@ window.cartUpdateQuantity = function (productId, qty) {
     renderCartPage();
 };
 
-// ---------- PAGE CHECKOUT ----------
+// ---------- PAGE CHECKOUT (avec KYC) ----------
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -398,6 +398,15 @@ function renderCheckoutPage() {
             delivery_address: { full_name: fullname, phone, address_line1: address },
             payment_method: payment
         };
+
+        const total = getCartTotal() + (getCartTotal() >= 25000 ? 0 : 1500);
+
+        // 🔐 KYC pour les commandes ≥ 1 000 000 FCFA
+        if (total >= 1000000) {
+            showKYCModal(orderData, fullname);
+            return;
+        }
+
         try {
             const res = await createOrder(orderData);
             const order = res.data;
@@ -410,6 +419,67 @@ function renderCheckoutPage() {
             navigateTo('/orders');
         } catch (err) {
             showToast(err.message, 'error');
+        }
+    });
+}
+
+// ---------- MODALE KYC (EmailJS) ----------
+function showKYCModal(orderData, customerName) {
+    const modal = document.createElement('div');
+    modal.id = 'kyc-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7); z-index: 10000;
+        display: flex; align-items: center; justify-content: center;
+    `;
+    modal.innerHTML = `
+        <div style="background: var(--surface); border-radius: var(--radius-lg); padding: 2rem; max-width: 450px; width: 90%; text-align: center;">
+            <h3>🔐 ${t('kycTitle')}</h3>
+            <p>${t('kycDescription')}</p>
+            <form id="kyc-form">
+                <label style="display: block; margin-top: 1rem;">${t('kycIdLabel')}</label>
+                <input type="file" id="kyc-id" accept="image/*" required>
+                <label style="display: block; margin-top: 1rem;">${t('kycSelfieLabel')}</label>
+                <input type="file" id="kyc-selfie" accept="image/*" required>
+                <button type="submit" class="btn btn-primary btn-block mt-2">${t('kycSend')}</button>
+            </form>
+            <button id="kyc-cancel" class="btn btn-outline btn-block mt-1">${t('kycCancel')}</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('kyc-cancel').addEventListener('click', () => modal.remove());
+
+    document.getElementById('kyc-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const idFile = document.getElementById('kyc-id').files[0];
+        const selfieFile = document.getElementById('kyc-selfie').files[0];
+        if (!idFile || !selfieFile) return;
+
+        orderData.payment_method = 'kyc_pending';
+        try {
+            const res = await createOrder(orderData);
+            const order = res.data;
+
+            // Envoyer les documents via EmailJS
+            await emailjs.send("TON_SERVICE_ID", "TON_TEMPLATE_ID", {
+                order_number: order.order_number,
+                customer_name: customerName,
+                total: formatPrice(orderData.items.reduce((sum, item) => {
+                    const product = demoData.products.find(p => p.id === item.product_id);
+                    return sum + (product ? product.price * item.quantity : 0);
+                }, 0)),
+                id_document: idFile,
+                selfie: selfieFile
+            });
+
+            cart = [];
+            saveCart();
+            showToast(t('orderConfirmed') + ' (vérification en cours)', 'success');
+            modal.remove();
+            navigateTo('/orders');
+        } catch (err) {
+            showToast(err.message || 'Erreur lors de l\'envoi des documents', 'error');
         }
     });
 }
@@ -549,7 +619,7 @@ function renderAboutPage() {
     </div>`;
 }
 
-// ---------- PAGE CONTACT ----------
+// ---------- PAGE CONTACT (avec formulaire EmailJS) ----------
 function renderContactPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -557,6 +627,15 @@ function renderContactPage() {
         <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
         <h2>${t('contactTitle')}</h2>
         <p class="text-center">${t('contactDesc')}</p>
+        
+        <form id="contact-form" class="card">
+            <input type="text" id="contact-name" placeholder="${t('namePlaceholder')}" required>
+            <input type="email" id="contact-email" placeholder="${t('emailPlaceholder')}" required>
+            <input type="tel" id="contact-phone" placeholder="${t('phonePlaceholder') || 'Téléphone'}">
+            <textarea id="contact-message" placeholder="${t('messagePlaceholder')}" required></textarea>
+            <button type="submit" class="btn btn-primary btn-block">${t('sendMessage')}</button>
+            <p id="contact-status" style="text-align:center; margin-top:1rem;"></p>
+        </form>
 
         <div class="card">
             <h3>${t('addressLabel')}</h3>
@@ -589,4 +668,24 @@ function renderContactPage() {
             </div>
         </div>
     </div>`;
+
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('contact-status');
+        status.textContent = 'Envoi en cours...';
+        
+        try {
+            await emailjs.send("TON_SERVICE_ID", "TON_TEMPLATE_ID", {
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                phone: document.getElementById('contact-phone').value,
+                message: document.getElementById('contact-message').value,
+            });
+            
+            status.textContent = '✅ Message envoyé !';
+            document.getElementById('contact-form').reset();
+        } catch (err) {
+            status.textContent = '❌ Erreur réseau';
+        }
+    });
 }
