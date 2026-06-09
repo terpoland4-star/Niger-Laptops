@@ -550,7 +550,7 @@ function showKYCModal(orderData, customerName) {
             const order = res.data;
 
             // Envoyer les documents via EmailJS
-            await emailjs.send("TON_SERVICE_ID", "TON_TEMPLATE_ID", {
+            await emailjs.send("service_4vlnw9a", "template_kw3ckfd", {
                 order_number: order.order_number,
                 customer_name: customerName,
                 total: formatPrice(orderData.items.reduce((sum, item) => {
@@ -677,7 +677,7 @@ function subscribeToNotifications() {
         OneSignal.push(function () {
             OneSignal.registerForPushNotifications()
                 .then(() => showToast('🔔 Notifications activées !', 'success'))
-                .catch(() => showToast('Erreur lors de l\'activation', 'error'));
+                .catch((err) => showToast('Erreur : ' + (err.message || 'inconnue'), 'error'));
         });
     } else {
         showToast('Service de notifications indisponible', 'error');
@@ -797,8 +797,8 @@ function renderContactPage() {
 
         <div class="card">
             <h3>${t('emailLabel')}</h3>
-            <a href="mailto:zoubeirou.zakariya@gmail.com" class="btn btn-outline btn-block">
-                ✉️ zoubeirou.zakariya@gmail.com
+            <a href="mailto:moctarhamadine54@gmail.com" class="btn btn-outline btn-block">
+                ✉️ moctarhamadine54@gmail.com
             </a>
         </div>
 
@@ -818,7 +818,7 @@ function renderContactPage() {
         status.textContent = 'Envoi en cours...';
         
         try {
-            await emailjs.send("TON_SERVICE_ID", "TON_TEMPLATE_ID", {
+            await emailjs.send("service_4vlnw9a", "template_kw3ckfd", {
                 name: document.getElementById('contact-name').value,
                 email: document.getElementById('contact-email').value,
                 phone: document.getElementById('contact-phone').value,
