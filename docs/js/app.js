@@ -42,12 +42,13 @@ function handleRoute() {
             renderAboutPage();
         } else if (path === '/contact') {
             renderContactPage();
+        } else if (path === '/track') {           // ← ajouté
+            renderTrackOrderPage();
         } else {
             document.getElementById('app').innerHTML = '<div class="container"><h2>Page non trouvée</h2></div>';
         }
         updateCartCount();
     } catch (error) {
-        // Afficher l'erreur directement dans la page
         const app = document.getElementById('app');
         if (app) {
             app.innerHTML = `
