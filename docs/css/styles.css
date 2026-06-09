@@ -931,6 +931,7 @@ textarea:focus {
     font-size: 1rem;
   }
 }
+
 /* ---------- AVIS CLIENTS ---------- */
 .reviews-section {
     margin-top: 1.5rem;
@@ -1006,4 +1007,13 @@ textarea:focus {
 @keyframes fadeInRight {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
+}
+
+/* ---------- POSITION DE LA CLOCHE ONESIGNAL ---------- */
+/* Déplace la cloche en bas à gauche pour éviter le chevauchement avec le bouton WhatsApp */
+#onesignal-bell-container.onesignal-reset {
+    left: 24px !important;
+    right: auto !important;
+    bottom: 24px !important;
+    z-index: 9998; /* juste en dessous du bouton WhatsApp pour éviter la superposition */
 }
