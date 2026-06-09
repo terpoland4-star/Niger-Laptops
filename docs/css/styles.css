@@ -737,6 +737,54 @@ textarea:focus {
   font-size: 0.85rem;
 }
 
+/* ---------- ANIMATION DU FOOTER ---------- */
+.promo-footer .promo-left,
+.promo-footer .promo-right {
+    animation: footerFadeInUp 0.8s ease forwards;
+    opacity: 0;
+}
+
+@keyframes footerFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.promo-footer .promo-right {
+    animation-delay: 0.2s;
+}
+
+.promo-right img {
+    transition: transform 0.3s ease;
+}
+.promo-right img:hover {
+    transform: rotate(5deg) scale(1.05);
+}
+
+.useful-links .promo-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+.useful-links .promo-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--orange);
+    transition: width 0.3s ease;
+}
+.useful-links .promo-link:hover::after {
+    width: 100%;
+}
+
 /* ---------- MODE SOMBRE ---------- */
 [data-theme="dark"] {
   --bg: #1a1a2e;
@@ -1010,10 +1058,12 @@ textarea:focus {
 }
 
 /* ---------- POSITION DE LA CLOCHE ONESIGNAL ---------- */
-/* Déplace la cloche en bas à gauche pour éviter le chevauchement avec le bouton WhatsApp */
-#onesignal-bell-container.onesignal-reset {
+/* Utilisation d'un sélecteur large pour couvrir tous les cas */
+#onesignal-bell-container,
+#onesignal-bell-container.onesignal-reset,
+div[id^="onesignal-bell-container"] {
     left: 24px !important;
     right: auto !important;
     bottom: 24px !important;
-    z-index: 9998; /* juste en dessous du bouton WhatsApp pour éviter la superposition */
+    z-index: 9998 !important;
 }
