@@ -29,12 +29,27 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- EmailJS (pour KYC) -->
+    <!-- EmailJS (pour KYC et contact) -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
         (function() {
             emailjs.init("TON_USER_ID"); // Remplace par ton vrai User ID EmailJS
         })();
+    </script>
+
+    <!-- OneSignal -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "1ab8bdc3-c665-4b8f-909a-ac625d0478c7",
+          safari_web_id: "web.onesignal.auto.1a908d8f-b1c2-454b-a8c2-6bb9d82d2555",
+          notifyButton: {
+            enable: true, // ou false pour gérer manuellement l'abonnement
+          },
+        });
+      });
     </script>
 
     <script type="application/ld+json">
@@ -97,6 +112,14 @@
 
     <!-- Pied de page (généré par renderFooter()) -->
     <div id="footer-app"></div>
+
+    <!-- Bouton WhatsApp flottant -->
+    <div class="whatsapp-float" id="whatsappFloat">
+        <div class="whatsapp-float__bubble" id="whatsappBubble">💬 Besoin d'aide ?</div>
+        <a href="https://wa.me/22791127870?text=Bonjour%20Niger%20Laptops%20!" target="_blank" rel="noopener" class="whatsapp-float__btn" aria-label="Discuter sur WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
 
     <!-- Scripts -->
     <script src="js/utils.js"></script>
