@@ -37,7 +37,6 @@ function skeleton(columns = 2) {
 async function renderHomePage() {
     const app = document.getElementById('app');
 
-    // Squelette immédiat
     app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
@@ -67,7 +66,6 @@ async function renderHomePage() {
         </main>
     `;
 
-    // Récupération des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -224,7 +222,7 @@ function handleSearchSuggestions() {
     }
 }
 
-// ---------- ACCESSIBILITÉ (initialisation unique) ----------
+// ---------- ACCESSIBILITÉ ----------
 let accessibilityInitialized = false;
 
 function initAccessibilityControls() {
@@ -271,7 +269,48 @@ function resetFontSize() {
     localStorage.setItem('fontSize', '16');
 }
 
-// ---------- FONCTIONS D'AJOUT AU PANIER ----------
+// ---------- NOTIFICATIONS ----------
+function subscribeToNotifications() {
+    if (typeof OneSignal !== 'undefined') {
+        OneSignal.push(function () {
+            OneSignal.registerForPushNotifications().then(function () {
+                showToast('🔔 Notifications activées !', 'success');
+            }).catch(function (err) {
+                showToast('Erreur lors de l\'activation des notifications', 'error');
+            });
+        });
+    }
+}
+
+// ---------- AVIS CLIENTS ----------
+function getReviews(productId) {
+    const stored = localStorage.getItem('productReviews');
+    const allReviews = stored ? JSON.parse(stored) : {};
+    return allReviews[productId] || [];
+}
+
+function saveReview(productId, review) {
+    const stored = localStorage.getItem('productReviews');
+    const allReviews = stored ? JSON.parse(stored) : {};
+    if (!allReviews[productId]) allReviews[productId] = [];
+    allReviews[productId].push(review);
+    localStorage.setItem('productReviews', JSON.stringify(allReviews));
+}
+
+function calculateAverageRating(reviews) {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return (sum / reviews.length).toFixed(1);
+}
+
+function renderStars(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+    return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+}
+
+// ---------- FONCTIONS PANIER ----------
 window.addToCartFromCard = async function (productId) {
     try {
         const res = await getProduct(productId);
@@ -297,6 +336,45 @@ async function renderProductPage(productId) {
         const res = await getProduct(productId);
         const p = getLocalizedProduct(res.data);
         const stockQty = p.stock_quantity !== undefined ? p.stock_quantity : 10;
+
+        const reviews = getReviews(productId);
+        const avgRating = calculateAverageRating(reviews);
+
+        let reviewsHTML = '';
+        if (reviews.length > 0) {
+            reviewsHTML = `
+                <div class="reviews-section">
+                    <h3>⭐ ${t('customerReviews')} (${reviews.length})</h3>
+                    <p class="rating-average">${renderStars(avgRating)} ${avgRating}/5</p>
+                    ${reviews.slice().reverse().map(r => `
+                        <div class="review-card">
+                            <div class="review-stars">${renderStars(r.rating)}</div>
+                            <p class="review-comment">${r.comment || ''}</p>
+                            <small class="review-author">– ${r.author || t('anonymous')}</small>
+                        </div>
+                    `).join('')}
+                </div>`;
+        } else {
+            reviewsHTML = `<p>${t('noReviews')}</p>`;
+        }
+
+        let reviewFormHTML = '';
+        if (currentUser) {
+            reviewFormHTML = `
+                <div class="review-form card mt-2">
+                    <h4>${t('leaveReview')}</h4>
+                    <select id="review-rating">
+                        <option value="5">★★★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="3">★★★</option>
+                        <option value="2">★★</option>
+                        <option value="1">★</option>
+                    </select>
+                    <textarea id="review-comment" placeholder="${t('reviewCommentPlaceholder')}"></textarea>
+                    <button onclick="submitReview('${productId}')" class="btn btn-primary btn-block mt-2">${t('submitReview')}</button>
+                </div>`;
+        }
+
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
@@ -309,11 +387,28 @@ async function renderProductPage(productId) {
             </div>
             <div>${t('stock')} : ${stockQty > 0 ? t('inStock') : t('outOfStock')}</div>
             <button class="btn btn-primary btn-block mt-2" onclick="addToCartFromDetail('${p.id}', ${stockQty})">${t('addToCart')}</button>
+            ${reviewsHTML}
+            ${reviewFormHTML}
         </div>`;
     } catch (e) {
         app.innerHTML = `<div class="container">${t('productNotFound')}</div>`;
     }
 }
+
+window.submitReview = function(productId) {
+    const rating = parseInt(document.getElementById('review-rating').value);
+    const comment = document.getElementById('review-comment').value.trim();
+    if (!rating) return;
+    const review = {
+        rating: rating,
+        comment: comment,
+        author: currentUser.full_name || currentUser.email || 'Client',
+        date: new Date().toISOString()
+    };
+    saveReview(productId, review);
+    showToast(t('reviewSubmitted'), 'success');
+    renderProductPage(productId);
+};
 
 // ---------- PAGE PANIER ----------
 function renderCartPage() {
@@ -401,7 +496,6 @@ function renderCheckoutPage() {
 
         const total = getCartTotal() + (getCartTotal() >= 25000 ? 0 : 1500);
 
-        // 🔐 KYC pour les commandes ≥ 1 000 000 FCFA
         if (total >= 1000000) {
             showKYCModal(orderData, fullname);
             return;
@@ -416,6 +510,19 @@ function renderCheckoutPage() {
             cart = [];
             saveCart();
             showToast(t('orderConfirmed'), 'success');
+
+            // Notification OneSignal
+            if (typeof OneSignal !== 'undefined') {
+                OneSignal.push(function () {
+                    OneSignal.sendSelfNotification(
+                        "Commande confirmée !",
+                        "Votre commande " + order.order_number + " est en cours de préparation.",
+                        "https://www.niger-laptops.com/#/orders",
+                        "https://www.niger-laptops.com/assets/icon-512.png"
+                    );
+                });
+            }
+
             navigateTo('/orders');
         } catch (err) {
             showToast(err.message, 'error');
@@ -423,7 +530,7 @@ function renderCheckoutPage() {
     });
 }
 
-// ---------- MODALE KYC (EmailJS) ----------
+// ---------- MODALE KYC ----------
 function showKYCModal(orderData, customerName) {
     const modal = document.createElement('div');
     modal.id = 'kyc-modal';
@@ -461,7 +568,6 @@ function showKYCModal(orderData, customerName) {
             const res = await createOrder(orderData);
             const order = res.data;
 
-            // Envoyer les documents via EmailJS
             await emailjs.send("TON_SERVICE_ID", "TON_TEMPLATE_ID", {
                 order_number: order.order_number,
                 customer_name: customerName,
@@ -537,11 +643,12 @@ function renderProfilePage() {
         <button onclick="navigateTo('/')" style="margin-bottom:16px; display:block; text-align:left;">${t('back')}</button>
         <h2>${t('profileTitle')}</h2>
         <p>${currentUser.full_name || currentUser.email}</p>
-        <button class="btn btn-danger btn-block" onclick="logout()">${t('logoutBtn')}</button>
+        <button class="btn btn-outline btn-block" onclick="subscribeToNotifications()">🔔 ${t('notificationsSubscribe')}</button>
+        <button class="btn btn-danger btn-block mt-2" onclick="logout()">${t('logoutBtn')}</button>
     </div>`;
 }
 
-// ---------- PAGE CONNEXION (email/mot de passe) ----------
+// ---------- PAGE CONNEXION ----------
 function renderLoginPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -570,7 +677,7 @@ function renderLoginPage() {
     });
 }
 
-// ---------- PAGE INSCRIPTION (email/mot de passe) ----------
+// ---------- PAGE INSCRIPTION ----------
 function renderRegisterPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
@@ -600,6 +707,48 @@ function renderRegisterPage() {
     });
 }
 
+// ---------- PAGE SUIVI DE COMMANDE ----------
+function renderTrackOrderPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
+        <h2>📦 ${t('trackOrderTitle')}</h2>
+        <form id="track-order-form">
+            <input type="text" id="track-order-number" placeholder="${t('orderNumberPlaceholder')}" required>
+            <button type="submit" class="btn btn-primary btn-block mt-2">${t('trackOrderBtn')}</button>
+        </form>
+        <div id="track-order-result" class="mt-2"></div>
+    </div>`;
+
+    document.getElementById('track-order-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const orderNumber = document.getElementById('track-order-number').value.trim();
+        const resultDiv = document.getElementById('track-order-result');
+        resultDiv.innerHTML = t('loading');
+
+        try {
+            const res = await getOrders();
+            const orders = res.data || [];
+            const order = orders.find(o => o.order_number === orderNumber);
+            if (order) {
+                const statusLabel = t(order.status) || order.status;
+                resultDiv.innerHTML = `
+                <div class="card">
+                    <h3>${t('orderDetails')} ${order.order_number}</h3>
+                    <p><strong>${t('status')} :</strong> ${statusLabel}</p>
+                    <p><strong>${t('total')} :</strong> ${formatPrice(order.total)}</p>
+                    <p><strong>${t('createdAt') || 'Date'} :</strong> ${new Date(order.created_at).toLocaleDateString()}</p>
+                </div>`;
+            } else {
+                resultDiv.innerHTML = `<p>${t('orderNotFoundTrack')}</p>`;
+            }
+        } catch (err) {
+            resultDiv.innerHTML = `<p>${t('errorLoading')}</p>`;
+        }
+    });
+}
+
 // ---------- PAGE À PROPOS ----------
 function renderAboutPage() {
     const app = document.getElementById('app');
@@ -619,7 +768,7 @@ function renderAboutPage() {
     </div>`;
 }
 
-// ---------- PAGE CONTACT (avec formulaire EmailJS) ----------
+// ---------- PAGE CONTACT ----------
 function renderContactPage() {
     const app = document.getElementById('app');
     app.innerHTML = `
