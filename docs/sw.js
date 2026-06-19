@@ -1,4 +1,4 @@
-const CACHE_NAME = 'niger-laptops-v13';
+const CACHE_NAME = 'niger-laptops-v14'; // Version incrémentée pour forcer le rechargement
 
 // Liste complète des ressources à mettre en cache
 const ASSETS = [
@@ -20,20 +20,25 @@ const ASSETS = [
     './assets/site.webmanifest',
     './assets/favicon.ico',
     './assets/favicon.svg',
+    './assets/favicon-96x96.png',         // Ajouté pour correspondre au HTML
     './assets/apple-touch-icon.png',
     './assets/web-app-manifest-192x192.png',
     './assets/web-app-manifest-512x512.png',
 ];
 
-// Installation : mise en cache des ressources
+// Installation : mise en cache tolérante aux erreurs
 self.addEventListener('install', event => {
     console.log('[SW] Installation');
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
-            console.log('[SW] Mise en cache des assets');
-            return cache.addAll(ASSETS).catch(err => {
-                console.error('[SW] Erreur de cache:', err);
-            });
+            console.log('[SW] Mise en cache avec tolérance aux erreurs');
+            return Promise.allSettled(
+                ASSETS.map(url =>
+                    cache.add(url).catch(err => {
+                        console.warn(`[SW] Impossible de mettre en cache ${url} :`, err);
+                    })
+                )
+            );
         })
     );
     self.skipWaiting();
@@ -55,15 +60,13 @@ self.addEventListener('activate', event => {
     self.clients.claim();
 });
 
-// Interception des requêtes
+// Stratégie de réponse : réseau pour API, cache-first pour le reste
 self.addEventListener('fetch', event => {
-    // Ne pas intercepter les requêtes API
     if (event.request.url.includes('/api/')) {
         event.respondWith(fetch(event.request));
         return;
     }
 
-    // Pour les requêtes de navigation, toujours servir index.html
     if (event.request.mode === 'navigate') {
         event.respondWith(
             caches.match('./index.html').then(cached => {
@@ -73,7 +76,6 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Pour les autres ressources : cache d'abord, puis réseau
     event.respondWith(
         caches.match(event.request).then(cached => {
             if (cached) return cached;
