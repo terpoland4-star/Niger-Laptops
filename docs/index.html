@@ -2,16 +2,18 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Niger Laptops – Votre boutique de consommables informatiques à Niamey">
     <meta name="keywords" content="ordinateur, laptop, niger, informatique, technologie, accessoires">
     <meta name="author" content="Hamadine AG MOCTAR - HAM Global Words">
     <meta name="copyright" content="HAM Global Words 2026">
     <meta name="theme-color" content="#0066CC">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Niger Laptops">
 
+    <!-- Préconnexions -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -59,6 +61,7 @@
       });
     </script>
 
+    <!-- Données structurées Schema.org -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -75,53 +78,155 @@
     </script>
 
     <link rel="stylesheet" href="css/styles.css">
-
     <title>Niger Laptops – Informatique & Technologie au Niger</title>
+
+    <!-- Styles de base pour la nouvelle navigation (à fusionner avec styles.css) -->
+    <style>
+        /* Barre de navigation inférieure */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface, #fff);
+            border-top: 1px solid var(--border, #ddd);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            z-index: 1100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light, #666);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: color 0.2s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--font-body, sans-serif);
+            position: relative;
+        }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary, #0066CC); }
+        .badge {
+            position: absolute;
+            top: 2px;
+            right: 50%;
+            transform: translateX(18px);
+            background: var(--primary, #0066CC);
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+            line-height: 1;
+        }
+        main { padding-bottom: 80px; }
+        .whatsapp-float { bottom: 80px; }
+
+        /* Menu latéral */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1200; display: none;
+        }
+        .side-menu {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: var(--surface, #fff); z-index: 1300;
+            transition: right 0.3s; padding: 20px; box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+            overflow-y: auto;
+        }
+        .side-menu.open { right: 0; }
+        .menu-section { margin-bottom: 24px; }
+        .menu-section label {
+            font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+            color: var(--text-light, #888); margin-bottom: 8px; display: block;
+        }
+        .menu-link, .menu-btn {
+            display: block; width: 100%; padding: 10px 12px;
+            margin-bottom: 4px; border-radius: 8px; text-decoration: none;
+            color: var(--text, #333); background: var(--secondary, #f0f4ff);
+            border: none; text-align: left; font-size: 0.9rem; cursor: pointer;
+        }
+        .menu-link:hover, .menu-btn:hover { background: var(--primary, #0066CC); color: #fff; }
+        .font-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+        .font-controls .menu-btn { flex: 1; text-align: center; }
+        .toolbar-select {
+            width: 100%; padding: 10px; border-radius: 8px;
+            border: 1px solid var(--border, #ddd); background: var(--surface, #fff);
+            font-size: 0.9rem; margin-top: 4px;
+        }
+        /* Bannière "En construction" discrète (optionnelle, activable via JS) */
+        .construction-banner {
+            background: #fff3cd; color: #856404; text-align: center;
+            padding: 8px; font-size: 0.85rem; display: none; /* cachée par défaut */
+        }
+    </style>
 </head>
 <body>
-    <!-- Bannière défilante "En construction" -->
-    <div class="construction-banner" role="marquee" aria-label="Site en construction">
-        <div class="construction-banner__text">
-            🚧 Niger Laptops est en cours de construction – Bientôt votre boutique en ligne de consommables informatiques à Niamey ! 🚧
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            🚧 Niger Laptops est en cours de construction – Bientôt votre boutique en ligne de consommables informatiques à Niamey ! 🚧
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            🚧 Niger Laptops est en cours de construction – Bientôt votre boutique en ligne de consommables informatiques à Niamey ! 🚧
-        </div>
+    <!-- Bannière d'information temporaire (affichée si nécessaire, gérée par app.js) -->
+    <div class="construction-banner" id="construction-banner">
+        🚧 Niger Laptops est en cours de construction – Bientôt votre boutique en ligne ! 🚧
     </div>
 
-    <!-- Barre d'outils unifiée -->
-    <header class="toolbar">
-        <div class="toolbar-left">
-            <select id="lang-selector" class="toolbar-select" aria-label="Langue">
-                <option value="fr">🇫🇷 FR</option>
-                <option value="en">🇬🇧 EN</option>
+    <!-- Barre de navigation inférieure -->
+    <nav class="bottom-nav">
+        <a href="#home" class="nav-item active" id="nav-home"><i class="fas fa-home"></i><span>Accueil</span></a>
+        <a href="#products" class="nav-item" id="nav-products"><i class="fas fa-laptop"></i><span>Produits</span></a>
+        <button class="nav-item" id="nav-cart" onclick="UI.openCart()"><i class="fas fa-shopping-cart"></i><span>Panier</span><span id="cart-count" class="badge" style="display:none;">0</span></button>
+        <a href="#orders" class="nav-item" id="nav-orders"><i class="fas fa-receipt"></i><span>Commandes</span></a>
+        <button class="nav-item" id="nav-menu" onclick="toggleMenu()"><i class="fas fa-ellipsis-h"></i><span>Plus</span></button>
+    </nav>
+
+    <!-- Menu "Plus" coulissant -->
+    <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+    <div class="side-menu" id="side-menu">
+        <div class="menu-section">
+            <label>Langue</label>
+            <select id="lang-selector" class="toolbar-select">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
             </select>
         </div>
-        <div class="toolbar-right">
-            <button id="theme-toggle" class="toolbar-btn" title="Mode sombre" aria-label="Mode sombre">
-                <i class="fas fa-moon"></i>
-            </button>
-            <button id="high-contrast-toggle" class="toolbar-btn" title="Contraste élevé" aria-label="Contraste élevé">
-                <i class="fas fa-adjust"></i>
-            </button>
-            <button id="font-decrease" class="toolbar-btn" title="Diminuer la taille du texte" aria-label="Texte plus petit">A−</button>
-            <button id="font-increase" class="toolbar-btn" title="Augmenter la taille du texte" aria-label="Texte plus grand">A+</button>
-            <button id="font-reset" class="toolbar-btn" title="Taille du texte par défaut" aria-label="Réinitialiser la taille">
-                <i class="fas fa-undo-alt"></i>
-            </button>
+        <div class="menu-section">
+            <label>Accessibilité</label>
+            <button id="theme-btn" class="menu-btn"><i class="fas fa-moon"></i> Mode sombre</button>
+            <button id="contrast-btn" class="menu-btn"><i class="fas fa-adjust"></i> Contraste</button>
+            <div class="font-controls">
+                <button id="font-minus" class="menu-btn">A-</button>
+                <span>Taille</span>
+                <button id="font-plus" class="menu-btn">A+</button>
+            </div>
         </div>
-    </header>
-
-    <div id="app">
-        <!-- Contenu généré dynamiquement par app.js -->
+        <div class="menu-section">
+            <label>Navigation</label>
+            <a href="#login" class="menu-link" id="login-link">Connexion</a>
+            <a href="#register" class="menu-link" id="register-link">Inscription</a>
+            <a href="#dashboard" class="menu-link" id="dashboard-link" style="display:none;">Dashboard</a>
+        </div>
     </div>
 
-    <!-- Pied de page (généré par renderFooter()) -->
+    <!-- Contenu principal -->
+    <main id="app"><div class="loading">Chargement...</div></main>
+
+    <!-- Pied de page injecté par JS -->
     <div id="footer-app"></div>
 
+    <!-- Bouton WhatsApp flottant -->
+    <div class="whatsapp-float">
+        <a href="#" target="_blank" rel="noopener" class="whatsapp-btn" id="whatsapp-link">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
 
-    <!-- Scripts -->
+    <!-- Scripts (inchangés) -->
     <script src="js/utils.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/theme.js"></script>
@@ -133,6 +238,15 @@
     <script src="js/cart.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Gestion du menu "Plus" -->
+    <script>
+        function toggleMenu() {
+            document.getElementById('side-menu').classList.toggle('open');
+            document.getElementById('menu-overlay').style.display = 
+                document.getElementById('side-menu').classList.contains('open') ? 'block' : 'none';
+        }
+    </script>
 
     <!-- Enregistrement du Service Worker -->
     <script>
