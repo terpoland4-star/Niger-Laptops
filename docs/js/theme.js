@@ -1,13 +1,22 @@
+// ==========================================
+// theme.js – Gestion du thème sombre/clair
+// ==========================================
+
 function applyTheme(theme) {
     if (theme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
     } else {
         document.documentElement.removeAttribute('data-theme');
     }
-    const btn = document.getElementById('theme-toggle');
+    const btn = document.getElementById('theme-btn');
     if (btn) {
-        btn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        btn.title = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
+        if (theme === 'dark') {
+            btn.innerHTML = '<i class="fas fa-sun"></i> Mode clair';
+            btn.title = 'Passer en mode clair';
+        } else {
+            btn.innerHTML = '<i class="fas fa-moon"></i> Mode sombre';
+            btn.title = 'Passer en mode sombre';
+        }
     }
 }
 
@@ -16,42 +25,44 @@ function toggleTheme() {
     const next = current === 'dark' ? 'light' : 'dark';
     applyTheme(next);
     localStorage.setItem('theme', next);
-    // Désactiver le mode automatique quand l'utilisateur choisit manuellement
     localStorage.setItem('autoThemeDisabled', 'true');
 }
 
 function initTheme() {
-    // Si l'utilisateur a déjà basculé manuellement, on respecte son choix
     const autoDisabled = localStorage.getItem('autoThemeDisabled');
 
     if (!autoDisabled) {
-        // Mode automatique : sombre entre 18h et 6h, clair le reste du temps
+        // Mode automatique : sombre de 18h à 6h
         function applyAutoTheme() {
             const hour = new Date().getHours();
             const autoTheme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
             applyTheme(autoTheme);
         }
         applyAutoTheme();
-        // Vérifier toutes les 60 secondes si l'heure a changé de plage
         setInterval(() => {
             if (localStorage.getItem('autoThemeDisabled') === 'true') return;
             const hour = new Date().getHours();
-            const newAutoTheme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
+            const autoTheme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
             const currentAttr = document.documentElement.getAttribute('data-theme');
-            if ((currentAttr === 'dark' && newAutoTheme === 'light') ||
-                (currentAttr !== 'dark' && newAutoTheme === 'dark')) {
-                applyTheme(newAutoTheme);
+            if ((currentAttr === 'dark' && autoTheme === 'light') ||
+                (currentAttr !== 'dark' && autoTheme === 'dark')) {
+                applyTheme(autoTheme);
             }
         }, 60000);
     } else {
-        // L'utilisateur a choisi manuellement, on applique son thème sauvegardé
         const saved = localStorage.getItem('theme');
         applyTheme(saved || 'light');
     }
 
-    // Bouton de basculement manuel
-    const btn = document.getElementById('theme-toggle');
+    const btn = document.getElementById('theme-btn');
     if (btn) {
         btn.addEventListener('click', toggleTheme);
     }
+}
+
+// Initialisation au chargement
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+} else {
+    initTheme();
 }
