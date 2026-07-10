@@ -1,56 +1,84 @@
-const API_BASE = 'http://localhost:3000/api/v1'; // À modifier selon votre serveur
-const USE_LOCAL_DATA = true;
+// ==========================================
+// api.js – Client API avec retry, timeout et fallback local
+// ==========================================
 
-async function apiCall(endpoint, options = {}) {
+const API_BASE = 'http://localhost:3000/api/v1';
+const USE_LOCAL_DATA = true; // Mode démonstration
+const REQUEST_TIMEOUT = 10000; // 10 secondes
+
+/**
+ * Effectue un appel API avec retry automatique et timeout.
+ * @param {string} endpoint
+ * @param {object} options - Options fetch
+ * @param {number} retries - Nombre de tentatives restantes
+ * @returns {Promise<any>}
+ */
+async function apiCall(endpoint, options = {}, retries = 2) {
     const token = localStorage.getItem('access_token');
-    const headers = { 'Content-Type': 'application/json', ...options.headers };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-
-    const response = await fetch(API_BASE + endpoint, { ...options, headers });
-    if (!response.ok) {
-        let errorMessage = 'Erreur réseau';
-        try {
-            const err = await response.json();
-            errorMessage = err.error || errorMessage;
-        } catch (e) {
-            // La réponse n'est pas du JSON, on garde le message par défaut
-        }
-        throw new Error(errorMessage);
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
-    return response.json();
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    try {
+        const response = await fetch(API_BASE + endpoint, {
+            ...options,
+            headers,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            let errorMessage = 'Erreur réseau';
+            try {
+                const err = await response.json();
+                errorMessage = err.error || err.message || errorMessage;
+            } catch (e) {
+                // Réponse non JSON
+            }
+            throw new Error(errorMessage);
+        }
+        return await response.json();
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (retries > 0 && error.name !== 'AbortError') {
+            console.warn(`Tentative échouée, nouvelle tentative dans ${(3 - retries) * 1000}ms...`);
+            await new Promise(r => setTimeout(r, (3 - retries) * 1000));
+            return apiCall(endpoint, options, retries - 1);
+        }
+        if (error.name === 'AbortError') {
+            throw new Error('La requête a expiré');
+        }
+        throw error;
+    }
 }
 
-// Auth (non utilisée en mode local)
+// ===================== Auth (non utilisée en local) =====================
 async function sendOTP(phone) {
     return apiCall('/auth/send-otp', { method: 'POST', body: JSON.stringify({ phone }) });
 }
 async function verifyOTP(phone, code, firstName, lastName) {
     return apiCall('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ phone, code, first_name: firstName, last_name: lastName }) });
 }
-async function logout() {
-    try { await apiCall('/auth/logout', { method: 'POST' }); } catch(e) {}
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    navigateTo('/login');
-}
 
-// Produits – utilise les données locales si USE_LOCAL_DATA = true
+// ===================== Produits =====================
 async function getProducts(params = {}) {
-    if (USE_LOCAL_DATA) {
-        return getLocalProducts(params);
-    }
+    if (USE_LOCAL_DATA) return getLocalProducts(params);
     const query = new URLSearchParams(params).toString();
     return apiCall('/products?' + query);
 }
 
 async function getProduct(id) {
-    if (USE_LOCAL_DATA) {
-        return getLocalProduct(id);
-    }
+    if (USE_LOCAL_DATA) return getLocalProduct(id);
     return apiCall('/products/' + id);
 }
 
-// Fonctions locales adaptées aux données bilingues
 function getLocalProducts(params = {}) {
     let products = [...demoData.products];
     if (params.search) {
@@ -62,7 +90,7 @@ function getLocalProducts(params = {}) {
                    (p.description_en && p.description_en.toLowerCase().includes(q));
         });
     }
-    return { data: products, pagination: { page:1, totalPages:1, total: products.length } };
+    return { data: products, pagination: { page: 1, totalPages: 1, total: products.length } };
 }
 
 function getLocalProduct(id) {
@@ -78,12 +106,11 @@ function getLocalProduct(id) {
     };
 }
 
-// Commandes – simulation en local
-let localOrders = []; // stocke les commandes passées localement (mémoire volatile)
+// ===================== Commandes (simulation locale) =====================
+let localOrders = [];
 
 async function createOrder(data) {
     if (USE_LOCAL_DATA) {
-        // Simuler la création de commande
         const order = {
             id: 'local-' + Date.now(),
             order_number: 'NL-LOCAL-' + Date.now(),
@@ -110,9 +137,7 @@ async function createOrder(data) {
 }
 
 async function getOrders() {
-    if (USE_LOCAL_DATA) {
-        return { data: localOrders };
-    }
+    if (USE_LOCAL_DATA) return { data: localOrders };
     return apiCall('/orders/my-orders');
 }
 
@@ -124,5 +149,3 @@ async function getOrder(id) {
     }
     return apiCall('/orders/' + id);
 }
-
-// La fonction initiatePayment() est dans payments.js
