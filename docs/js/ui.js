@@ -1,5 +1,5 @@
 // ==========================================
-// ui.js – Composants et rendu des pages (internationalisé, responsive, accessible)
+// ui.js – Composants et rendu des pages (moderne, sécurisé, accessible)
 // ==========================================
 
 // ---------- CARTE PRODUIT ----------
@@ -9,19 +9,20 @@ function productCard(product) {
         ? Math.round((1 - localized.price / localized.compare_at_price) * 100)
         : 0;
     return `
-    <div class="product-card" onclick="navigateTo('/product/${localized.id}')">
-        <img src="${localized.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image'}" alt="${localized.name}" loading="lazy">
+    <article class="product-card" data-id="${escapeHTML(localized.id)}" tabindex="0" role="button" aria-label="${escapeHTML(localized.name)}">
+        <img src="${escapeHTML(localized.thumbnail || 'https://placehold.co/300x200?text=Pas+d%27image')}" 
+             alt="${escapeHTML(localized.name)}" loading="lazy" width="300" height="200">
         <div class="product-info">
-            <small>${localized.brand || ''}</small>
-            <h4>${localized.name}</h4>
+            <small>${escapeHTML(localized.brand || '')}</small>
+            <h4>${escapeHTML(localized.name)}</h4>
             <div class="flex-between">
                 <span class="price">${formatPrice(localized.price)}</span>
                 ${localized.compare_at_price ? `<span class="old-price">${formatPrice(localized.compare_at_price)}</span>` : ''}
             </div>
             ${discount > 0 ? `<span class="badge">${t('discount', {discount})}</span>` : ''}
-            <button class="btn btn-primary btn-block add-to-cart-btn" data-product-id="${localized.id}">${t('addToCart')}</button>
+            <button class="btn btn-primary btn-block add-to-cart-btn" data-product-id="${escapeHTML(localized.id)}">${t('addToCart')}</button>
         </div>
-    </div>`;
+    </article>`;
 }
 
 // ---------- SQUELETTE DE CHARGEMENT ----------
@@ -33,9 +34,10 @@ function skeleton(columns = 2) {
     return `<div class="product-grid">${html}</div>`;
 }
 
-// ---------- PAGE D'ACCUEIL (ONGLETS INSPIRÉS DE TEMU) ----------
+// ---------- PAGE D'ACCUEIL (MODERNE, SANS NAV REDONDANTE) ----------
 async function renderHomePage() {
     const app = document.getElementById('app');
+    if (!app) return;
 
     // Squelette immédiat
     app.innerHTML = `
@@ -43,20 +45,13 @@ async function renderHomePage() {
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
             <div>
                 <h1 style="font-size:1.5rem;">${t('siteName')}</h1>
-                <p style="font-size:0.85rem; color: var(--text-light); margin: 0;">${t('tagline')}</p>
+                <p style="font-size:0.85rem; color: var(--text-secondary); margin: 0;">${t('tagline')}</p>
             </div>
             <span style="flex:1"></span>
-            <span id="cart-count" class="badge">${getCartCount()}</span>
         </header>
-        <nav class="home-nav">
-            <a href="#/" class="active"><i class="fas fa-home"></i> ${t('home')}</a>
-            <a href="#/cart"><i class="fas fa-shopping-cart"></i> ${t('cart')}</a>
-            <a href="#/orders"><i class="fas fa-box"></i> ${t('orders')}</a>
-            <a href="#/profile"><i class="fas fa-user"></i> ${t('profile')}</a>
-        </nav>
         <main class="container" style="padding-top: 0;">
             <div class="search-wrapper">
-                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
+                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()" aria-label="${t('searchPlaceholder')}">
                 <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
@@ -67,7 +62,7 @@ async function renderHomePage() {
         </main>
     `;
 
-    // Récupération des produits
+    // Chargement des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -75,7 +70,6 @@ async function renderHomePage() {
     } catch (e) {
         allProducts = [];
     }
-
     window._allProducts = allProducts;
 
     const mainTabs = [
@@ -83,7 +77,6 @@ async function renderHomePage() {
         { key: 'Stockage', label: '💾 Stockage' },
         { key: 'Accessoires', label: '🎧 Accessoires' }
     ];
-
     let activeTab = 'Ordinateurs';
 
     function buildContent() {
@@ -125,7 +118,7 @@ async function renderHomePage() {
     if (main) {
         main.innerHTML = `
             <div class="search-wrapper">
-                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()">
+                <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()" aria-label="${t('searchPlaceholder')}">
                 <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
@@ -142,7 +135,6 @@ async function renderHomePage() {
                 activeTab = this.dataset.tab;
                 document.getElementById('temu-content').innerHTML = buildContent();
                 attachAddToCartListeners();
-                initAccessibilityControls();
             });
         });
     }
@@ -153,13 +145,13 @@ async function renderHomePage() {
             if (btn) {
                 e.stopPropagation();
                 const productId = btn.dataset.productId;
-                addToCartFromCard(productId);
+                const product = window._allProducts?.find(p => p.id === productId);
+                if (product) addToCart(product, 1);
             }
         });
     }
 
     attachAddToCartListeners();
-    initAccessibilityControls();
 }
 
 // ---------- RECHERCHE DYNAMIQUE ----------
@@ -179,21 +171,18 @@ function handleSearchSuggestions() {
     const input = document.getElementById('search-input');
     const dropdown = document.getElementById('suggestions-dropdown');
     const resultsGrid = document.getElementById('search-results-grid');
-    const categorySections = document.querySelectorAll('.category-section');
-
     if (!input) return;
 
     const query = input.value.trim().toLowerCase();
-
     if (query.length === 0) {
         dropdown.style.display = 'none';
         if (resultsGrid) resultsGrid.style.display = 'none';
-        categorySections.forEach(s => s.style.display = '');
+        document.querySelectorAll('.category-section').forEach(s => s.style.display = '');
         return;
     }
 
     if (allProductsCache.length === 0) {
-        loadAllProducts().then(() => handleSearchSuggestions());
+        loadAllProducts().then(handleSearchSuggestions);
         return;
     }
 
@@ -205,53 +194,55 @@ function handleSearchSuggestions() {
 
     if (resultsGrid) {
         resultsGrid.innerHTML = filtered.map(p => productCard(p)).join('');
-        resultsGrid.style.display = 'block';
+        resultsGrid.style.display = filtered.length ? 'block' : 'none';
     }
+    document.querySelectorAll('.category-section').forEach(s => s.style.display = 'none');
 
-    categorySections.forEach(s => s.style.display = 'none');
-
-    if (filtered.length === 0) {
-        dropdown.style.display = 'none';
-    } else {
-        const suggestions = filtered.slice(0, 5).map(p => {
+    if (filtered.length && filtered.length <= 5) {
+        dropdown.innerHTML = filtered.slice(0, 5).map(p => {
             const loc = getLocalizedProduct(p);
             return `<div class="suggestion-item" onclick="navigateTo('/product/${loc.id}'); document.getElementById('suggestions-dropdown').style.display='none';">
-                <strong>${loc.name}</strong> – ${formatPrice(loc.price)}
+                <strong>${escapeHTML(loc.name)}</strong> – ${formatPrice(loc.price)}
             </div>`;
         }).join('');
-        dropdown.innerHTML = suggestions;
         dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
     }
 }
 
-// ---------- ACCESSIBILITÉ ----------
+// ---------- ACCESSIBILITÉ (corrigée pour le menu latéral) ----------
 let accessibilityInitialized = false;
 
 function initAccessibilityControls() {
     if (accessibilityInitialized) return;
     accessibilityInitialized = true;
 
-    const highContrastToggle = document.getElementById('high-contrast-toggle');
-    if (highContrastToggle) {
-        highContrastToggle.checked = localStorage.getItem('highContrast') === 'true';
-        applyHighContrast();
-        highContrastToggle.addEventListener('click', () => {
-            const current = localStorage.getItem('highContrast') === 'true';
-            localStorage.setItem('highContrast', !current);
-            applyHighContrast();
+    // Contraste
+    const contrastBtn = document.getElementById('contrast-btn');
+    if (contrastBtn) {
+        if (localStorage.getItem('highContrast') === 'true') {
+            document.body.classList.add('high-contrast');
+            contrastBtn.setAttribute('aria-pressed', 'true');
+        }
+        contrastBtn.addEventListener('click', () => {
+            const isHigh = document.body.classList.toggle('high-contrast');
+            localStorage.setItem('highContrast', isHigh);
+            contrastBtn.setAttribute('aria-pressed', isHigh);
         });
     }
 
-    const fontIncrease = document.getElementById('font-increase');
-    const fontDecrease = document.getElementById('font-decrease');
+    // Taille de police
+    const fontPlus = document.getElementById('font-plus');
+    const fontMinus = document.getElementById('font-minus');
     const fontReset = document.getElementById('font-reset');
-    if (fontIncrease) fontIncrease.addEventListener('click', () => changeFontSize(1));
-    if (fontDecrease) fontDecrease.addEventListener('click', () => changeFontSize(-1));
+    if (fontPlus) fontPlus.addEventListener('click', () => changeFontSize(1));
+    if (fontMinus) fontMinus.addEventListener('click', () => changeFontSize(-1));
     if (fontReset) fontReset.addEventListener('click', resetFontSize);
 }
 
 function applyHighContrast() {
-    document.body.classList.toggle('high-contrast', localStorage.getItem('highContrast') === 'true');
+    // géré par le toggle
 }
 
 let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
@@ -270,24 +261,6 @@ function resetFontSize() {
     document.body.style.fontSize = '16px';
     localStorage.setItem('fontSize', '16');
 }
-
-// ---------- FONCTIONS D'AJOUT AU PANIER ----------
-window.addToCartFromCard = async function (productId) {
-    try {
-        const res = await getProduct(productId);
-        addToCart(res.data, 1);
-        showToast(t('addedToCart'), 'success');
-    } catch (e) {
-        showToast(t('errorProduct'), 'error');
-    }
-};
-
-window.addToCartFromDetail = function (productId, stock) {
-    getProduct(productId).then(res => {
-        addToCart(res.data, 1);
-        showToast(t('addedToCart'), 'success');
-    }).catch(() => showToast(t('errorProduct'), 'error'));
-};
 
 // ---------- AVIS CLIENTS ----------
 function getReviews(productId) {
@@ -316,17 +289,18 @@ function renderStars(rating) {
     return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
 }
 
-// ---------- PAGE DÉTAIL PRODUIT (avec avis) ----------
+// ---------- PAGE DÉTAIL PRODUIT ----------
 async function renderProductPage(productId) {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `<div class="container">${t('loading')}</div>`;
     try {
         const res = await getProduct(productId);
         const p = getLocalizedProduct(res.data);
         const stockQty = p.stock_quantity !== undefined ? p.stock_quantity : 10;
-
         const reviews = getReviews(productId);
         const avg = calcAvg(reviews);
+
         let reviewsHTML = reviews.length ?
             `<div class="reviews-section">
                 <h3>⭐ ${t('customerReviews')} (${reviews.length})</h3>
@@ -334,8 +308,8 @@ async function renderProductPage(productId) {
                 ${reviews.slice().reverse().map(r => `
                     <div class="review-card">
                         <div class="review-stars">${renderStars(r.rating)}</div>
-                        <p class="review-comment">${r.comment || ''}</p>
-                        <small class="review-author">– ${r.author || t('anonymous')}</small>
+                        <p class="review-comment">${escapeHTML(r.comment || '')}</p>
+                        <small class="review-author">– ${escapeHTML(r.author || t('anonymous'))}</small>
                     </div>`).join('')}
             </div>` : `<p>${t('noReviews')}</p>`;
 
@@ -344,30 +318,30 @@ async function renderProductPage(productId) {
             reviewFormHTML = `
                 <div class="review-form card mt-2">
                     <h4>${t('leaveReview')}</h4>
-                    <select id="review-rating">
+                    <select id="review-rating" aria-label="Note sur 5">
                         <option value="5">★★★★★</option>
                         <option value="4">★★★★</option>
                         <option value="3">★★★</option>
                         <option value="2">★★</option>
                         <option value="1">★</option>
                     </select>
-                    <textarea id="review-comment" placeholder="${t('reviewCommentPlaceholder')}"></textarea>
-                    <button onclick="submitReview('${productId}')" class="btn btn-primary btn-block mt-2">${t('submitReview')}</button>
+                    <textarea id="review-comment" placeholder="${t('reviewCommentPlaceholder')}" aria-label="Commentaire"></textarea>
+                    <button onclick="submitReview('${escapeHTML(productId)}')" class="btn btn-primary btn-block mt-2">${t('submitReview')}</button>
                 </div>`;
         }
 
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
-            <img src="${p.thumbnail || 'https://placehold.co/600x400'}" style="width:100%; border-radius:12px; max-height:300px; object-fit:cover;" alt="${p.name}">
-            <h2>${p.name}</h2>
-            <p>${p.description || ''}</p>
+            <img src="${escapeHTML(p.thumbnail || 'https://placehold.co/600x400')}" style="width:100%; border-radius:var(--radius); max-height:300px; object-fit:cover;" alt="${escapeHTML(p.name)}">
+            <h2>${escapeHTML(p.name)}</h2>
+            <p>${escapeHTML(p.description || '')}</p>
             <div class="flex-between">
                 <span class="price">${formatPrice(p.price)}</span>
                 ${p.compare_at_price ? `<span class="old-price">${formatPrice(p.compare_at_price)}</span>` : ''}
             </div>
             <div>${t('stock')} : ${stockQty > 0 ? t('inStock') : t('outOfStock')}</div>
-            <button class="btn btn-primary btn-block mt-2" onclick="addToCartFromDetail('${p.id}', ${stockQty})">${t('addToCart')}</button>
+            <button class="btn btn-primary btn-block mt-2" onclick="addToCartFromDetail('${escapeHTML(p.id)}', ${stockQty})">${t('addToCart')}</button>
             ${reviewsHTML}
             ${reviewFormHTML}
         </div>`;
@@ -380,75 +354,84 @@ window.submitReview = function(productId) {
     const rating = parseInt(document.getElementById('review-rating').value);
     const comment = document.getElementById('review-comment').value.trim();
     if (!rating) return;
-    const review = {
+    saveReview(productId, {
         rating,
         comment,
-        author: currentUser.full_name || currentUser.email || 'Client',
+        author: currentUser?.full_name || currentUser?.email || 'Client',
         date: new Date().toISOString()
-    };
-    saveReview(productId, review);
+    });
     showToast(t('reviewSubmitted'), 'success');
     renderProductPage(productId);
 };
 
+window.addToCartFromDetail = function(productId, stockQty) {
+    const product = window._allProducts?.find(p => p.id === productId);
+    if (product && stockQty > 0) addToCart(product, 1);
+    else showToast(t('outOfStock'), 'error');
+};
+
+// ---------- PANIER, CHECKOUT, COMMANDES, PROFIL, CONNEXION, INSCRIPTION (inchangés mais avec escape) ----------
+// (Code similaire à l'original, en appliquant escapeHTML sur les données insérées)
+// Pour rester concis, je fournirai les fonctions principales déjà corrigées dans la version précédente.
+// Vous pouvez les réintégrer telles quelles, en remplaçant les appels directs par escapeHTML sur les données dynamiques.
+
+// ---------- FONCTIONS MANQUANTES (à intégrer depuis l'ancien ui.js) ----------
+// Les fonctions renderCartPage, renderCheckoutPage, renderOrdersPage, renderOrderDetail, renderTrackOrderPage, renderProfilePage, renderLoginPage, renderRegisterPage, renderAboutPage, renderContactPage
+// sont à reprendre de l'ancien fichier en ajoutant escapeHTML autour des données dynamiques.
+// Je vais inclure les versions sécurisées ci-dessous.
+
 // ---------- PAGE PANIER ----------
 function renderCartPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     if (cart.length === 0) {
-        app.innerHTML = `
-        <div class="container">
-            <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
-            <h2>🛒 ${t('emptyCart')}</h2>
-            <button class="btn btn-primary" onclick="navigateTo('/')">${t('seeProducts')}</button>
-        </div>`;
+        app.innerHTML = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>${t('emptyCart')}</h2><button class="btn btn-primary" onclick="navigateTo('/')">${t('seeProducts')}</button></div>`;
         return;
     }
-    let html = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button><h2>${t('cart')}</h2>`;
+    let html = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>${t('cart')}</h2>`;
     cart.forEach(item => {
-        const localized = getLocalizedProduct(item);
+        const loc = getLocalizedProduct(item);
         html += `
         <div class="card flex-between">
             <div>
-                <strong>${localized.name}</strong><br>
-                <small>${formatPrice(localized.price)} x ${item.quantity}</small>
+                <strong>${escapeHTML(loc.name)}</strong><br>
+                <small>${formatPrice(loc.price)} x ${item.quantity}</small>
             </div>
             <div class="flex">
-                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity - 1})" aria-label="Réduire la quantité">−</button>
+                <button class="btn" onclick="updateQuantity('${escapeHTML(item.id)}', ${item.quantity - 1})">−</button>
                 <span>${item.quantity}</span>
-                <button class="btn" onclick="cartUpdateQuantity('${localized.id}', ${item.quantity + 1})" aria-label="Augmenter la quantité">+</button>
-                <button class="btn btn-danger" onclick="removeFromCart('${localized.id}'); renderCartPage();" aria-label="Supprimer l'article">🗑</button>
+                <button class="btn" onclick="updateQuantity('${escapeHTML(item.id)}', ${item.quantity + 1})">+</button>
+                <button class="btn btn-danger" onclick="removeFromCart('${escapeHTML(item.id)}'); renderCartPage();">🗑</button>
             </div>
         </div>`;
     });
+    const subtotal = getCartTotal();
+    const delivery = subtotal >= 25000 ? 0 : 1500;
     html += `
         <div class="card">
-            <div class="flex-between"><span>${t('subtotal')}</span><span>${formatPrice(getCartTotal())}</span></div>
-            <div class="flex-between"><span>${t('delivery')}</span><span>${getCartTotal() >= 25000 ? t('free') : formatPrice(1500)}</span></div>
-            <div class="flex-between"><strong>${t('total')}</strong><strong>${formatPrice(getCartTotal() + (getCartTotal() >= 25000 ? 0 : 1500))}</strong></div>
+            <div class="flex-between"><span>${t('subtotal')}</span><span>${formatPrice(subtotal)}</span></div>
+            <div class="flex-between"><span>${t('delivery')}</span><span>${delivery ? formatPrice(delivery) : t('free')}</span></div>
+            <div class="flex-between"><strong>${t('total')}</strong><strong>${formatPrice(subtotal + delivery)}</strong></div>
             <button class="btn btn-primary btn-block mt-2" onclick="navigateTo('/checkout')">${t('order')}</button>
         </div>
     </div>`;
     app.innerHTML = html;
 }
 
-window.cartUpdateQuantity = function (productId, qty) {
-    updateQuantity(productId, qty);
-    renderCartPage();
-};
-
-// ---------- PAGE CHECKOUT (avec KYC et notification) ----------
+// ---------- CHECKOUT (avec KYC) ----------
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
+        <button onclick="navigateTo('/')">${t('back')}</button>
         <h2>${t('checkout')}</h2>
         <form id="checkout-form">
-            <input type="text" id="fullname" placeholder="${t('namePlaceholder')}" required>
-            <input type="tel" id="phone" placeholder="${t('phoneRequired')}" required>
-            <textarea id="address" placeholder="${t('addressPlaceholder')}" required></textarea>
-            <select id="payment-method" required>
+            <input type="text" id="fullname" placeholder="${t('namePlaceholder')}" required aria-label="${t('namePlaceholder')}">
+            <input type="tel" id="phone" placeholder="${t('phoneRequired')}" required aria-label="${t('phoneRequired')}">
+            <textarea id="address" placeholder="${t('addressPlaceholder')}" required aria-label="${t('addressPlaceholder')}"></textarea>
+            <select id="payment-method" required aria-label="${t('paymentMethod')}">
                 <option value="">-- ${t('paymentMethod')} --</option>
                 <option value="zamani_cash">${t('zamaniCash')}</option>
                 <option value="airtel_money">${t('airtelMoney')}</option>
@@ -464,20 +447,23 @@ function renderCheckoutPage() {
 
     document.getElementById('checkout-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const fullname = document.getElementById('fullname').value;
-        const phone = document.getElementById('phone').value;
-        const address = document.getElementById('address').value;
+        const fullname = document.getElementById('fullname').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
         const payment = document.getElementById('payment-method').value;
+
+        if (!isValidNigerPhone(phone)) {
+            showToast('Numéro de téléphone invalide', 'error');
+            return;
+        }
 
         const orderData = {
             items: cart.map(item => ({ product_id: item.id, quantity: item.quantity })),
             delivery_address: { full_name: fullname, phone, address_line1: address },
             payment_method: payment
         };
-
         const total = getCartTotal() + (getCartTotal() >= 25000 ? 0 : 1500);
 
-        // 🔐 KYC pour les commandes ≥ 1 000 000 FCFA
         if (total >= 1000000) {
             showKYCModal(orderData, fullname);
             return;
@@ -493,13 +479,11 @@ function renderCheckoutPage() {
             saveCart();
             showToast(t('orderConfirmed'), 'success');
             navigateTo('/orders');
-
-            // Notification OneSignal
             if (typeof OneSignal !== 'undefined') {
                 OneSignal.push(function () {
                     OneSignal.sendSelfNotification(
                         "Commande confirmée !",
-                        "Votre commande " + order.order_number + " est en cours de préparation.",
+                        "Votre commande " + order.order_number + " est en cours.",
                         "https://www.niger-laptops.com/#/orders",
                         "https://www.niger-laptops.com/assets/icon-512.png"
                     );
@@ -511,23 +495,23 @@ function renderCheckoutPage() {
     });
 }
 
-// ---------- MODALE KYC ----------
+// Les autres fonctions (KYC modal, orders, login, etc.) sont à intégrer avec escapeHTML.
+// Pour garder le fichier complet, voici les versions essentielles ci-dessous.
+// (Je ne répéterai pas tout l'ancien code, mais je vous le fournirai dans un bloc complet si nécessaire.)
+
+// ---------- FONCTIONS UTILITAIRES POUR LE CHECKOUT ----------
 function showKYCModal(orderData, customerName) {
     const modal = document.createElement('div');
     modal.id = 'kyc-modal';
-    modal.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.7); z-index: 10000;
-        display: flex; align-items: center; justify-content: center;
-    `;
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
     modal.innerHTML = `
-        <div style="background: var(--surface); border-radius: var(--radius-lg); padding: 2rem; max-width: 450px; width: 90%; text-align: center;">
+        <div style="background:var(--surface);border-radius:var(--radius-lg);padding:2rem;max-width:450px;width:90%;text-align:center;">
             <h3>🔐 ${t('kycTitle')}</h3>
             <p>${t('kycDescription')}</p>
             <form id="kyc-form">
-                <label style="display: block; margin-top: 1rem;">${t('kycIdLabel')}</label>
+                <label>${t('kycIdLabel')}</label>
                 <input type="file" id="kyc-id" accept="image/*" required>
-                <label style="display: block; margin-top: 1rem;">${t('kycSelfieLabel')}</label>
+                <label>${t('kycSelfieLabel')}</label>
                 <input type="file" id="kyc-selfie" accept="image/*" required>
                 <button type="submit" class="btn btn-primary btn-block mt-2">${t('kycSend')}</button>
             </form>
@@ -535,60 +519,78 @@ function showKYCModal(orderData, customerName) {
         </div>
     `;
     document.body.appendChild(modal);
-
     document.getElementById('kyc-cancel').addEventListener('click', () => modal.remove());
-
     document.getElementById('kyc-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const idFile = document.getElementById('kyc-id').files[0];
         const selfieFile = document.getElementById('kyc-selfie').files[0];
         if (!idFile || !selfieFile) return;
-
+        if (!idFile.type.startsWith('image/') || !selfieFile.type.startsWith('image/')) {
+            showToast('Fichiers images uniquement', 'error');
+            return;
+        }
+        if (idFile.size > 5*1024*1024 || selfieFile.size > 5*1024*1024) {
+            showToast('Fichier trop volumineux (max 5 Mo)', 'error');
+            return;
+        }
         orderData.payment_method = 'kyc_pending';
         try {
             const res = await createOrder(orderData);
             const order = res.data;
-
-            // Envoyer les documents via EmailJS
             await emailjs.send("service_4vlnw9a", "template_kw3ckfd", {
                 order_number: order.order_number,
                 customer_name: customerName,
-                total: formatPrice(orderData.items.reduce((sum, item) => {
-                    const product = demoData.products.find(p => p.id === item.product_id);
-                    return sum + (product ? product.price * item.quantity : 0);
-                }, 0)),
+                total: formatPrice(order.total),
                 id_document: idFile,
                 selfie: selfieFile
             });
-
             cart = [];
             saveCart();
-            showToast(t('orderConfirmed') + ' (vérification en cours)', 'success');
+            showToast(t('orderConfirmed'), 'success');
             modal.remove();
             navigateTo('/orders');
         } catch (err) {
-            showToast(err.message || 'Erreur lors de l\'envoi des documents', 'error');
+            showToast(err.message, 'error');
         }
     });
 }
+
+// ---------- EXPOSITION GLOBALE ----------
+window.renderHomePage = renderHomePage;
+window.renderProductPage = renderProductPage;
+window.renderCartPage = renderCartPage;
+window.renderCheckoutPage = renderCheckoutPage;
+window.renderOrdersPage = renderOrdersPage; // à définir si pas encore
+window.renderProfilePage = renderProfilePage;
+window.renderLoginPage = renderLoginPage;
+window.renderRegisterPage = renderRegisterPage;
+window.renderAboutPage = renderAboutPage;
+window.renderContactPage = renderContactPage;
+window.renderTrackOrderPage = renderTrackOrderPage;
+window.initAccessibilityControls = initAccessibilityControls;
+
+// ==========================================
+// ui.js – Suite : Commandes, Profil, Connexion, etc.
+// ==========================================
 
 // ---------- PAGE COMMANDES ----------
 async function renderOrdersPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
-    app.innerHTML = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button><h2>${t('myOrders')}</h2></div>`;
+    if (!app) return;
+    app.innerHTML = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>${t('myOrders')}</h2></div>`;
     try {
         const res = await getOrders();
         const orders = res.data || [];
         let html = orders.length ? '' : `<p>${t('noOrders')}</p>`;
         orders.forEach(order => {
             html += `<div class="card" onclick="navigateTo('/order/${order.id}')">
-                <div class="flex-between"><strong>${order.order_number}</strong><span class="badge">${order.status}</span></div>
+                <div class="flex-between"><strong>${escapeHTML(order.order_number)}</strong><span class="badge">${escapeHTML(order.status)}</span></div>
                 <div>${formatPrice(order.total)}</div>
-                <small>${new Date(order.created_at).toLocaleDateString()}</small>
+                <small>${formatDate(order.created_at)}</small>
             </div>`;
         });
-        app.innerHTML = `<div class="container"><button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button><h2>${t('myOrders')}</h2>${html}</div>`;
+        app.innerHTML = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>${t('myOrders')}</h2>${html}</div>`;
     } catch (e) {
         app.innerHTML = `<div class="container">${t('errorLoading')}</div>`;
     }
@@ -597,16 +599,17 @@ async function renderOrdersPage() {
 async function renderOrderDetail(orderId) {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `<div class="container">${t('loading')}</div>`;
     try {
         const res = await getOrder(orderId);
         const order = res.data;
-        let items = order.items.map(i => `<li>${i.product_name} x${i.quantity} = ${formatPrice(i.total_price)}</li>`).join('');
+        let items = order.items.map(i => `<li>${escapeHTML(i.product_name)} x${i.quantity} = ${formatPrice(i.total_price)}</li>`).join('');
         app.innerHTML = `
         <div class="container">
             <button onclick="navigateTo('/orders')">${t('back')}</button>
-            <h2>${t('orderDetails')} ${order.order_number}</h2>
-            <p>${t('status')}: ${order.status}</p>
+            <h2>${t('orderDetails')} ${escapeHTML(order.order_number)}</h2>
+            <p>${t('status')}: ${escapeHTML(order.status)}</p>
             <p>${t('total')}: ${formatPrice(order.total)}</p>
             <h4>${t('articles')}:</h4>
             <ul>${items}</ul>
@@ -619,12 +622,13 @@ async function renderOrderDetail(orderId) {
 // ---------- SUIVI DE COMMANDE ----------
 function renderTrackOrderPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
+        <button onclick="navigateTo('/')">${t('back')}</button>
         <h2>📦 ${t('trackOrderTitle')}</h2>
         <form id="track-order-form">
-            <input type="text" id="track-order-number" placeholder="${t('orderNumberPlaceholder')}" required>
+            <input type="text" id="track-order-number" placeholder="${t('orderNumberPlaceholder')}" required aria-label="${t('orderNumberPlaceholder')}">
             <button type="submit" class="btn btn-primary btn-block mt-2">${t('trackOrderBtn')}</button>
         </form>
         <div id="track-order-result" class="mt-2"></div>
@@ -643,10 +647,10 @@ function renderTrackOrderPage() {
                 const statusLabel = t(order.status) || order.status;
                 resultDiv.innerHTML = `
                 <div class="card">
-                    <h3>${t('orderDetails')} ${order.order_number}</h3>
-                    <p><strong>${t('status')} :</strong> ${statusLabel}</p>
+                    <h3>${t('orderDetails')} ${escapeHTML(order.order_number)}</h3>
+                    <p><strong>${t('status')} :</strong> ${escapeHTML(statusLabel)}</p>
                     <p><strong>${t('total')} :</strong> ${formatPrice(order.total)}</p>
-                    <p><strong>${t('createdAt')} :</strong> ${new Date(order.created_at).toLocaleDateString()}</p>
+                    <p><strong>${t('createdAt')} :</strong> ${formatDate(order.created_at)}</p>
                 </div>`;
             } else {
                 resultDiv.innerHTML = `<p>${t('orderNotFoundTrack')}</p>`;
@@ -657,21 +661,21 @@ function renderTrackOrderPage() {
     });
 }
 
-// ---------- PAGE PROFIL (avec notifications) ----------
+// ---------- PAGE PROFIL ----------
 function renderProfilePage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container text-center">
         <button onclick="navigateTo('/')" style="margin-bottom:16px; display:block; text-align:left;">${t('back')}</button>
         <h2>${t('profileTitle')}</h2>
-        <p>${currentUser.full_name || currentUser.email}</p>
+        <p>${escapeHTML(currentUser.full_name || currentUser.email)}</p>
         <button class="btn btn-outline btn-block" onclick="subscribeToNotifications()">🔔 ${t('notificationsSubscribe')}</button>
         <button class="btn btn-danger btn-block mt-2" onclick="logout()">${t('logoutBtn')}</button>
     </div>`;
 }
 
-// ---------- NOTIFICATIONS ----------
 function subscribeToNotifications() {
     if (typeof OneSignal !== 'undefined') {
         OneSignal.push(function () {
@@ -684,17 +688,20 @@ function subscribeToNotifications() {
     }
 }
 
-// ---------- PAGE CONNEXION (email/mot de passe) ----------
+// ---------- PAGE CONNEXION ----------
 function renderLoginPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('back')}</button>
+        <button onclick="navigateTo('/')">${t('back')}</button>
         <h2>${t('loginTitle')}</h2>
         <form id="login-form">
+            <label for="login-email">${t('emailPlaceholder')}</label>
             <input type="email" id="login-email" placeholder="${t('emailPlaceholder')}" required autocomplete="email">
+            <label for="login-password">${t('passwordPlaceholder')}</label>
             <input type="password" id="login-password" placeholder="${t('passwordPlaceholder')}" required autocomplete="current-password">
-            <button type="submit" class="btn btn-primary btn-block">${t('loginBtn')}</button>
+            <button type="submit" class="btn btn-primary btn-block mt-2">${t('loginBtn')}</button>
         </form>
         <p style="text-align:center; margin-top:1rem;">
             <a href="#/register">${t('createAccount')}</a>
@@ -705,6 +712,10 @@ function renderLoginPage() {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
+        if (!isValidEmail(email)) {
+            showToast('Email invalide', 'error');
+            return;
+        }
         try {
             await handleLogin(email, password);
         } catch (err) {
@@ -716,15 +727,19 @@ function renderLoginPage() {
 // ---------- PAGE INSCRIPTION ----------
 function renderRegisterPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/login')" style="margin-bottom:16px;">${t('back')}</button>
+        <button onclick="navigateTo('/login')">${t('back')}</button>
         <h2>${t('registerTitle')}</h2>
         <form id="register-form">
+            <label for="reg-fullname">${t('fullnamePlaceholder')}</label>
             <input type="text" id="reg-fullname" placeholder="${t('fullnamePlaceholder')}" required autocomplete="name">
+            <label for="reg-email">${t('emailPlaceholder')}</label>
             <input type="email" id="reg-email" placeholder="${t('emailPlaceholder')}" required autocomplete="email">
-            <input type="password" id="reg-password" placeholder="${t('passwordPlaceholder')}" required autocomplete="new-password">
-            <button type="submit" class="btn btn-primary btn-block">${t('registerBtn')}</button>
+            <label for="reg-password">${t('passwordPlaceholder')}</label>
+            <input type="password" id="reg-password" placeholder="${t('passwordPlaceholder')}" required autocomplete="new-password" minlength="6">
+            <button type="submit" class="btn btn-primary btn-block mt-2">${t('registerBtn')}</button>
         </form>
     </div>`;
 
@@ -733,8 +748,16 @@ function renderRegisterPage() {
         const fullname = document.getElementById('reg-fullname').value.trim();
         const email = document.getElementById('reg-email').value.trim();
         const password = document.getElementById('reg-password').value;
+        if (!isValidEmail(email)) {
+            showToast('Email invalide', 'error');
+            return;
+        }
+        if (password.length < 6) {
+            showToast('Mot de passe trop court (6 caractères min)', 'error');
+            return;
+        }
         try {
-            register(email, password, fullname);
+            await register(email, password, fullname);
             showToast(t('registerSuccess'), 'success');
             navigateTo('/');
         } catch (err) {
@@ -746,9 +769,10 @@ function renderRegisterPage() {
 // ---------- PAGE À PROPOS ----------
 function renderAboutPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
+        <button onclick="navigateTo('/')">${t('backHome')}</button>
         <h2>${t('aboutTitle')}</h2>
         <p>${t('aboutText1')}</p>
         <p>${t('aboutText2')}</p>
@@ -762,21 +786,26 @@ function renderAboutPage() {
     </div>`;
 }
 
-// ---------- PAGE CONTACT (avec formulaire EmailJS) ----------
+// ---------- PAGE CONTACT ----------
 function renderContactPage() {
     const app = document.getElementById('app');
+    if (!app) return;
     app.innerHTML = `
     <div class="container">
-        <button onclick="navigateTo('/')" style="margin-bottom:16px;">${t('backHome')}</button>
+        <button onclick="navigateTo('/')">${t('backHome')}</button>
         <h2>${t('contactTitle')}</h2>
         <p class="text-center">${t('contactDesc')}</p>
         
         <form id="contact-form" class="card">
+            <label for="contact-name">${t('namePlaceholder')}</label>
             <input type="text" id="contact-name" placeholder="${t('namePlaceholder')}" required>
+            <label for="contact-email">${t('emailPlaceholder')}</label>
             <input type="email" id="contact-email" placeholder="${t('emailPlaceholder')}" required>
+            <label for="contact-phone">${t('phonePlaceholder') || 'Téléphone'}</label>
             <input type="tel" id="contact-phone" placeholder="${t('phonePlaceholder') || 'Téléphone'}">
+            <label for="contact-message">${t('messagePlaceholder')}</label>
             <textarea id="contact-message" placeholder="${t('messagePlaceholder')}" required></textarea>
-            <button type="submit" class="btn btn-primary btn-block">${t('sendMessage')}</button>
+            <button type="submit" class="btn btn-primary btn-block mt-2">${t('sendMessage')}</button>
             <p id="contact-status" style="text-align:center; margin-top:1rem;"></p>
         </form>
 
@@ -816,7 +845,6 @@ function renderContactPage() {
         e.preventDefault();
         const status = document.getElementById('contact-status');
         status.textContent = 'Envoi en cours...';
-        
         try {
             await emailjs.send("service_4vlnw9a", "template_kw3ckfd", {
                 name: document.getElementById('contact-name').value,
@@ -824,7 +852,6 @@ function renderContactPage() {
                 phone: document.getElementById('contact-phone').value,
                 message: document.getElementById('contact-message').value,
             });
-            
             status.textContent = '✅ Message envoyé !';
             document.getElementById('contact-form').reset();
         } catch (err) {
@@ -832,3 +859,13 @@ function renderContactPage() {
         }
     });
 }
+
+// ---------- EXPOSITION GLOBALE (suite) ----------
+window.renderOrdersPage = renderOrdersPage;
+window.renderOrderDetail = renderOrderDetail;
+window.renderTrackOrderPage = renderTrackOrderPage;
+window.renderProfilePage = renderProfilePage;
+window.renderLoginPage = renderLoginPage;
+window.renderRegisterPage = renderRegisterPage;
+window.renderAboutPage = renderAboutPage;
+window.renderContactPage = renderContactPage;
