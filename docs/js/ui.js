@@ -39,7 +39,6 @@ async function renderHomePage() {
     const app = document.getElementById('app');
     if (!app) return;
 
-    // Squelette immédiat
     app.innerHTML = `
         <header class="container app-header">
             <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="logo-animated" style="height:70px; width:auto;" onerror="this.style.display='none'">
@@ -62,7 +61,6 @@ async function renderHomePage() {
         </main>
     `;
 
-    // Chargement des produits
     let allProducts = [];
     try {
         const res = await getProducts({ limit: 200 });
@@ -211,14 +209,13 @@ function handleSearchSuggestions() {
     }
 }
 
-// ---------- ACCESSIBILITÉ (corrigée pour le menu latéral) ----------
+// ---------- ACCESSIBILITÉ ----------
 let accessibilityInitialized = false;
 
 function initAccessibilityControls() {
     if (accessibilityInitialized) return;
     accessibilityInitialized = true;
 
-    // Contraste
     const contrastBtn = document.getElementById('contrast-btn');
     if (contrastBtn) {
         if (localStorage.getItem('highContrast') === 'true') {
@@ -232,17 +229,12 @@ function initAccessibilityControls() {
         });
     }
 
-    // Taille de police
     const fontPlus = document.getElementById('font-plus');
     const fontMinus = document.getElementById('font-minus');
     const fontReset = document.getElementById('font-reset');
     if (fontPlus) fontPlus.addEventListener('click', () => changeFontSize(1));
     if (fontMinus) fontMinus.addEventListener('click', () => changeFontSize(-1));
     if (fontReset) fontReset.addEventListener('click', resetFontSize);
-}
-
-function applyHighContrast() {
-    // géré par le toggle
 }
 
 let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
@@ -370,16 +362,6 @@ window.addToCartFromDetail = function(productId, stockQty) {
     else showToast(t('outOfStock'), 'error');
 };
 
-// ---------- PANIER, CHECKOUT, COMMANDES, PROFIL, CONNEXION, INSCRIPTION (inchangés mais avec escape) ----------
-// (Code similaire à l'original, en appliquant escapeHTML sur les données insérées)
-// Pour rester concis, je fournirai les fonctions principales déjà corrigées dans la version précédente.
-// Vous pouvez les réintégrer telles quelles, en remplaçant les appels directs par escapeHTML sur les données dynamiques.
-
-// ---------- FONCTIONS MANQUANTES (à intégrer depuis l'ancien ui.js) ----------
-// Les fonctions renderCartPage, renderCheckoutPage, renderOrdersPage, renderOrderDetail, renderTrackOrderPage, renderProfilePage, renderLoginPage, renderRegisterPage, renderAboutPage, renderContactPage
-// sont à reprendre de l'ancien fichier en ajoutant escapeHTML autour des données dynamiques.
-// Je vais inclure les versions sécurisées ci-dessous.
-
 // ---------- PAGE PANIER ----------
 function renderCartPage() {
     const app = document.getElementById('app');
@@ -418,7 +400,23 @@ function renderCartPage() {
     app.innerHTML = html;
 }
 
-// ---------- CHECKOUT (avec KYC) ----------
+// ---------- ENVOI WHATSAPP ----------
+function sendOrderToWhatsApp({ orderNumber, customerName, phone, address, paymentMethod, total, items }) {
+    const message = 
+        `🛒 *Nouvelle commande Niger Laptops*\n\n` +
+        `📦 N° ${orderNumber}\n` +
+        `👤 Client : ${customerName}\n` +
+        `📞 Tél : ${phone}\n` +
+        `📍 Adresse : ${address}\n` +
+        `💰 Total : ${formatPrice(total)}\n` +
+        `💳 Paiement : ${paymentMethod}\n\n` +
+        `📋 *Articles :*\n` +
+        items.map(item => `- ${item.name} x${item.quantity}`).join('\n');
+
+    window.open(`https://wa.me/22791127870?text=${encodeURIComponent(message)}`, '_blank');
+}
+
+// ---------- CHECKOUT (avec KYC et WhatsApp) ----------
 function renderCheckoutPage() {
     if (!currentUser) { navigateTo('/login'); return; }
     const app = document.getElementById('app');
@@ -472,6 +470,18 @@ function renderCheckoutPage() {
         try {
             const res = await createOrder(orderData);
             const order = res.data;
+
+            // Envoi WhatsApp après la commande (le client valide lui-même)
+            sendOrderToWhatsApp({
+                orderNumber: order.order_number,
+                customerName: fullname,
+                phone: phone,
+                address: address,
+                paymentMethod: payment,
+                total: order.total,
+                items: cart.map(item => ({ name: getLocalizedProduct(item).name, quantity: item.quantity }))
+            });
+
             if (payment !== 'cash_on_delivery') {
                 await initiatePayment(order.id, phone, payment);
             }
@@ -495,11 +505,7 @@ function renderCheckoutPage() {
     });
 }
 
-// Les autres fonctions (KYC modal, orders, login, etc.) sont à intégrer avec escapeHTML.
-// Pour garder le fichier complet, voici les versions essentielles ci-dessous.
-// (Je ne répéterai pas tout l'ancien code, mais je vous le fournirai dans un bloc complet si nécessaire.)
-
-// ---------- FONCTIONS UTILITAIRES POUR LE CHECKOUT ----------
+// ---------- KYC MODAL ----------
 function showKYCModal(orderData, customerName) {
     const modal = document.createElement('div');
     modal.id = 'kyc-modal';
@@ -554,24 +560,6 @@ function showKYCModal(orderData, customerName) {
         }
     });
 }
-
-// ---------- EXPOSITION GLOBALE ----------
-window.renderHomePage = renderHomePage;
-window.renderProductPage = renderProductPage;
-window.renderCartPage = renderCartPage;
-window.renderCheckoutPage = renderCheckoutPage;
-window.renderOrdersPage = renderOrdersPage; // à définir si pas encore
-window.renderProfilePage = renderProfilePage;
-window.renderLoginPage = renderLoginPage;
-window.renderRegisterPage = renderRegisterPage;
-window.renderAboutPage = renderAboutPage;
-window.renderContactPage = renderContactPage;
-window.renderTrackOrderPage = renderTrackOrderPage;
-window.initAccessibilityControls = initAccessibilityControls;
-
-// ==========================================
-// ui.js – Suite : Commandes, Profil, Connexion, etc.
-// ==========================================
 
 // ---------- PAGE COMMANDES ----------
 async function renderOrdersPage() {
@@ -860,7 +848,11 @@ function renderContactPage() {
     });
 }
 
-// ---------- EXPOSITION GLOBALE (suite) ----------
+// ---------- EXPOSITION GLOBALE ----------
+window.renderHomePage = renderHomePage;
+window.renderProductPage = renderProductPage;
+window.renderCartPage = renderCartPage;
+window.renderCheckoutPage = renderCheckoutPage;
 window.renderOrdersPage = renderOrdersPage;
 window.renderOrderDetail = renderOrderDetail;
 window.renderTrackOrderPage = renderTrackOrderPage;
@@ -869,3 +861,4 @@ window.renderLoginPage = renderLoginPage;
 window.renderRegisterPage = renderRegisterPage;
 window.renderAboutPage = renderAboutPage;
 window.renderContactPage = renderContactPage;
+window.initAccessibilityControls = initAccessibilityControls;
