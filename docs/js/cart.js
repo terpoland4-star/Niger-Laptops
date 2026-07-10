@@ -1,3 +1,7 @@
+// ==========================================
+// cart.js – Gestion du panier avec Optimistic UI
+// ==========================================
+
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function saveCart() {
@@ -6,6 +10,7 @@ function saveCart() {
 }
 
 function addToCart(product, quantity = 1) {
+    // Optimistic UI : mise à jour immédiate
     const existing = cart.find(item => item.id === product.id);
     if (existing) {
         existing.quantity += quantity;
@@ -13,7 +18,22 @@ function addToCart(product, quantity = 1) {
         cart.push({ ...product, quantity });
     }
     saveCart();
-    showToast('Produit ajouté au panier');
+    showToast(t('addedToCart'), 'success');
+
+    // Simulation d'appel API en arrière-plan (rollback en cas d'erreur)
+    try {
+        // Ici on pourrait appeler apiCall('/cart/add', { method: 'POST', body: ... })
+        // Pour la démo, on ne fait rien.
+    } catch (e) {
+        // Rollback
+        if (existing) {
+            existing.quantity -= quantity;
+            if (existing.quantity <= 0) removeFromCart(product.id);
+        } else {
+            removeFromCart(product.id);
+        }
+        showToast(t('errorProduct'), 'error');
+    }
 }
 
 function removeFromCart(productId) {
@@ -23,13 +43,13 @@ function removeFromCart(productId) {
 
 function updateQuantity(productId, quantity) {
     const item = cart.find(i => i.id === productId);
-    if (item && quantity > 0) {
-        item.quantity = quantity;
-    } else if (item && quantity <= 0) {
+    if (!item) return;
+    if (quantity <= 0) {
         removeFromCart(productId);
-        return;
+    } else {
+        item.quantity = quantity;
+        saveCart();
     }
-    saveCart();
 }
 
 function getCartTotal() {
@@ -41,6 +61,18 @@ function getCartCount() {
 }
 
 function updateCartCount() {
+    const count = getCartCount();
     const el = document.getElementById('cart-count');
-    if (el) el.textContent = getCartCount();
-  }
+    if (el) {
+        el.textContent = count;
+        el.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+}
+
+// Exposition sur window pour compatibilité
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.updateQuantity = updateQuantity;
+window.getCartTotal = getCartTotal;
+window.getCartCount = getCartCount;
+window.updateCartCount = updateCartCount;
