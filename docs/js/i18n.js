@@ -1,21 +1,25 @@
+// ==========================================
+// i18n.js – Internationalisation dynamique (sans reload)
+// ==========================================
+
 const TRANSLATIONS = {
     fr: {
         siteName: 'Niger Laptops',
-        tagline: 'Consommables & accessoires informatiques à Niamey. Paiement par Zamani Cash, Airtel Money, MyNita, AmanaTa, carte bancaire. Livraison express sous 60 minutes.',
+        tagline: 'Ordinateurs portables & accessoires à Niamey. Livraison rapide, paiement à la livraison.',
         home: 'Accueil',
         cart: 'Panier',
         orders: 'Commandes',
         profile: 'Profil',
         searchPlaceholder: 'Rechercher un produit...',
-        addToCart: 'Ajouter',
-        emptyCart: 'Panier vide',
+        addToCart: 'Ajouter au panier',
+        emptyCart: 'Votre panier est vide',
         seeProducts: 'Voir les produits',
         back: '← Retour',
         backHome: '← Accueil',
         checkout: 'Finaliser la commande',
         subtotal: 'Sous-total',
         delivery: 'Livraison',
-        free: 'Gratuit',
+        free: 'Offerte',
         total: 'Total',
         order: 'Commander',
         confirmOrder: 'Confirmer la commande',
@@ -24,66 +28,66 @@ const TRANSLATIONS = {
         airtelMoney: 'Airtel Money',
         mynita: 'MyNita',
         amanata: 'AmanaTa',
-        card: '💳 Carte Bancaire (Visa/Mastercard)',
+        card: '💳 Carte Bancaire',
         bankTransfer: '🏦 Virement Bancaire',
-        cashOnDelivery: '💵 Espèces à la livraison',
+        cashOnDelivery: '💵 Paiement à la livraison',
         orderConfirmed: 'Commande confirmée !',
         myOrders: 'Mes commandes',
-        noOrders: 'Aucune commande',
+        noOrders: 'Aucune commande pour le moment.',
         loading: 'Chargement...',
-        productNotFound: 'Produit non trouvé',
-        errorLoading: 'Erreur de chargement des produits',
+        productNotFound: 'Produit introuvable',
+        errorLoading: 'Erreur de chargement',
         stock: 'Stock',
         inStock: '✅ En stock',
-        outOfStock: '❌ Rupture',
+        outOfStock: '❌ Rupture de stock',
         aboutTitle: 'À propos de Niger Laptops',
-        aboutText1: 'Niger Laptops est une boutique en ligne spécialisée dans la vente de consommables et accessoires informatiques à Niamey.',
-        aboutText2: 'Notre mission : offrir aux particuliers, étudiants, entreprises et administrations un accès rapide et fiable aux produits informatiques du quotidien, avec une livraison en moins de 60 minutes.',
+        aboutText1: 'Boutique en ligne spécialisée en informatique au Niger.',
+        aboutText2: 'Livraison en 60 minutes dans Niamey.',
         valuesTitle: 'Nos valeurs',
-        value1: '🛍️ Large choix de produits',
-        value2: '🚚 Livraison rapide dans Niamey',
+        value1: '🛍️ Large choix',
+        value2: '🚚 Livraison rapide',
         value3: '💳 Paiement mobile sécurisé',
-        value4: '📞 Support client réactif',
-        contactTitle: 'Contactez Niger Laptops',
-        contactDesc: 'Votre boutique de consommables informatiques à Niamey. Livraison sous 60 minutes.',
+        value4: '📞 Support réactif',
+        contactTitle: 'Contact',
+        contactDesc: 'Une question ? Écrivez-nous.',
         addressLabel: '📍 Adresse',
-        address: 'Cité Sonuci, sur la latérite de chez Seyni Omar, Niamey (Niger)',
-        openMaps: '🗺️ Ouvrir dans Google Maps',
+        address: 'Cité Sonuci, Niamey (Niger)',
+        openMaps: '🗺️ Voir sur Google Maps',
         whatsappLabel: '📞 WhatsApp',
         emailLabel: '📧 Email',
         followUs: 'Suivez-nous',
         usefulLinks: 'Liens utiles',
         loginTitle: 'Connexion',
-        phonePlaceholder: 'Téléphone (+227...)',
+        phonePlaceholder: 'Téléphone',
         sendCode: 'Recevoir le code',
         verifyCode: 'Vérifier',
         codeSent: 'Code envoyé',
         invalidCode: 'Code invalide',
         enterPhone: 'Veuillez saisir votre numéro',
         logoutBtn: 'Déconnexion',
-        profileTitle: '👤 Profil',
+        profileTitle: '👤 Mon profil',
         namePlaceholder: 'Nom complet',
         addressPlaceholder: 'Adresse complète',
-        phoneRequired: 'Téléphone (obligatoire pour Airtel, MyNita, AmanaTa)',
-        orderDetails: 'Commande',
+        phoneRequired: 'Téléphone (obligatoire)',
+        orderDetails: 'Détails de la commande',
         status: 'Statut',
         articles: 'Articles',
-        loginSuccess: 'Connexion réussie (mode démo)',
-        addedToCart: 'Produit ajouté au panier',
-        errorProduct: 'Erreur',
+        loginSuccess: 'Connexion réussie',
+        addedToCart: 'Ajouté au panier',
+        errorProduct: 'Erreur produit',
         noProducts: 'Aucun produit trouvé.',
         discount: '-{discount}%',
-        developerTitle: 'Plateforme conçu par Hamadine AG MOCTAR',
-        developerSub: 'Développeur web full stack & CEO de HAM Global Words',
-        developerAddress: '📍 Tchangarey, Marché de Bétail, Niamey (Niger)',
-        devContact: '💡 Besoin d\'une application ou d\'un site web ? Contactez‑moi !',
-        emailPlaceholder: 'Adresse email',
+        developerTitle: 'Conçu par Hamadine AG MOCTAR',
+        developerSub: 'Développeur Full Stack – HAM Global Words',
+        developerAddress: '📍 Tchangarey, Niamey',
+        devContact: '💡 Besoin d\'un site ? Contactez-moi !',
+        emailPlaceholder: 'Email',
         passwordPlaceholder: 'Mot de passe',
         loginBtn: 'Se connecter',
         registerTitle: 'Créer un compte',
         registerBtn: 'S\'inscrire',
         fullnamePlaceholder: 'Nom complet',
-        createAccount: 'Pas encore de compte ? S\'inscrire',
+        createAccount: 'Pas de compte ? S\'inscrire',
         registerSuccess: 'Compte créé avec succès !',
         emailAlreadyUsed: 'Cet email est déjà utilisé.',
         invalidCredentials: 'Email ou mot de passe incorrect.',
@@ -97,26 +101,26 @@ const TRANSLATIONS = {
         installSubtitle: 'Installez cette application pour une meilleure expérience',
         installBtn: 'Installer',
         later: 'Plus tard',
-        iosInstallStep1: 'Appuyez sur le bouton Partager',
+        iosInstallStep1: 'Appuyez sur Partager',
         iosInstallStep2: 'Sélectionnez "Sur l\'écran d\'accueil"',
-        iosInstallStep3: 'Puis appuyez sur "Ajouter"',
+        iosInstallStep3: 'Puis "Ajouter"',
         close: 'Fermer',
         newProducts: 'Produits neufs',
         usedProducts: 'Produits d\'occasion',
         messagePlaceholder: 'Votre message',
-        sendMessage: 'Envoyer le message',
+        sendMessage: 'Envoyer',
         kycTitle: 'Vérification d\'identité requise',
-        kycDescription: 'Pour les commandes de plus de 1 000 000 FCFA, nous devons vérifier votre identité.',
-        kycIdLabel: 'Pièce d\'identité (CNI, passeport)',
-        kycSelfieLabel: 'Selfie avec la pièce d\'identité',
+        kycDescription: 'Pour les commandes > 1 000 000 FCFA.',
+        kycIdLabel: 'Pièce d\'identité',
+        kycSelfieLabel: 'Selfie avec la pièce',
         kycSend: 'Envoyer pour vérification',
         kycCancel: 'Annuler',
         customerReviews: 'Avis clients',
         noReviews: 'Aucun avis pour le moment.',
         leaveReview: 'Laisser un avis',
         reviewCommentPlaceholder: 'Votre commentaire...',
-        submitReview: 'Envoyer l\'avis',
-        reviewSubmitted: 'Avis envoyé !',
+        submitReview: 'Publier l\'avis',
+        reviewSubmitted: 'Avis publié !',
         anonymous: 'Anonyme',
         trackOrderTitle: 'Suivi de commande',
         orderNumberPlaceholder: 'Numéro de commande',
@@ -127,15 +131,15 @@ const TRANSLATIONS = {
     },
     en: {
         siteName: 'Niger Laptops',
-        tagline: 'Computer consumables & accessories in Niamey. Payment via Zamani Cash, Airtel Money, MyNita, AmanaTa, bank card. Express delivery within 60 minutes.',
+        tagline: 'Laptops & accessories in Niamey. Fast delivery, cash on delivery.',
         home: 'Home',
         cart: 'Cart',
         orders: 'Orders',
         profile: 'Profile',
         searchPlaceholder: 'Search a product...',
-        addToCart: 'Add to Cart',
-        emptyCart: 'Empty Cart',
-        seeProducts: 'See Products',
+        addToCart: 'Add to cart',
+        emptyCart: 'Your cart is empty',
+        seeProducts: 'See products',
         back: '← Back',
         backHome: '← Home',
         checkout: 'Checkout',
@@ -144,74 +148,74 @@ const TRANSLATIONS = {
         free: 'Free',
         total: 'Total',
         order: 'Order',
-        confirmOrder: 'Confirm Order',
-        paymentMethod: 'Payment Method',
+        confirmOrder: 'Confirm order',
+        paymentMethod: 'Payment method',
         zamaniCash: 'Zamani Cash',
         airtelMoney: 'Airtel Money',
         mynita: 'MyNita',
         amanata: 'AmanaTa',
-        card: '💳 Credit Card (Visa/Mastercard)',
+        card: '💳 Credit Card',
         bankTransfer: '🏦 Bank Transfer',
         cashOnDelivery: '💵 Cash on Delivery',
-        orderConfirmed: 'Order Confirmed!',
-        myOrders: 'My Orders',
-        noOrders: 'No orders',
+        orderConfirmed: 'Order confirmed!',
+        myOrders: 'My orders',
+        noOrders: 'No orders yet.',
         loading: 'Loading...',
         productNotFound: 'Product not found',
-        errorLoading: 'Error loading products',
+        errorLoading: 'Error loading',
         stock: 'Stock',
-        inStock: '✅ In Stock',
-        outOfStock: '❌ Out of Stock',
+        inStock: '✅ In stock',
+        outOfStock: '❌ Out of stock',
         aboutTitle: 'About Niger Laptops',
-        aboutText1: 'Niger Laptops is an online store specialized in selling computer consumables and accessories in Niamey.',
-        aboutText2: 'Our mission: to offer individuals, students, businesses and administrations fast and reliable access to everyday IT products, with delivery in less than 60 minutes.',
+        aboutText1: 'Online computer store in Niger.',
+        aboutText2: 'Delivery within 60 minutes in Niamey.',
         valuesTitle: 'Our values',
-        value1: '🛍️ Wide range of products',
-        value2: '🚚 Fast delivery in Niamey',
+        value1: '🛍️ Wide range',
+        value2: '🚚 Fast delivery',
         value3: '💳 Secure mobile payment',
-        value4: '📞 Responsive customer support',
-        contactTitle: 'Contact Niger Laptops',
-        contactDesc: 'Your computer consumables store in Niamey. Delivery within 60 minutes.',
+        value4: '📞 Reactive support',
+        contactTitle: 'Contact',
+        contactDesc: 'Have a question? Write to us.',
         addressLabel: '📍 Address',
-        address: 'Cité Sonuci, sur la latérite de chez Seyni Omar, Niamey (Niger)',
-        openMaps: '🗺️ Open in Google Maps',
+        address: 'Cité Sonuci, Niamey (Niger)',
+        openMaps: '🗺️ View on Google Maps',
         whatsappLabel: '📞 WhatsApp',
         emailLabel: '📧 Email',
         followUs: 'Follow us',
         usefulLinks: 'Useful links',
         loginTitle: 'Login',
-        phonePlaceholder: 'Phone (+227...)',
-        sendCode: 'Send Code',
+        phonePlaceholder: 'Phone',
+        sendCode: 'Send code',
         verifyCode: 'Verify',
         codeSent: 'Code sent',
         invalidCode: 'Invalid code',
         enterPhone: 'Please enter your number',
         logoutBtn: 'Logout',
-        profileTitle: '👤 Profile',
-        namePlaceholder: 'Full Name',
-        addressPlaceholder: 'Full Address',
-        phoneRequired: 'Phone (required for Airtel, MyNita, AmanaTa)',
-        orderDetails: 'Order',
+        profileTitle: '👤 My profile',
+        namePlaceholder: 'Full name',
+        addressPlaceholder: 'Full address',
+        phoneRequired: 'Phone (required)',
+        orderDetails: 'Order details',
         status: 'Status',
         articles: 'Items',
-        loginSuccess: 'Logged in (demo mode)',
-        addedToCart: 'Product added to cart',
-        errorProduct: 'Error',
+        loginSuccess: 'Logged in',
+        addedToCart: 'Added to cart',
+        errorProduct: 'Product error',
         noProducts: 'No products found.',
         discount: '-{discount}%',
-        developerTitle: 'Platform designed by Hamadine AG MOCTAR',
-        developerSub: 'Full Stack Web Developer & CEO of HAM Global Words',
-        developerAddress: '📍 Tchangarey, Marché de Bétail, Niamey (Niger)',
-        devContact: '💡 Need an application or a website? Contact me!',
-        emailPlaceholder: 'Email address',
+        developerTitle: 'Designed by Hamadine AG MOCTAR',
+        developerSub: 'Full Stack Developer – HAM Global Words',
+        developerAddress: '📍 Tchangarey, Niamey',
+        devContact: '💡 Need a website? Contact me!',
+        emailPlaceholder: 'Email',
         passwordPlaceholder: 'Password',
-        loginBtn: 'Log in',
-        registerTitle: 'Create an account',
+        loginBtn: 'Login',
+        registerTitle: 'Create account',
         registerBtn: 'Sign up',
         fullnamePlaceholder: 'Full name',
-        createAccount: 'Don\'t have an account? Sign up',
-        registerSuccess: 'Account created successfully!',
-        emailAlreadyUsed: 'This email is already used.',
+        createAccount: 'No account? Sign up',
+        registerSuccess: 'Account created!',
+        emailAlreadyUsed: 'Email already used.',
         invalidCredentials: 'Invalid email or password.',
         accessibilityTitle: 'Accessibility',
         highContrast: 'High contrast',
@@ -223,18 +227,18 @@ const TRANSLATIONS = {
         installSubtitle: 'Install this app for a better experience',
         installBtn: 'Install',
         later: 'Later',
-        iosInstallStep1: 'Tap the Share button',
+        iosInstallStep1: 'Tap Share',
         iosInstallStep2: 'Select "Add to Home Screen"',
-        iosInstallStep3: 'Then tap "Add"',
+        iosInstallStep3: 'Then "Add"',
         close: 'Close',
         newProducts: 'New products',
         usedProducts: 'Used products',
         messagePlaceholder: 'Your message',
-        sendMessage: 'Send message',
+        sendMessage: 'Send',
         kycTitle: 'Identity verification required',
-        kycDescription: 'For orders over 1,000,000 FCFA, we need to verify your identity.',
-        kycIdLabel: 'ID document (National ID, passport)',
-        kycSelfieLabel: 'Selfie with ID document',
+        kycDescription: 'For orders over 1,000,000 FCFA.',
+        kycIdLabel: 'ID document',
+        kycSelfieLabel: 'Selfie with ID',
         kycSend: 'Submit for verification',
         kycCancel: 'Cancel',
         customerReviews: 'Customer reviews',
@@ -253,43 +257,11 @@ const TRANSLATIONS = {
     }
 };
 
-const CATEGORIES_TRANSLATIONS = {
-    fr: {
-        'Ordinateurs': 'Ordinateurs',
-        'Tablettes': 'Tablettes',
-        'Photo & Vidéo': 'Photo & Vidéo',
-        'Audio': 'Audio',
-        'Réseau & Connectique': 'Réseau & Connectique',
-        'Projecteurs': 'Projecteurs',
-        'Impression': 'Impression',
-        'Énergie & Onduleurs': 'Énergie & Onduleurs',
-        'Accessoires': 'Accessoires',
-        'Communication': 'Communication',
-        'Gaming': 'Gaming',
-        'Visioconférence': 'Visioconférence',
-        'Matériel de bureau': 'Matériel de bureau',
-        'Sans catégorie': 'Sans catégorie'
-    },
-    en: {
-        'Ordinateurs': 'Laptops',
-        'Tablettes': 'Tablets',
-        'Photo & Vidéo': 'Photo & Video',
-        'Audio': 'Audio',
-        'Réseau & Connectique': 'Networking',
-        'Projecteurs': 'Projectors',
-        'Impression': 'Printing',
-        'Énergie & Onduleurs': 'Power & UPS',
-        'Accessoires': 'Accessories',
-        'Communication': 'Communication',
-        'Gaming': 'Gaming',
-        'Visioconférence': 'Video Conferencing',
-        'Matériel de bureau': 'Office Equipment',
-        'Sans catégorie': 'Uncategorized'
-    }
-};
-
 let currentLang = localStorage.getItem('lang') || 'fr';
 
+/**
+ * Traduit une clé avec interpolation.
+ */
 function t(key, params = {}) {
     let text = TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.fr[key] || key;
     Object.keys(params).forEach(p => {
@@ -298,10 +270,20 @@ function t(key, params = {}) {
     return text;
 }
 
+/**
+ * Traduit une catégorie.
+ */
 function translateCategory(category) {
-    return CATEGORIES_TRANSLATIONS[currentLang]?.[category] || category;
+    const cats = {
+        fr: { 'Ordinateurs': 'Ordinateurs', 'Stockage': 'Stockage', 'Accessoires': 'Accessoires' },
+        en: { 'Ordinateurs': 'Laptops', 'Stockage': 'Storage', 'Accessoires': 'Accessories' }
+    };
+    return (cats[currentLang] && cats[currentLang][category]) || category;
 }
 
+/**
+ * Retourne le produit localisé (nom, description).
+ */
 function getLocalizedProduct(product) {
     const lang = currentLang;
     return {
@@ -311,22 +293,39 @@ function getLocalizedProduct(product) {
     };
 }
 
+/**
+ * Change la langue sans recharger la page.
+ */
 function setLanguage(lang) {
+    if (lang === currentLang) return;
     currentLang = lang;
     localStorage.setItem('lang', lang);
-    window.location.reload();
+    // Mise à jour des textes visibles via l'événement personnalisé
+    document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+    // Mise à jour du sélecteur
+    const sel = document.getElementById('lang-selector');
+    if (sel) sel.value = lang;
 }
 
+/**
+ * Initialise le sélecteur de langue dans le menu.
+ */
 function initLanguage() {
-    const langSelector = document.getElementById('lang-selector');
-    if (langSelector) {
-        langSelector.value = currentLang;
-        langSelector.addEventListener('change', (e) => {
-            setLanguage(e.target.value);
-        });
-    }
+    const sel = document.getElementById('lang-selector');
+    if (!sel) return;
+    sel.value = currentLang;
+    sel.addEventListener('change', (e) => setLanguage(e.target.value));
 }
 
+// Écoute l'événement pour mettre à jour les composants (sera utilisé par les pages)
+document.addEventListener('languageChanged', () => {
+    // On relance le rendu de la page courante si une fonction de rendu existe
+    if (typeof handleRoute === 'function') handleRoute();
+});
+
+/**
+ * Génère le pied de page (inchangé, utilise `t()` qui prend la langue courante).
+ */
 function renderFooter() {
     const footer = document.getElementById('footer-app');
     if (!footer) return;
@@ -353,7 +352,6 @@ function renderFooter() {
                             <i class="fas fa-envelope"></i> zoubeirou.zakariya@gmail.com
                         </a>
                     </p>
-                    <!-- Liens utiles -->
                     <div class="useful-links" style="margin-top: 1rem;">
                         <h4 style="color: white; margin-bottom: 0.5rem;">🔗 ${t('usefulLinks')}</h4>
                         <a href="#/about" class="promo-link" style="display: block; margin-bottom: 0.3rem;">
@@ -369,7 +367,6 @@ function renderFooter() {
                             <i class="fas fa-shopping-cart"></i> ${t('cart')}
                         </a>
                     </div>
-                    <!-- Réseaux sociaux -->
                     <div class="social-links" style="justify-content: flex-start; gap: 15px; font-size: 1.5rem; margin-top: 0.5rem;">
                         <span style="color: white; font-size: 0.9rem; margin-right: 0.5rem;">${t('followUs')}</span>
                         <a href="https://www.facebook.com/share/1DANxXYdTC/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
