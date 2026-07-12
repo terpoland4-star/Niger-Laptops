@@ -182,8 +182,7 @@
         </div>
     </main>
 
-    <!-- ==================== SECTION FACEBOOK TEMPORAIRE ==================== -->
-    <!-- À REMPLACER dès que le SDK Facebook est de nouveau opérationnel -->
+    <!-- ==================== SECTION FACEBOOK TEMPORAIRE (optimisée) ==================== -->
     <section class="container mt-2" id="facebook-temp-section">
         <div class="facebook-card">
             <div class="facebook-card__header">
@@ -194,7 +193,10 @@
             <a href="https://www.facebook.com/100063546250480" target="_blank" rel="noopener" class="btn btn-primary btn-block mt-2">
                 <i class="fab fa-facebook"></i> Voir la page Niger Laptops
             </a>
-            <div class="facebook-posts-preview">
+            <button id="toggle-fb-posts" class="btn btn-outline btn-block mt-2" onclick="document.getElementById('fb-posts-grid').classList.toggle('hidden'); this.querySelector('span').textContent = document.getElementById('fb-posts-grid').classList.contains('hidden') ? 'Afficher' : 'Masquer';">
+                <span>Afficher</span> les 10 dernières actualités <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="fb-posts-grid" class="facebook-posts-preview hidden">
                 <!-- ========== 10 VRAIES PUBLICATIONS (liens réels) ========== -->
                 <a href="https://www.facebook.com/100063546250480/posts/898423685619165/?app=fbl" target="_blank" rel="noopener" class="fb-post">
                     <img src="assets/images/logo/logolap.png" alt="Aperçu publication" loading="lazy">
@@ -246,16 +248,7 @@
                     <small>Il y a 4 jours</small>
                     <p>🛒 Commandez en ligne en quelques clics – www.niger-laptops.com.</p>
                 </a>
-
-                <!-- ========== 9 PUBLICATIONS SUPPLÉMENTAIRES (à personnaliser) ========== -->
-                <!-- Copiez-collez ce modèle pour chaque nouveau post -->
-                <!--
-                <a href="LIEN_FACEBOOK" target="_blank" rel="noopener" class="fb-post">
-                    <img src="assets/images/logo/logolap.png" alt="Aperçu publication" loading="lazy">
-                    <small>Il y a … jours</small>
-                    <p>Texte de la publication.</p>
-                </a>
-                -->
+                <!-- les 9 autres posts à insérer ici plus tard -->
             </div>
         </div>
     </section>
