@@ -1,6 +1,6 @@
 const demoData = {
   products: [
-    // ========== ORDINATEURS (10) ==========
+    // ========== ORDINATEURS (10 existants) ==========
     {
       id: "1",
       name_fr: "HP Victus 15-fb3093dx",
@@ -142,7 +142,7 @@ const demoData = {
       description_en: "All-in-one PC with 24\" touchscreen, Core i3, 8GB RAM, 512GB SSD."
     },
 
-    // ========== STOCKAGE (3) – exemples avec tablettes ==========
+    // ========== STOCKAGE (3 existants) ==========
     {
       id: "11",
       name_fr: "Samsung Galaxy Tab S9 FE+ (Fan Edition Plus)",
@@ -186,7 +186,7 @@ const demoData = {
       description_en: "10.5\", 64GB, 4GB RAM, for the whole family."
     },
 
-    // ========== ACCESSOIRES (15) ==========
+    // ========== ACCESSOIRES (15 existants) ==========
     {
       id: "14",
       name_fr: "Canon EOS R6",
@@ -396,6 +396,92 @@ const demoData = {
       rating: 4.3,
       description_fr: "Compteuse trieuse de billets, détection faux, capacité 200 billets.",
       description_en: "Banknote sorter & counter, counterfeit detection, 200-bill capacity."
+    },
+
+    // ========== NOUVEAUX PRODUITS (PUBLICATIONS FACEBOOK) ==========
+    {
+      id: "29",
+      name_fr: "HP ProBook Core i5 (14 pouces)",
+      name_en: "HP ProBook Core i5 (14-inch)",
+      category: "Ordinateurs",
+      condition: "new",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/hp-probook-core-i5-14.jpg",
+      featured: true,
+      rating: 4.5,
+      description_fr: "📱 91 12 78 70 / 88 39 81 07\n📍 Cité Sonuci, sur la latérite de chez Seyni Omar\n\n• Écran 14 pouces\n• SSD 256 Go\n• RAM 8 Go\n• Autonomie +4h\n🔥 Excellent rapport qualité/prix !",
+      description_en: "📱 91 12 78 70 / 88 39 81 07\n📍 Cité Sonuci, Niamey\n\n• 14-inch display\n• 256GB SSD\n• 8GB RAM\n• 4h+ battery life\n🔥 Great value for money!"
+    },
+    {
+      id: "30",
+      name_fr: "DELL Latitude 7480 Core i7",
+      name_en: "DELL Latitude 7480 Core i7",
+      category: "Ordinateurs",
+      condition: "used",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/dell-latitude-7480-core-i7.jpg",
+      featured: true,
+      rating: 4.6,
+      description_fr: "📱 91 12 78 70 / 88 39 71 07\n📍 Cité Sonuci, sur la latérite de chez Seyni Omar\n\n• Intel Core i7-7600U @ 2.90 GHz\n• SSD 512 Go / RAM 8 Go DDR4\n• Écran QHD 14\" tactile 4K LED\n• Intel UHD Graphics 620\n• Clavier rétroéclairé, HDMI\n✅ Garantie – Livraison gratuite",
+      description_en: "📱 91 12 78 70 / 88 39 71 07\n📍 Cité Sonuci, Niamey\n\n• Intel Core i7-7600U @ 2.90 GHz\n• 512GB SSD / 8GB DDR4\n• 14\" QHD Touch 4K LED\n• Intel UHD Graphics 620\n• Backlit keyboard, HDMI\n✅ Warranty – Free delivery"
+    },
+    {
+      id: "31",
+      name_fr: "HP ProBook Core i5 (2e version)",
+      name_en: "HP ProBook Core i5 (2nd version)",
+      category: "Ordinateurs",
+      condition: "new",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/hp-probook-core-i5-14-2.jpg",
+      featured: false,
+      rating: 4.5,
+      description_fr: "📍 Cité Sonuci, sur la latérite de chez Seyni Omar\n🏢 En face de Nita et Amana\n\n• Écran 14 pouces\n• SSD 256 Go\n• RAM 8 Go\n• Autonomie +4h\n🔥 Disponible immédiatement !",
+      description_en: "📍 Cité Sonuci, Niamey\n🏢 Opposite Nita and Amana\n\n• 14-inch display\n• 256GB SSD\n• 8GB RAM\n• 4h+ battery life\n🔥 Available immediately!"
+    },
+    {
+      id: "32",
+      name_fr: "AirPods Pro 2nd génération",
+      name_en: "AirPods Pro 2nd Generation",
+      category: "Accessoires",
+      condition: "new",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/airpods-pro-2e-gen.jpg",
+      featured: true,
+      rating: 4.8,
+      description_fr: "🎧 AirPods Pro 2nd génération\n• Excellente résolution sonore\n• Batterie exceptionnelle\n💰 Prix : 13 500 FCFA\n👜 Pochette AirPods qualité supérieure : 5 000 FCFA\n🎁 Pack complet avec pochette : 16 500 FCFA\n📍 Cité Sonuci, sur la latérite de chez Seyni Omar",
+      description_en: "🎧 AirPods Pro 2nd Gen\n• Excellent sound resolution\n• Exceptional battery life\n💰 Price: 13,500 XOF\n👜 Premium case: 5,000 XOF\n🎁 Full pack with case: 16,500 XOF\n📍 Cité Sonuci, Niamey"
+    },
+    {
+      id: "33",
+      name_fr: "Lenovo ThinkPad L13 Core i5 11e génération",
+      name_en: "Lenovo ThinkPad L13 Core i5 11th Gen",
+      category: "Ordinateurs",
+      condition: "new",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/lenovo-thinkpad-l13-core-i5-11e.jpg",
+      featured: true,
+      rating: 4.7,
+      description_fr: "💻 Lenovo ThinkPad L13 Core i5 11e génération\n• SSD 256 Go\n• RAM 8 Go\n• Clavier lumineux\n• Autonomie +5h\n• Chargeur Type-C\n• Empreinte digitale 🔒\n📍 Cité Sonuci, sur la latérite de chez Seyni Omar",
+      description_en: "💻 Lenovo ThinkPad L13 Core i5 11th Gen\n• 256GB SSD\n• 8GB RAM\n• Backlit keyboard\n• 5h+ battery life\n• USB-C charger\n• Fingerprint reader 🔒\n📍 Cité Sonuci, Niamey"
+    },
+    {
+      id: "34",
+      name_fr: "Lenovo ThinkPad L13 Yoga Core i5 10e génération",
+      name_en: "Lenovo ThinkPad L13 Yoga Core i5 10th Gen",
+      category: "Ordinateurs",
+      condition: "new",
+      price: null,
+      oldPrice: null,
+      thumbnail: "assets/images/facebook/lenovo-thinkpad-l13-yoga-core-i5-10e.jpg",
+      featured: true,
+      rating: 4.7,
+      description_fr: "🔄 Lenovo ThinkPad L13 Yoga Core i5 10e génération\n• Écran tactile rotatif X360\n• SSD 256 Go\n• RAM 8 Go\n• Clavier lumineux\n📍 Cité Sonuci, en face de Nita et Amana",
+      description_en: "🔄 Lenovo ThinkPad L13 Yoga Core i5 10th Gen\n• X360 touchscreen\n• 256GB SSD\n• 8GB RAM\n• Backlit keyboard\n📍 Cité Sonuci, opposite Nita and Amana"
     }
   ]
 };
