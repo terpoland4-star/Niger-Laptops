@@ -379,24 +379,60 @@ label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.9r
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- FLUX FACEBOOK ---------- */
-.fb-page-container {
+/* ---------- FLUX FACEBOOK (TEMPORAIRE) ---------- */
+.hidden { display: none; }
+.facebook-card {
   background: var(--surface-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: var(--radius);
-  padding: 1.25rem;
+  padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
   margin-bottom: 1rem;
+  text-align: center;
 }
-.fb-page-container h2 { margin-bottom: 1rem; font-size: 1.4rem; }
-.fb-page,
-.fb-page iframe {
-  width: 100% !important;
-  border-radius: var(--radius-sm) !important;
-  overflow: hidden;
-  background: #fff;
+.facebook-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.facebook-posts-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.fb-post {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--ease-out);
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+}
+.fb-post:hover { transform: translateY(-4px); }
+.fb-post img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.fb-post small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.fb-post p {
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0;
 }
 
 /* ---------- MODE SOMBRE ---------- */
