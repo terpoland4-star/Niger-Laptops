@@ -193,12 +193,11 @@
             <a href="https://www.facebook.com/100063546250480" target="_blank" rel="noopener" class="btn btn-primary btn-block mt-2">
                 <i class="fab fa-facebook"></i> Voir la page Niger Laptops
             </a>
-            <button id="toggle-fb-posts" class="btn btn-outline btn-block mt-2" onclick="document.getElementById('fb-posts-grid').classList.toggle('hidden'); this.querySelector('span').textContent = document.getElementById('fb-posts-grid').classList.contains('hidden') ? 'Afficher' : 'Masquer';">
+            <button id="toggle-fb-posts" class="btn btn-outline btn-block mt-2" onclick="toggleFacebookPosts()">
                 <span>Afficher</span> les 10 dernières actualités <i class="fas fa-chevron-down"></i>
             </button>
             <div id="fb-posts-grid" class="facebook-posts-preview hidden">
                 <!-- ========== 10 VRAIES PUBLICATIONS (contenus enrichis) ========== -->
-
                 <!-- Publication 1 -->
                 <a href="https://www.facebook.com/100063546250480/posts/898423685619165/?app=fbl" target="_blank" rel="noopener" class="fb-post">
                     <img src="assets/images/facebook/hp-probook-core-i5-14.jpg" alt="HP ProBook Core i5" loading="lazy">
@@ -281,7 +280,7 @@
                     📍 Cité Sonuci, en face de Nita et Amana</p>
                 </a>
 
-                <!-- Publications 7 à 10 (inchangées avec image générique) -->
+                <!-- Publications 7 à 10 -->
                 <a href="https://www.facebook.com/100063546250480/posts/1603610475100479/?app=fbl" target="_blank" rel="noopener" class="fb-post">
                     <img src="assets/images/facebook/accessoires-informatiques.jpg" alt="Accessoires informatiques" loading="lazy">
                     <small>Il y a 3 jours</small>
@@ -330,7 +329,7 @@
     <script src="js/ui.js" defer></script>
     <script src="js/app.js" defer></script>
 
-    <!-- Gestion du menu "Plus" -->
+    <!-- Gestion du menu "Plus" et du bouton Facebook -->
     <script>
         function toggleMenu() {
             const menu = document.getElementById('side-menu');
@@ -348,6 +347,20 @@
                 btn.focus();
             }
         }
+
+        function toggleFacebookPosts() {
+            const grid = document.getElementById('fb-posts-grid');
+            const btn = document.getElementById('toggle-fb-posts');
+            const span = btn.querySelector('span');
+            if (grid.classList.contains('hidden')) {
+                grid.classList.remove('hidden');
+                span.textContent = 'Masquer';
+            } else {
+                grid.classList.add('hidden');
+                span.textContent = 'Afficher';
+            }
+        }
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const menu = document.getElementById('side-menu');
