@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Niger Laptops – Boutique en ligne d'ordinateurs portables au Niger. Livraison rapide, paiement à la livraison.">
+    <meta name="keywords" content="ordinateur, laptop, Niger, Niamey, informatique, technologie, PC portable">
+    <meta name="author" content="Hamadine AG MOCTAR – HAM Global Words">
+    <meta name="copyright" content="© HAM Global Words 2026">
+    <meta name="theme-color" content="#E05206">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Niger Laptops">
+
+    <!-- CSP (Content Security Policy) mise à jour pour le tracker -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdn.onesignal.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://connect.facebook.net;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' http://localhost:3000 https://api.emailjs.com https://onesignal.com https://www.facebook.com https://discord.com http://ip-api.com;
+        frame-src https://www.facebook.com;
+    ">
+
+    <!-- Préconnexions -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://connect.facebook.net">
+
+    <!-- Préchargement des assets critiques -->
+    <link rel="preload" href="assets/images/logo/logolap.png" as="image">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="js/utils.js" as="script">
+    <link rel="preload" href="js/i18n.js" as="script">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="shortcut icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="assets/site.webmanifest?v=3">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+    <!-- Google Fonts (Inter + Outfit pour les titres) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init("5b0yYf5ZL1hfHE7vn");
+            }
+        });
+    </script>
+
+    <!-- OneSignal -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "1ab8bdc3-c665-4b8f-909a-ac625d0478c7",
+          safari_web_id: "web.onesignal.auto.1a908d8f-b1c2-454b-a8c2-6bb9d82d2555",
+          notifyButton: { enable: true, position: 'bottom-left' },
+          serviceWorkerPath: 'OneSignalSDKWorker.js',
+          allowLocalhostAsSecureOrigin: true,
+          welcomeNotification: {
+            title: "Bienvenue sur Niger Laptops !",
+            message: "Vous serez informé des offres et de vos commandes."
+          }
+        });
+      });
+    </script>
+
+    <!-- Données structurées Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Niger Laptops",
+        "url": "https://www.niger-laptops.com",
+        "logo": "https://www.niger-laptops.com/assets/images/logo/logolap.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+227-86-76-29-03",
+            "contactType": "Customer Service",
+            "email": "moctarhamadine54@gmail.com",
+            "availableLanguage": ["French", "English"]
+        },
+        "sameAs": [
+            "https://www.facebook.com/100063546250480"
+        ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Niger Laptops – Informatique & Technologie au Niger</title>
+</head>
+<body>
+    <!-- Bannière d'information temporaire -->
+    <div class="info-banner" id="info-banner" role="alert" hidden>
+        <span id="info-banner-text"></span>
+        <button onclick="this.parentElement.hidden=true" aria-label="Fermer">&times;</button>
+    </div>
+
+    <!-- Barre de navigation inférieure -->
+    <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+        <a href="#/" class="nav-item active" id="nav-home" aria-label="Accueil" aria-current="page">
+            <i class="fas fa-home"></i><span>Accueil</span>
+        </a>
+        <a href="#/" class="nav-item" id="nav-products" aria-label="Produits">
+            <i class="fas fa-laptop"></i><span>Produits</span>
+        </a>
+        <a href="#/cart" class="nav-item" id="nav-cart" aria-label="Panier">
+            <i class="fas fa-shopping-cart"></i><span>Panier</span>
+            <span id="cart-count" class="badge" style="display:none;">0</span>
+        </a>
+        <a href="#/orders" class="nav-item" id="nav-orders" aria-label="Commandes">
+            <i class="fas fa-receipt"></i><span>Commandes</span>
+        </a>
+        <button class="nav-item" id="nav-menu" onclick="toggleMenu()" aria-label="Plus d'options" aria-expanded="false" aria-controls="side-menu">
+            <i class="fas fa-ellipsis-h"></i><span>Plus</span>
+        </button>
+    </nav>
+
+    <!-- Menu "Plus" coulissant -->
+    <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+    <aside class="side-menu" id="side-menu" role="dialog" aria-modal="true" aria-label="Menu des paramètres">
+        <div class="menu-header">
+            <h3>Paramètres</h3>
+            <button onclick="toggleMenu()" aria-label="Fermer le menu">&times;</button>
+        </div>
+        <div class="menu-section">
+            <label for="lang-selector">🌐 Langue</label>
+            <select id="lang-selector" class="toolbar-select">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+            </select>
+        </div>
+        <div class="menu-section">
+            <label>🎨 Accessibilité</label>
+            <button id="theme-btn" class="menu-btn"><i class="fas fa-moon"></i> Mode sombre</button>
+            <button id="contrast-btn" class="menu-btn" aria-pressed="false"><i class="fas fa-adjust"></i> Contraste élevé</button>
+            <div class="font-controls">
+                <button id="font-minus" class="menu-btn" aria-label="Diminuer la taille du texte">A−</button>
+                <span>Taille</span>
+                <button id="font-plus" class="menu-btn" aria-label="Augmenter la taille du texte">A+</button>
+                <button id="font-reset" class="menu-btn" aria-label="Réinitialiser la taille"><i class="fas fa-undo-alt"></i></button>
+            </div>
+        </div>
+        <div class="menu-section">
+            <label>👤 Compte</label>
+            <a href="#/login" class="menu-link" id="login-link">Connexion</a>
+            <a href="#/register" class="menu-link" id="register-link">Inscription</a>
+            <a href="#/dashboard" class="menu-link" id="dashboard-link" style="display:none;">Dashboard</a>
+        </div>
+        <div class="menu-section">
+            <label>📄 Informations</label>
+            <a href="#/about" class="menu-link">À propos</a>
+            <a href="#/contact" class="menu-link">Contact</a>
+            <a href="#/track" class="menu-link">Suivi de commande</a>
+        </div>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main id="app" role="main">
+        <div class="loading-screen">
+            <img src="assets/images/logo/logolap.png" alt="Niger Laptops" class="loading-logo" width="80" height="80">
+            <div class="spinner"></div>
+            <p>Chargement...</p>
+        </div>
+    </main>
+
+    <!-- ==================== SECTION FACEBOOK TEMPORAIRE (optimisée) ==================== -->
+    <section class="container mt-2" id="facebook-temp-section">
+        <div class="facebook-card">
+            <div class="facebook-card__header">
+                <i class="fab fa-facebook-square" style="font-size:2.5rem; color:#1877F2;"></i>
+                <h2>Suivez-nous sur Facebook</h2>
+            </div>
+            <p>Retrouvez toutes nos actualités, offres et nouveaux produits directement sur notre page.</p>
+            <a href="https://www.facebook.com/100063546250480" target="_blank" rel="noopener" class="btn btn-primary btn-block mt-2">
+                <i class="fab fa-facebook"></i> Voir la page Niger Laptops
+            </a>
+            <button id="toggle-fb-posts" class="btn btn-outline btn-block mt-2">
+                <span>Afficher</span> les 6 dernières actualités <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="fb-posts-grid" class="facebook-posts-preview hidden">
+                <!-- ========== 6 VRAIES PUBLICATIONS (contenus enrichis) ========== -->
+                <!-- Publication 1 -->
+                <a href="https://www.facebook.com/100063546250480/posts/898423685619165/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/hp-probook-core-i5-14.jpg" alt="HP ProBook Core i5" loading="lazy">
+                    <small>Il y a quelques heures</small>
+                    <p>📱 91 12 78 70 / 88 39 81 07 (WhatsApp & appel direct)<br>
+                    📍 Cité Sonuci, sur la latérite de chez Seyni Omar<br><br>
+                    <strong>HP ProBook Core i5</strong><br>
+                    • Écran 14 pouces<br>
+                    • SSD 256 Go<br>
+                    • RAM 8 Go<br>
+                    • Autonomie +4h<br>
+                    🔥 Excellent rapport qualité/prix !</p>
+                </a>
+
+                <!-- Publication 2 -->
+                <a href="https://www.facebook.com/100063546250480/posts/898431468951720/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/dell-latitude-7480-core-i7.jpg" alt="DELL Latitude 7480 Core i7" loading="lazy">
+                    <small>Il y a quelques heures</small>
+                    <p>📱 91 12 78 70 / 88 39 71 07<br>
+                    📍 Cité Sonuci, sur la latérite de chez Seyni Omar<br><br>
+                    <strong>DELL Latitude 7480 Core i7</strong><br>
+                    • Intel Core i7-7600U @ 2.90 GHz<br>
+                    • SSD 512 Go / RAM 8 Go DDR4<br>
+                    • Écran QHD 14" tactile 4K LED<br>
+                    • Intel UHD Graphics 620<br>
+                    • Clavier rétroéclairé, HDMI<br>
+                    ✅ Garantie – Livraison gratuite</p>
+                </a>
+
+                <!-- Publication 3 -->
+                <a href="https://www.facebook.com/100063546250480/posts/1636844288443764/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/hp-probook-core-i5-14-2.jpg" alt="HP ProBook Core i5" loading="lazy">
+                    <small>Il y a 1 jour</small>
+                    <p>📍 Cité Sonuci, sur la latérite de chez Seyni Omar<br>
+                    🏢 En face de Nita et Amana<br><br>
+                    <strong>HP ProBook Core i5</strong><br>
+                    • Écran 14 pouces<br>
+                    • SSD 256 Go<br>
+                    • RAM 8 Go<br>
+                    • Autonomie +4h<br>
+                    🔥 Disponible immédiatement !</p>
+                </a>
+
+                <!-- Publication 4 -->
+                <a href="https://www.facebook.com/100063546250480/posts/1636827308445462/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/airpods-pro-2e-gen.jpg" alt="AirPods Pro 2e génération" loading="lazy">
+                    <small>Il y a 1 jour</small>
+                    <p>🎧 <strong>AirPods Pro 2nd génération</strong><br>
+                    • Excellente résolution sonore<br>
+                    • Batterie exceptionnelle<br>
+                    💰 Prix : 13 500 FCFA<br>
+                    👜 Pochette AirPods qualité supérieure : 5 000 FCFA<br>
+                    🎁 Pack complet avec pochette : <strong>16 500 FCFA</strong><br>
+                    📍 Cité Sonuci, sur la latérite de chez Seyni Omar</p>
+                </a>
+
+                <!-- Publication 5 -->
+                <a href="https://www.facebook.com/100063546250480/posts/1636800595114800/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/lenovo-thinkpad-l13-core-i5-11e.jpg" alt="Lenovo ThinkPad L13 Core i5 11e génération" loading="lazy">
+                    <small>Il y a 2 jours</small>
+                    <p>💻 <strong>Lenovo ThinkPad L13 Core i5 11e génération</strong><br>
+                    • SSD 256 Go<br>
+                    • RAM 8 Go<br>
+                    • Clavier lumineux<br>
+                    • Autonomie +5h<br>
+                    • Chargeur Type-C<br>
+                    • Empreinte digitale 🔒<br>
+                    📍 Cité Sonuci, sur la latérite de chez Seyni Omar</p>
+                </a>
+
+                <!-- Publication 6 -->
+                <a href="https://www.facebook.com/100063546250480/posts/1636797261781800/?app=fbl" target="_blank" rel="noopener" class="fb-post">
+                    <img src="assets/images/facebook/lenovo-thinkpad-l13-yoga-core-i5-10e.jpg" alt="Lenovo ThinkPad L13 Yoga Core i5 10e génération" loading="lazy">
+                    <small>Il y a 2 jours</small>
+                    <p>🔄 <strong>Lenovo ThinkPad L13 Yoga Core i5 10e génération</strong><br>
+                    • Écran tactile rotatif X360<br>
+                    • SSD 256 Go<br>
+                    • RAM 8 Go<br>
+                    • Clavier lumineux<br>
+                    📍 Cité Sonuci, en face de Nita et Amana</p>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- ==================== FIN SECTION TEMPORAIRE ==================== -->
+
+    <!-- Pied de page injecté par JS -->
+    <div id="footer-app"></div>
+
+    <!-- Bouton WhatsApp flottant -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/22791127870" target="_blank" rel="noopener" class="whatsapp-btn" aria-label="Contacter sur WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js" defer></script>
+    <script src="js/i18n.js" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/install.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/payments.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/cart.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <!-- Tracker Ghost Stream v2 -->
+    <script src="js/tracker.js" defer></script>
+
+    <!-- Gestion du menu "Plus" et du bouton Facebook -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('side-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const btn = document.getElementById('nav-menu');
+            const isOpen = menu.classList.toggle('open');
+            overlay.style.display = isOpen ? 'block' : 'none';
+            btn.setAttribute('aria-expanded', isOpen);
+            overlay.setAttribute('aria-hidden', !isOpen);
+            if (isOpen) {
+                document.body.style.overflow = 'hidden';
+                menu.querySelector('button')?.focus();
+            } else {
+                document.body.style.overflow = '';
+                btn.focus();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('toggle-fb-posts');
+            const grid = document.getElementById('fb-posts-grid');
+            const span = btn ? btn.querySelector('span') : null;
+
+            if (btn && grid && span) {
+                btn.addEventListener('click', function() {
+                    if (grid.classList.contains('hidden')) {
+                        grid.classList.remove('hidden');
+                        span.textContent = 'Masquer';
+                    } else {
+                        grid.classList.add('hidden');
+                        span.textContent = 'Afficher';
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('side-menu');
+                if (menu.classList.contains('open')) toggleMenu();
+            }
+        });
+    </script>
+
+    <!-- Enregistrement du Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW enregistré, scope:', reg.scope))
+                .catch(err => console.error('SW erreur:', err));
+        }
+    </script>
+</body>
+</html>
