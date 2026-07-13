@@ -145,9 +145,6 @@ async function renderHomePage() {
             <span style="flex:1"></span>
         </header>
         <main class="container" style="padding-top: 0;">
-            <div class="social-proof-banner" style="text-align:center; padding:0.5rem; background:var(--sand-100); border-radius:var(--radius-sm); margin-bottom:1rem;">
-                🔥 ${Math.floor(Math.random()*50)+10} personnes consultent cette page
-            </div>
             <div class="search-wrapper">
                 <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()" aria-label="${t('searchPlaceholder')}">
                 <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
@@ -168,6 +165,7 @@ async function renderHomePage() {
         allProducts = [];
     }
     window._allProducts = allProducts;
+    allProductsCache = allProducts;   // Synchronisation du cache de recherche
 
     const mainTabs = [
         { key: 'Ordinateurs', label: '💻 Ordinateurs' },
@@ -214,9 +212,6 @@ async function renderHomePage() {
     const main = document.querySelector('main.container');
     if (main) {
         main.innerHTML = `
-            <div class="social-proof-banner" style="text-align:center; padding:0.5rem; background:var(--sand-100); border-radius:var(--radius-sm); margin-bottom:1rem;">
-                🔥 ${Math.floor(Math.random()*50)+10} personnes consultent cette page
-            </div>
             <div class="search-wrapper">
                 <input type="search" id="search-input" placeholder="${t('searchPlaceholder')}" autocomplete="off" oninput="handleSearchSuggestions()" aria-label="${t('searchPlaceholder')}">
                 <button class="search-btn" onclick="handleSearchSuggestions()" aria-label="Rechercher">
@@ -234,26 +229,23 @@ async function renderHomePage() {
                 this.classList.add('active');
                 activeTab = this.dataset.tab;
                 document.getElementById('temu-content').innerHTML = buildContent();
-                attachAddToCartListeners();
                 updateCompareButtons();
                 updateWishlistButtons();
             });
         });
     }
 
-    function attachAddToCartListeners() {
-        document.getElementById('app').addEventListener('click', function (e) {
-            const btn = e.target.closest('.add-to-list-btn');
-            if (btn) {
-                e.stopPropagation();
-                const productId = btn.dataset.productId;
-                const product = window._allProducts?.find(p => p.id === productId);
-                if (product) addToList(product, 1);
-            }
-        });
-    }
+    // Écouteur unique, évite l'accumulation
+    app.addEventListener('click', function (e) {
+        const btn = e.target.closest('.add-to-list-btn');
+        if (btn) {
+            e.stopPropagation();
+            const productId = btn.dataset.productId;
+            const product = window._allProducts?.find(p => p.id === productId);
+            if (product) addToList(product, 1);
+        }
+    });
 
-    attachAddToCartListeners();
     updateCompareButtons();
     updateWishlistButtons();
     if (compareList.length >= 2 && !document.getElementById('compare-floating-btn')) {
@@ -538,7 +530,8 @@ function renderComparePage() {
         <button onclick="navigateTo('/')">${t('back')}</button>
         <h2 style="margin-top:1rem;"><i class="fas fa-balance-scale"></i> Comparer les produits</h2>
         ${tableHTML}
-        <button class="btn btn-outline btn-block mt-2" onclick="compareList = []; localStorage.removeItem('compareList'); updateCompareButtons(); navigateTo('/');">
+        <button class="btn btn-outline btn-block mt-2" onclick="compareList = []; localStorage.removeItem('compareList'); updateCompareButtons(); navigateTo('/'); 
+            const fb = document.getElementById('compare-floating-btn'); if(fb) fb.remove();">
             Vider le comparateur
         </button>
     </div>`;
@@ -548,8 +541,9 @@ function renderComparePage() {
 function renderCartPage() {
     const app = document.getElementById('app');
     if (!app) return;
+    const list = window.list || [];
 
-    if (typeof list === 'undefined' || list.length === 0) {
+    if (list.length === 0) {
         app.innerHTML = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>📋 Ma liste</h2><p>Votre liste est vide.</p></div>`;
         return;
     }
@@ -625,11 +619,11 @@ function renderCheckoutPage() {
 
     document.getElementById('checkout-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        // rediriger vers WhatsApp
         const fullname = document.getElementById('fullname').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const address = document.getElementById('address').value.trim();
         const payment = document.getElementById('payment-method').value;
+        const list = window.list || [];
 
         const message = `Bonjour, je souhaite passer commande :\n\nNom : ${fullname}\nTél : ${phone}\nAdresse : ${address}\nPaiement : ${payment}\n\nArticles :\n${list.map(item => `- ${getLocalizedProduct(item).name} x${item.quantity}`).join('\n')}`;
         window.open(`https://wa.me/22791127870?text=${encodeURIComponent(message)}`, '_blank');
@@ -924,6 +918,42 @@ function renderContactPage() {
     });
 }
 
+// ---------- PAGE FAVORIS ----------
+function renderWishlistPage() {
+    const app = document.getElementById('app');
+    if (!app) return;
+    const products = wishlist.map(id => window._allProducts?.find(p => p.id === id)).filter(Boolean);
+    if (!products.length) {
+        app.innerHTML = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>❤️ Favoris</h2><p>Aucun favori pour le moment.</p></div>`;
+        return;
+    }
+    let html = `<div class="container"><button onclick="navigateTo('/')">${t('back')}</button><h2>❤️ Favoris</h2><div class="product-grid">`;
+    html += products.map(p => productCard(p)).join('');
+    html += '</div></div>';
+    app.innerHTML = html;
+    updateCompareButtons();
+    updateWishlistButtons();
+}
+
+// ---------- PAGE BLOG ----------
+function renderBlogPage() {
+    const app = document.getElementById('app');
+    if (!app) return;
+    app.innerHTML = `
+    <div class="container">
+        <button onclick="navigateTo('/')">← Accueil</button>
+        <h2>📝 Blog</h2>
+        <article class="card">
+            <h3>Guide d'achat : quel PC choisir en 2026 ?</h3>
+            <p>Découvrez nos conseils pour choisir le meilleur ordinateur selon votre budget et vos besoins.</p>
+        </article>
+        <article class="card">
+            <h3>Les avantages du paiement mobile au Niger</h3>
+            <p>Rapide, sécurisé et accessible à tous, le paiement mobile révolutionne le commerce.</p>
+        </article>
+    </div>`;
+}
+
 // ---------- EXPOSITIONS GLOBALES ----------
 window.renderHomePage = renderHomePage;
 window.renderProductPage = renderProductPage;
@@ -938,6 +968,8 @@ window.renderLoginPage = renderLoginPage;
 window.renderRegisterPage = renderRegisterPage;
 window.renderAboutPage = renderAboutPage;
 window.renderContactPage = renderContactPage;
+window.renderWishlistPage = renderWishlistPage;
+window.renderBlogPage = renderBlogPage;
 window.initAccessibilityControls = initAccessibilityControls;
 window.toggleCompare = toggleCompare;
 window.toggleWishlist = toggleWishlist;
